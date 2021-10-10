@@ -28,7 +28,7 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
 
       - name: Update GeoApp package
-        run: ssh ulmo 'R -e \'remotes::install_github("Nenuial/GeoApp")\''
+        run: ssh ulmo 'R -e "remotes::install_github(\"Nenuial/GeoApp\")"'
 
       - name: Restart GeoApp
         run: ssh ulmo 'sudo systemctl restart geoapp'
