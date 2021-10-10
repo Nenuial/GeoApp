@@ -1,0 +1,32 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# GeoApp
+
+<!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: end -->
+
+The goal of GeoApp is to provide a small app to support geography
+teaching.
+
+## Installation
+
+You can install the released version of GeoApp from
+[GitHub](https://github.com) with:
+
+``` r
+remotes::install_github("Nenuial/GeoApp")
+```
+
+An access to certain private repository dependencies is necessary!
+
+## Run the app
+
+To run the app use:
+
+``` r
+GeoApp::run_app()
+```

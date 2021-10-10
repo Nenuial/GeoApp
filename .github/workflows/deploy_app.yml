@@ -1,0 +1,34 @@
+on:
+  push:
+     tags:
+       - v*
+
+name: Geo-App
+
+jobs:
+  geo-app:
+    name: Deploy GeoApp
+    runs-on: macOS-latest
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/ulmo.key
+          chmod 600 ~/.ssh/ulmo.key
+          cat >>~/.ssh/config <<END
+          Host ulmo
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/ulmo.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      - name: Update GeoApp package
+        run: ssh ulmo 'R -e \'remotes::install_github("Nenuial/GeoApp")\''
+
+      - name: Restart GeoApp
+        run: ssh ulmo 'sudo systemctl restart geoapp'
