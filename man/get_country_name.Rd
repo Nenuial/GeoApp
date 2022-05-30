@@ -11,9 +11,6 @@ get_country_name(code, code_type)
 
 \item{code_type}{Code type in the countrycode package}
 }
-\value{
-
-}
 \description{
 Get country name for specific code type
 }
