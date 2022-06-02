@@ -43,7 +43,7 @@ mod_idb_pyramid_ui <- function(id){
             width = "100%",
             min = 1950,
             max = 2050,
-            value = 2000)
+            value = 2020)
         )
       )
     ),
