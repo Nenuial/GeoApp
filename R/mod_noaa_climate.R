@@ -73,17 +73,16 @@ mod_noaa_climate_ui <- function(id){
 #' noaa_climate Server Function
 #'
 #' @noRd 
-#' @importFrom magrittr %>%
 mod_noaa_climate_server <- function(id){
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    cities <- geographer::get_ncdc_city_list() %>% na.omit()
+    cities <- geodata::gdt_ncdc_city_list() |> na.omit()
     
     # Setup map ---------------------------------------------------------------
     observe(priority = 100, {
       output$map_area <- leaflet::renderLeaflet({
-        leaflet::leaflet(cities) %>% 
-          leaflet::addTiles() %>%
+        leaflet::leaflet(cities) |> 
+          leaflet::addTiles() |> 
           leaflet::addMarkers(lat = ~lat,
                               lng = ~long,
                               layerId = ~id,
@@ -144,8 +143,8 @@ mod_noaa_climate_server <- function(id){
     
     # Get climate data --------------------------------------------------------
     get_climate_data <- function(location_id) {
-      temp <- geographer::get_noaa_climate_data(location_id, data_type = "temperature")
-      prec <- geographer::get_noaa_climate_data(location_id, data_type = "precipitation")
+      temp <- geodata::gdt_noaa_climate_data(location_id, data_type = "temperature")
+      prec <- geodata::gdt_noaa_climate_data(location_id, data_type = "precipitation")
       
       return(list("temp" = temp,
                   "prec" = prec))
@@ -167,9 +166,9 @@ mod_noaa_climate_server <- function(id){
         dplyr::pull(lat) -> city_latitude
       
       # Get Köppen Climate code
-      koppen_climate <- geographer::determine_koppen_climate(temp = climate_data$temp$value,
-                                                             prec = climate_data$prec$value,
-                                                             lat = city_latitude)
+      koppen_climate <- geotools::gtl_koppen_code(temp = climate_data$temp$value,
+                                                  prec = climate_data$prec$value,
+                                                  lat = city_latitude)
       
       # Prettify the station name
       city_data$name %>% 

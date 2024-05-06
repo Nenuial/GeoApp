@@ -25,7 +25,7 @@ get_wb_country_name <- function(code) {
 #' @param code Country code
 #' @param code_type Code type in the countrycode package
 #'
-#' @return
+#' @return A list of country names
 #' @export
 get_country_name <- function(code, code_type) {
   countrycode::countrycode(code, origin = code_type, destination = "country.name.en")

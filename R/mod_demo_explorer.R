@@ -148,7 +148,7 @@ mod_demo_explorer_server <- function(id){
         dplyr::mutate(cut = santoku::chop(data, breaks = dim()$map$breaks,
                                           labels = santoku::lbl_dash(),
                                           extend = T, drop = F) %>% 
-                        forcats::fct_relabel(geographer::chop_relabel_dash)) -> map_data
+                        forcats::fct_relabel(geotools::gtl_relabel_dash)) -> map_data
       
       rnaturalearth::ne_countries(scale = 50,
                                   returnclass = "sf") %>% 
@@ -156,7 +156,7 @@ mod_demo_explorer_server <- function(id){
         dplyr::left_join(map_data, by = c("iso_a3" = "iso3c")) -> map
       
       leaflet::colorFactor(
-        palette = as.character(ggeo::return_palette(length(levels(map_data$cut)),
+        palette = as.character(ggeo::ggeopal_center(length(levels(map_data$cut)),
                                                     dim()$map$center,
                                                     dim()$map$palette)),
         domain = map_data$cut
@@ -174,7 +174,7 @@ mod_demo_explorer_server <- function(id){
             list(background = "white")
           ) %>% 
           leaflet::addPolygons(
-            data = geographer::carto_ne_get_boundbox(),
+            data = geographer::gph_boundbox(),
             fillColor = "#CDE4F2",
             fillOpacity = 1,
             weight = 1
