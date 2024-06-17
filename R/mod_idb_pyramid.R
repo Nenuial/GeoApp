@@ -11,15 +11,15 @@
 #' @rdname mod_idb_pyramid
 #'
 #' @keywords internal
-#' @export 
-#' @importFrom shiny NS tagList 
-mod_idb_pyramid_ui <- function(id){
+#' @export
+#' @importFrom shiny NS tagList
+mod_idb_pyramid_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    
+
     # Warning placeholder -----------------------------------------------------
     div(id = "idb_error", style = "position: absolute; top: 0; right: 0;"),
-    
+
     # Plot parameters ---------------------------------------------------------
     bs4Card(
       title = "Plot Parameters",
@@ -43,11 +43,12 @@ mod_idb_pyramid_ui <- function(id){
             width = "100%",
             min = 1950,
             max = 2050,
-            value = 2020)
+            value = 2020
+          )
         )
       )
     ),
-    
+
     # Plot --------------------------------------------------------------------
     bs4Card(
       title = "Plot",
@@ -63,7 +64,7 @@ mod_idb_pyramid_ui <- function(id){
         ),
         options = list(
           handles = "s",
-          create =  shinyjqui::JS(
+          create = shinyjqui::JS(
             'function(event, ui){ $(this).css("width", "100%"); }'
           )
         )
@@ -77,54 +78,55 @@ mod_idb_pyramid_ui <- function(id){
 #' @rdname mod_idb_pyramid
 #' @export
 #' @keywords internal
-#' 
+#'
 #' @importFrom magrittr %>%
-mod_idb_pyramid_server <- function(id){
+mod_idb_pyramid_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    ns <- session$ns
-    
+    ns <- session$ns  # nolint: object_usage_linter
+
     # Update plot -------------------------------------------------------------
     observe({
       req(input$country, input$year)
-      
-      hc <- tryCatch({
-        geographer::gph_highcharter_pyramid(
-          countrycode::countrycode(input$country, "fips", "country.name"),
-          input$year
-        )
-      },
-      error = function(cond) {
-        bs4Dash::createAlert(
-          id = "idb_error",
-          options = list(
-            title = "Error",
-            closable = TRUE,
-            width = 12,
-            elevations = 4,
-            status = c("danger"),
-            content = "No data could be fetched for this country/year !"
+
+      hc <- tryCatch(
+        {
+          geographer::gph_highcharter_pyramid(
+            countrycode::countrycode(input$country, "fips", "country.name"),
+            input$year
           )
-        )
-        
-        return(NULL)
-      },
-      warning = function(cond) {
-        bs4Dash::createAlert(
-          id = "idb_error",
-          options = list(
-            title = "Error",
-            closable = TRUE,
-            width = 12,
-            elevations = 4,
-            status = c("danger"),
-            content = "No data could be fetched for this country/year !"
+        },
+        error = function(cond) {
+          bs4Dash::createAlert(
+            id = "idb_error",
+            options = list(
+              title = "Error",
+              closable = TRUE,
+              width = 12,
+              elevations = 4,
+              status = c("danger"),
+              content = "No data could be fetched for this country/year !"
+            )
           )
-        )
-      }
+
+          return(NULL)
+        },
+        warning = function(cond) {
+          bs4Dash::createAlert(
+            id = "idb_error",
+            options = list(
+              title = "Error",
+              closable = TRUE,
+              width = 12,
+              elevations = 4,
+              status = c("danger"),
+              content = "No data could be fetched for this country/year !"
+            )
+          )
+        }
       )
-      
+
       req(hc)
-      
+
       output$plot_area <- highcharter::renderHighchart(hc)
     })
   })

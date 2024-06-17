@@ -12,3 +12,4 @@ $run_dev.*
 ^app\.R$
 ^rsconnect$
 ^Dockerfile$
+^.lintr$

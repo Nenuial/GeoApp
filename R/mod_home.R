@@ -11,11 +11,11 @@
 #' @rdname mod_home
 #'
 #' @keywords internal
-#' @export 
+#' @export
 #' @import bs4Dash
 #' @importFrom shiny NS tagList a
-mod_home_ui <- function(id){
-  ns <- NS(id)
+mod_home_ui <- function(id) {
+  ns <- NS(id) # nolint: object_usage_linter
   tagList(
     fluidRow(
       column(
@@ -63,7 +63,7 @@ mod_home_ui <- function(id){
             subtitle = "Results of swiss national votes",
             icon = shiny::icon("envelope"),
             tabName = "swiss_votes"
-          ) 
+          )
         )
       ),
       column(
@@ -92,9 +92,8 @@ mod_home_ui <- function(id){
 #' @export
 #' @keywords internal
 
-mod_home_server <- function(id){
+mod_home_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    ns <- session$ns
+    ns <- session$ns  # nolint: object_usage_linter
   })
 }
-

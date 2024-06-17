@@ -6,19 +6,15 @@ app_ui <- function() {
     fresh::bs4dash_status(primary = "#5E81AC", danger = "#BF616A")
   )
 
-  
+
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    
+
     # Firt level UI
     bs4DashPage(
-      #old_school = FALSE, DEPRECATED
-      #sidebar_mini = TRUE,
-      #sidebar_collapsed = FALSE,
-      
       freshTheme = theme,
-      
+
       # Navbar ------------------------------------------------------------------
       header = bs4DashNavbar(
         status = "white",
@@ -26,9 +22,8 @@ app_ui <- function() {
         skin = "light",
         "Geography App"
       ),
-      
       title = "GeoApp",
-      
+
       # Sidebar -----------------------------------------------------------------
       sidebar = bs4DashSidebar(
         skin = "light",
@@ -41,7 +36,6 @@ app_ui <- function() {
             tabName = "home",
             icon = shiny::icon("home")
           ),
-          
           bs4SidebarHeader("Human"),
           bs4SidebarMenuItem(
             text = "Demo explorer",
@@ -63,7 +57,6 @@ app_ui <- function() {
             tabName = "swiss_votes",
             icon = shiny::icon("envelope")
           ),
-          
           bs4SidebarHeader("Physical"),
           bs4SidebarMenuItem(
             text = "NOAA Climate",
@@ -72,8 +65,8 @@ app_ui <- function() {
           )
         )
       ),
-      
-      
+
+
       # Page body ---------------------------------------------------------------
       body = bs4DashBody(
         bs4TabItems(
@@ -107,21 +100,22 @@ app_ui <- function() {
   )
 }
 
-
-golem_add_external_resources <- function(){
-  
-  addResourcePath(
-    'www', system.file('app/www', package = 'GeoApp')
+#' @importFrom shiny addResourcePath
+golem_add_external_resources <- function() {
+  shiny::addResourcePath(
+    "www", system.file("app/www", package = "GeoApp")
   )
- 
+
   tags$head(
     golem::activate_js(),
     golem::favicon(ext = "png"),
-    
+
+    # nolint start commented_code_linter
     # Add here all the external resources
     # If you have a custom.css in the inst/app/www
     # Or for example, you can add shinyalert::useShinyalert() here
-    #tags$link(rel="stylesheet", type="text/css", href="www/custom.css")
-    tags$script(src="www/gochart.js")
+    # tags$link(rel="stylesheet", type="text/css", href="www/custom.css")
+    # nolint end
+    tags$script(src = "www/gochart.js")
   )
 }

@@ -4,10 +4,10 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd 
+#' @noRd
 #'
-#' @importFrom shiny NS tagList 
-mod_swiss_votes_ui <- function(id){
+#' @importFrom shiny NS tagList
+mod_swiss_votes_ui <- function(id) {
   ns <- NS(id)
   tagList(
     # Plot parameters ---------------------------------------------------------
@@ -45,7 +45,7 @@ mod_swiss_votes_ui <- function(id){
         )
       )
     ),
-    
+
     # Map --------------------------------------------------------------------
     bs4Card(
       title = "Map",
@@ -61,26 +61,26 @@ mod_swiss_votes_ui <- function(id){
         ),
         options = list(
           handles = "s",
-          create =  shinyjqui::JS(
+          create = shinyjqui::JS(
             'function(event, ui){ $(this).css("width", "100%"); }'
           )
         )
       )
-    )  
+    )
   )
 }
-    
+
 #' swiss_votes Server Functions
 #'
-#' @noRd 
-mod_swiss_votes_server <- function(id){
+#' @noRd
+mod_swiss_votes_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Update input votes ------------------------------------------------------
     observe({
       req(input$vote_date)
-      
+
       output$vote_ui <- shiny::renderUI({
         shiny::selectInput(
           inputId = ns("vote_id"),
@@ -89,50 +89,51 @@ mod_swiss_votes_server <- function(id){
         )
       })
     })
-    
+
     # Update map -------------------------------------------------------------
     observe({
       req(input$vote_date, input$vote_id, input$geolevel)
-      
-      hc <- tryCatch({
-        geographer::gph_highcharter_map_swiss_votes(
-          geolevel = input$geolevel,
-          votedates = input$vote_date,
-          id = input$vote_id
-        )
-      },
-      error = function(cond) {
-        bs4Dash::createAlert(
-          id = "swiss_votes_error",
-          options = list(
-            title = "Error",
-            closable = TRUE,
-            width = 12,
-            elevations = 4,
-            status = c("danger"),
-            content = "No data could be fetched!"
+
+      hc <- tryCatch(
+        {
+          geographer::gph_highcharter_map_swiss_votes(
+            geolevel = input$geolevel,
+            votedates = input$vote_date,
+            id = input$vote_id
           )
-        )
-        
-        return(NULL)
-      },
-      warning = function(cond) {
-        bs4Dash::createAlert(
-          id = "swiss_votes_error",
-          options = list(
-            title = "Error",
-            closable = TRUE,
-            width = 12,
-            elevations = 4,
-            status = c("danger"),
-            content = "No data could be fetched!"
+        },
+        error = function(cond) {
+          bs4Dash::createAlert(
+            id = "swiss_votes_error",
+            options = list(
+              title = "Error",
+              closable = TRUE,
+              width = 12,
+              elevations = 4,
+              status = c("danger"),
+              content = "No data could be fetched!"
+            )
           )
-        )
-      }
+
+          return(NULL)
+        },
+        warning = function(cond) {
+          bs4Dash::createAlert(
+            id = "swiss_votes_error",
+            options = list(
+              title = "Error",
+              closable = TRUE,
+              width = 12,
+              elevations = 4,
+              status = c("danger"),
+              content = "No data could be fetched!"
+            )
+          )
+        }
       )
-      
+
       req(hc)
-      
+
       output$map_area <- highcharter::renderHighchart(hc)
     })
   })

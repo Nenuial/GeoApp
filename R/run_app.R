@@ -8,13 +8,13 @@ run_app <- function(...) {
   if (!file.exists(cachedir)) dir.create(cachedir, recursive = TRUE)
   with_golem_options(
     app = shinyApp(
-      ui = app_ui, 
+      ui = app_ui,
       server = app_server,
       options = list(
         host = "0.0.0.0",
         port = 3801
       )
-    ), 
+    ),
     golem_opts = list(...)
   )
 }
