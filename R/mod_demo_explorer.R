@@ -159,7 +159,7 @@ mod_demo_explorer_server <- function(id) {
         returnclass = "sf"
       ) %>%
         sf::st_transform(4326) %>%
-        dplyr::left_join(map_data, by = c("iso_a3" = "iso3c")) -> map
+        dplyr::left_join(map_data, by = c("adm0_a3" = "iso3c")) -> map
 
       leaflet::colorFactor(
         palette = as.character(ggeo::ggeopal_center(
@@ -194,7 +194,7 @@ mod_demo_explorer_server <- function(id) {
             weight = 1,
             fillOpacity = 1,
             fillColor = ~ pal(map$cut),
-            layerId = map$iso_a3,
+            layerId = map$adm0_a3,
             color = "#CCCCCC",
             popup = glue::glue("<strong>{map$name}</strong><br>
                               <strong>{dim()$map$legend}:</strong> {map$data} {dim()$map$unit}")
@@ -207,8 +207,8 @@ mod_demo_explorer_server <- function(id) {
             values = map$cut,
             labels = levels(map$cut),
             opacity = 1,
-            labFormat = leaflet::labelFormat(suffix = glue::glue(" {dim()$map$unit}")),
-            na.label = "No data",
+            lab_format = leaflet::labelFormat(suffix = glue::glue(" {dim()$map$unit}")),
+            na_label = "No data",
             decreasing = TRUE
           )
       })
