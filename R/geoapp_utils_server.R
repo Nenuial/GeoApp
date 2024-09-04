@@ -15,7 +15,7 @@ geoapp_swiss_votes_date <- function() {
 #' @return The country name
 #' @export
 get_wb_country_name <- function(code) {
-  wbstats::wbcountries() %>%
+  wbstats::wb_countries() %>%
     dplyr::filter(iso3c == code) %>%
     dplyr::pull(country)
 }
