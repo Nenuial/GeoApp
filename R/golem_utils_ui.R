@@ -173,17 +173,17 @@ enurl <- function(url, text) {
 #'
 #' @export
 #' @rdname columns
-#' @importFrom bs4Dash column
+#' @importFrom shiny column
 col_12 <- function(...) {
   column(12, ...)
 }
 
-#' @importFrom bs4Dash column
+#' @importFrom shiny column
 col_6 <- function(...) {
   column(6, ...)
 }
 
-#' @importFrom bs4Dash column
+#' @importFrom shiny column
 col_4 <- function(...) {
   column(4, ...)
 }

@@ -1,5 +1,5 @@
 app_server <- function(input, output, session) {
-  mod_home_server("home_ui")
+  mod_home_server("home_ui", session)
   mod_demo_explorer_server("demo_explorer_ui")
   mod_hmd_demograph_server("hmd_demograph_ui")
   mod_idb_pyramid_server("idb_pyramid_ui")

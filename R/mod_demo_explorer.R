@@ -13,99 +13,90 @@
 #' @keywords internal
 #' @export
 #' @import shiny
-#' @import bs4Dash
+#' @import bslib
 #' @importFrom shiny NS tagList
 mod_demo_explorer_ui <- function(id) {
   ns <- NS(id)
-  tagList(
 
-    # Parameters --------------------------------------------------------------
-    bs4Card(
-      title = "Map Parameters",
-      collapsed = TRUE,
-      closable = FALSE,
-      headerBorder = TRUE,
-      status = "primary",
-      width = 12,
-      fluidRow(
-        column(
-          width = 6,
-          shiny::selectInput(
-            inputId = ns("dimension"),
-            label = "Dimension",
-            choices = list(
-              "Population growth" = "growth",
-              "Fertility" = "fertility",
-              "Life expectancy" = "lex"
+  navset_card_tab(
+    nav_item(
+      span("Demo Explorer", class = "card-header"),
+    ),
+    # Map Panel
+    nav_panel(
+      title = "Map",
+      card(
+        full_screen = TRUE,
+        layout_sidebar(
+          sidebar = sidebar(
+            layout_column_wrap(
+              width = "200px",
+              fixed_width = FALSE,
+              shiny::selectInput(
+                inputId = ns("dimension"),
+                label = "Dimension",
+                choices = list(
+                  "Population growth" = "growth",
+                  "Fertility" = "fertility",
+                  "Life expectancy" = "lex"
+                )
+              ),
+              shiny::sliderInput(
+                inputId = ns("year"),
+                label = "Year",
+                min = 1960,
+                max = as.integer(format(Sys.Date(), "%Y")) - 2,
+                value = as.integer(format(Sys.Date(), "%Y")) - 4,
+                step = 1
+              )
             )
-          )
-        ),
-        column(
-          width = 6,
-          shiny::sliderInput(
-            inputId = ns("year"),
-            label = "Year",
-            min = 1960,
-            max = as.integer(format(Sys.Date(), "%Y")),
-            value = 2015,
-            step = 1
+          ),
+          shinyjqui::jqui_resizable(
+            leaflet::leafletOutput(
+              outputId = ns("map_area"),
+              width = "100%",
+              height = 600
+            ),
+            options = list(
+              handles = "s",
+              create = shinyjqui::JS(
+                'function(event, ui){ $(this).css("width", "100%"); }'
+              )
+            )
           )
         )
       )
     ),
-
-    # Map, table and chart ----------------------------------------------------
-    tabBox(
-      id = "contentCard",
-      maximizable = TRUE,
-      closable = FALSE,
-      status = "primary",
-      type = "tabs",
-      side = "left",
-      width = 12,
-      tabPanel(
-        title = "Demography map",
-        shinyjqui::jqui_resizable(
-          leaflet::leafletOutput(
-            outputId = ns("map_area"),
-            width = "100%",
-            height = 600
-          ),
-          options = list(
-            handles = "s",
-            create = shinyjqui::JS(
-              'function(event, ui){ $(this).css("width", "100%"); }'
-            )
-          )
+    # Table Panel
+    nav_panel(
+      title = "Table",
+      card(
+        full_screen = TRUE,
+        height = "600px",
+        DT::dataTableOutput(
+          outputId = ns("table")
         )
-      ),
-      tabPanel(
-        title = "Demography tables",
-        column(
-          12,
-          DT::dataTableOutput(
-            outputId = ns("table")
-          )
-        )
-      ),
-      tabPanel(
-        title = "Demography plots",
-        shinyjqui::jqui_resizable(
-          highcharter::highchartOutput(
-            outputId = ns("plot_area"),
-            width = "100%",
-            height = 500
-          ),
-          options = list(
-            handles = "s",
-            create = shinyjqui::JS(
-              'function(event, ui){ $(this).css("width", "100%"); }'
-            )
+      )
+    ),
+    # Plot Panel
+    nav_panel(
+      title = "Plot",
+      shinyjqui::jqui_resizable(
+        highcharter::highchartOutput(
+          outputId = ns("plot_area"),
+          width = "100%",
+          height = 500
+        ),
+        options = list(
+          handles = "s",
+          create = shinyjqui::JS(
+            'function(event, ui){ $(this).css("width", "100%"); }'
           )
         )
       )
     )
   )
+  
 }
 
 # Module Server
@@ -286,7 +277,7 @@ mod_demo_explorer_server <- function(id) {
       hc$x$hc_opts$yAxis <- dim()$plot$axes$y
 
       for (param in dim()$plot$series) {
-        hc %>%
+        hc |>
           highcharter::hc_add_series(
             data = data,
             "line",
@@ -300,7 +291,8 @@ mod_demo_explorer_server <- function(id) {
       }
 
       output$plot_area <- highcharter::renderHighchart({
-        hc
+        hc |>
+          ggeo::hc_dark_web_theme()
       })
     }
 
@@ -345,14 +337,14 @@ mod_demo_explorer_server <- function(id) {
               ),
               y = list(
                 list(min = 0, title = list(text = "Rates")),
-                list(min = 0, title = list(text = "Population", style = list(color = "blue")), opposite = TRUE)
+                list(min = 0, title = list(text = "Population", style = list(color = "lightskyblue")), opposite = TRUE)
               )
             ),
             series = list(
               list(
                 indicator = expr(pop),
                 name = "population",
-                color = "blue",
+                color = "lightskyblue",
                 dash_style = "solid",
                 suffix = "",
                 yaxis = 1
@@ -360,7 +352,7 @@ mod_demo_explorer_server <- function(id) {
               list(
                 indicator = expr(cbr),
                 name = "crude birth rate",
-                color = "grey",
+                color = "whitesmoke",
                 dash_style = "solid",
                 suffix = " ‰",
                 yaxis = 0
@@ -368,7 +360,7 @@ mod_demo_explorer_server <- function(id) {
               list(
                 indicator = expr(cdr),
                 name = "crude death rate",
-                color = "black",
+                color = "crimson",
                 dash_style = "solid",
                 suffix = " ‰",
                 yaxis = 0
@@ -406,15 +398,15 @@ mod_demo_explorer_server <- function(id) {
                 title = list(text = "Year")
               ),
               y = list(
-                list(min = 0, title = list(text = "Fertility", style = list(color = "red"))),
-                list(min = 0, title = list(text = "Mortality rate", style = list(color = "black")), opposite = TRUE)
+                list(min = 0, title = list(text = "Fertility", style = list(color = "indianred"))),
+                list(min = 0, title = list(text = "Mortality rate", style = list(color = "whitesmoke")), opposite = TRUE)
               )
             ),
             series = list(
               list(
                 indicator = expr(tfr),
                 name = "fertility rate",
-                color = "red",
+                color = "indianred",
                 dash_style = "solid",
                 suffix = "",
                 yaxis = 0
@@ -422,7 +414,7 @@ mod_demo_explorer_server <- function(id) {
               list(
                 indicator = expr(cmr),
                 name = "child mortality rate",
-                color = "black",
+                color = "whitesmoke",
                 dash_style = "solid",
                 suffix = " ‰",
                 yaxis = 1
@@ -464,7 +456,7 @@ mod_demo_explorer_server <- function(id) {
               list(
                 indicator = expr(lex),
                 name = "life expectancy",
-                color = "grey",
+                color = "white",
                 dash_style = "ShortDot",
                 suffix = "",
                 yaxis = 0
@@ -472,7 +464,7 @@ mod_demo_explorer_server <- function(id) {
               list(
                 indicator = expr(lexm),
                 name = "male life expectancy",
-                color = "deepskyblue",
+                color = "skyblue",
                 dash_style = "solid",
                 suffix = "",
                 yaxis = 0
@@ -480,7 +472,7 @@ mod_demo_explorer_server <- function(id) {
               list(
                 indicator = expr(lexf),
                 name = "female life expectancy",
-                color = "fuchsia",
+                color = "plum",
                 dash_style = "solid",
                 suffix = "",
                 yaxis = 0
