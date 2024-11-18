@@ -7,7 +7,7 @@
 geoapp_ui_country_code(code_type)
 }
 \arguments{
-\item{code_type}{}
+\item{code_type}{Code type in the countrycode package}
 }
 \value{
 A named character vector

@@ -19,7 +19,7 @@ geoapp_ui_wb_country_selector <- function(id, label) {
 
 #' Country codes for selector
 #'
-#' @param code_type
+#' @param code_type Code type in the countrycode package
 #'
 #' @return A named character vector
 #' @export
@@ -32,6 +32,8 @@ geoapp_ui_country_code <- function(code_type) {
 }
 
 #' Latest swiss votes and their ids
+#'
+#' @param votedate date of the vote
 #'
 #' @return A named character vector
 #' @export

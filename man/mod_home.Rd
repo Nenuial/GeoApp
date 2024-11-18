@@ -11,12 +11,6 @@ mod_home_server(id, parent)
 }
 \arguments{
 \item{id}{shiny id}
-
-\item{input}{internal}
-
-\item{output}{internal}
-
-\item{session}{internal}
 }
 \description{
 A shiny Module.

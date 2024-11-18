@@ -1,4 +1,6 @@
 #' Run the Shiny Application
+#' 
+#' @param ... golem options
 #'
 #' @export
 #' @importFrom shiny shinyApp

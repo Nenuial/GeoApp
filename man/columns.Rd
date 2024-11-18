@@ -6,8 +6,11 @@
 \usage{
 col_12(...)
 }
+\arguments{
+\item{...}{The content of the column}
+}
 \description{
 Most shiny columns are 12, 6 or 4 of width.
 These are convenient wrappers around
-`column(12, ...)`, `column(6, ...)` and `column(4, ...)`.
+\code{column(12, ...)}, \code{column(6, ...)} and \code{column(4, ...)}.
 }

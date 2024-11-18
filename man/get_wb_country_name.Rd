@@ -7,7 +7,7 @@
 get_wb_country_name(code)
 }
 \arguments{
-\item{iso3c}{A WB ISO3 code}
+\item{code}{A WB ISO3 code}
 }
 \value{
 The country name

@@ -6,6 +6,9 @@
 \usage{
 geoapp_ui_swiss_votes(votedate)
 }
+\arguments{
+\item{votedate}{date of the vote}
+}
 \value{
 A named character vector
 }
