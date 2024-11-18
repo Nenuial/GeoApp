@@ -9,50 +9,33 @@
 #' @importFrom shiny NS tagList
 mod_swiss_votes_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    # Plot parameters ---------------------------------------------------------
-    bs4Card(
-      title = "Map Parameters",
-      closable = FALSE,
-      status = "primary",
-      width = 12,
-      tagList(
-        fluidRow(
-          column(
-            width = 6,
-            shiny::selectInput(
-              inputId = ns("vote_date"),
-              label = "Date",
-              choices = geoapp_ui_swiss_votes_dates()
-            )
+
+  card(
+    title = "Swiss Votes",
+    full_screen = TRUE,
+    card_header("Swiss Votes"),
+    layout_sidebar(
+      sidebar = sidebar(
+        # Sidebar --------------------------------------------------------------
+        layout_column_wrap(
+          width = "200px",
+          fixed_width = FALSE,
+          shiny::selectInput(
+            inputId = ns("vote_date"),
+            label = "Date",
+            choices = geoapp_ui_swiss_votes_dates()
           ),
-          column(
-            width = 6,
-            shiny::selectInput(
-              inputId = ns("geolevel"),
-              label = "Scale",
-              choices = c("Canton" = "canton", "District" = "district", "Municipality" = "municipality")
-            )
-          )
-        ),
-        fluidRow(
-          column(
-            width = 12,
-            shiny::uiOutput(
-              outputId = ns("vote_ui")
-            )
+          shiny::selectInput(
+            inputId = ns("geolevel"),
+            label = "Scale",
+            choices = c("Canton" = "canton", "District" = "district", "Municipality" = "municipality")
+          ),
+          shiny::uiOutput(
+            outputId = ns("vote_ui")
           )
         )
-      )
-    ),
-
-    # Map --------------------------------------------------------------------
-    bs4Card(
-      title = "Map",
-      maximizable = TRUE,
-      closable = FALSE,
-      status = "primary",
-      width = 12,
+      ),
+      # Plot --------------------------------------------------------------------
       shinyjqui::jqui_resizable(
         highcharter::highchartOutput(
           outputId = ns("map_area"),
@@ -100,35 +83,16 @@ mod_swiss_votes_server <- function(id) {
             geolevel = input$geolevel,
             votedates = input$vote_date,
             id = input$vote_id
-          )
+          ) |>
+            ggeo::hc_dark_web_theme()
         },
         error = function(cond) {
-          bs4Dash::createAlert(
-            id = "swiss_votes_error",
-            options = list(
-              title = "Error",
-              closable = TRUE,
-              width = 12,
-              elevations = 4,
-              status = c("danger"),
-              content = "No data could be fetched!"
-            )
-          )
+          # TODO: Handle error
 
           return(NULL)
         },
         warning = function(cond) {
-          bs4Dash::createAlert(
-            id = "swiss_votes_error",
-            options = list(
-              title = "Error",
-              closable = TRUE,
-              width = 12,
-              elevations = 4,
-              status = c("danger"),
-              content = "No data could be fetched!"
-            )
-          )
+          # TODO: Handle warning
         }
       )
 

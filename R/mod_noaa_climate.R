@@ -6,25 +6,19 @@
 #'
 #' @noRd
 #'
-#' @import bs4Dash
 #' @importFrom shiny NS tagList
 mod_noaa_climate_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    # Warning placeholder -----------------------------------------------------
-    div(id = "rnoaa_error", style = "position: absolute; top: 0; right: 0;"),
 
-    # Map and chart ----------------------------------------------------
-    tabBox(
-      id = "contentCard",
-      maximizable = TRUE,
-      closable = FALSE,
-      status = "primary",
-      type = "tabs",
-      side = "left",
-      width = 12,
-      tabPanel(
-        title = "Stations map",
+  card(
+    title = "NOAA Climate",
+    full_screen = TRUE,
+    card_header("NOAA Climate"),
+    layout_sidebar(
+      sidebar = sidebar(
+        width = "100%",
+        open = TRUE,
+        # Sidebar --------------------------------------------------------------
         shinyjqui::jqui_resizable(
           leaflet::leafletOutput(
             outputId = ns("map_area"),
@@ -39,33 +33,24 @@ mod_noaa_climate_ui <- function(id) {
           )
         )
       ),
-      tabPanel(
-        title = "Climate plot",
-        tagList(
-          shiny::fluidRow(
-            shinyjqui::jqui_resizable(
-              highcharter::highchartOutput(
-                outputId = ns("plot_area"),
-                width = "100%",
-                height = 500
-              ),
-              options = list(
-                handles = "s",
-                create = shinyjqui::JS(
-                  'function(event, ui){ $(this).css("width", "100%"); }'
-                )
-              )
-            )
+      # Plot --------------------------------------------------------------------
+      layout_column_wrap(
+        width = 1,
+        shinyjqui::jqui_resizable(
+          highcharter::highchartOutput(
+            outputId = ns("plot_area"),
+            width = "95%",
+            height = 500
           ),
-          shiny::fluidRow(
-            shiny::column(
-              width = 12,
-              align = "center",
-              shiny::tableOutput(ns("climate_table"))
+          options = list(
+            handles = "s",
+            create = shinyjqui::JS(
+              'function(event, ui){ $(this).css("width", "100%"); }'
             )
           )
         )
-      )
+      ),
+      shiny::tableOutput(ns("climate_table"))
     )
   )
 }
@@ -103,30 +88,12 @@ mod_noaa_climate_server <- function(id) {
           climate_data <- get_climate_data(input$map_area_marker_click$id)
         },
         error = function(cond) {
-          bs4Dash::createAlert(
-            id = "rnoaa_error",
-            options = list(
-              title = "Error",
-              closable = TRUE,
-              width = 12,
-              status = c("danger"),
-              content = "No data could be fetched for this station !"
-            )
-          )
+          # TODO: Handle error
 
           return(NULL)
         },
         warning = function(cond) {
-          bs4Dash::createAlert(
-            id = "rnoaa_error",
-            options = list(
-              title = "Error",
-              closable = TRUE,
-              width = 12,
-              status = c("danger"),
-              content = "No data could be fetched for this station !"
-            )
-          )
+          # TODO: Handle warning
 
           return(NULL)
         }
@@ -173,8 +140,8 @@ mod_noaa_climate_server <- function(id) {
       if ((max - min) > 200) tick_interval <- 20
 
       # Get City latitude
-      cities %>%
-        dplyr::filter(id == city_data$id) %>%
+      cities |>
+        dplyr::filter(id == city_data$id) |>
         dplyr::pull(lat) -> city_latitude
 
       # Get Köppen Climate code
@@ -185,21 +152,21 @@ mod_noaa_climate_server <- function(id) {
       )
 
       # Prettify the station name
-      city_data$name %>%
-        stringr::str_to_title() %>%
+      city_data$name |>
+        stringr::str_to_title() |>
         stringr::str_extract("^[^,]*") -> city_name
 
       # Setup Highcharter plot
-      highcharter::highchart() %>%
-        highcharter::hc_title(text = glue::glue("Average Monthly Weather Data for {city_name}")) %>%
-        highcharter::hc_subtitle(text = glue::glue("Average 1990-2015 - K\u00F6ppen Climate: {koppen_climate}")) %>%
+      highcharter::highchart() |>
+        highcharter::hc_title(text = glue::glue("Average Monthly Weather Data for {city_name}")) |>
+        highcharter::hc_subtitle(text = glue::glue("Average 1990-2015 - K\u00F6ppen Climate: {koppen_climate}")) |>
         highcharter::hc_xAxis(
           title = list(text = "Month"),
           categories = c(
             "", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
             "Aug", "Sep", "Oct", "Nov", "Dec"
           )
-        ) %>%
+        ) |>
         highcharter::hc_yAxis_multiples(
           list(
             title = list(
@@ -222,9 +189,9 @@ mod_noaa_climate_server <- function(id) {
             tickInterval = tick_interval * 2,
             opposite = TRUE
           )
-        ) %>%
-        highcharter::hc_tooltip(shared = TRUE, crosshairs = TRUE) %>%
-        highcharter::hc_plotOptions(series = list(marker = list(enabled = FALSE))) %>%
+        ) |>
+        highcharter::hc_tooltip(shared = TRUE, crosshairs = TRUE) |>
+        highcharter::hc_plotOptions(series = list(marker = list(enabled = FALSE))) |>
         highcharter::hc_add_series(
           data = climate_data$prec,
           "column",
@@ -233,7 +200,7 @@ mod_noaa_climate_server <- function(id) {
           color = "lightblue",
           tooltip = list(valueSuffix = " mm"),
           highcharter::hcaes(x = month, y = value)
-        ) %>%
+        ) |>
         highcharter::hc_add_series(
           data = climate_data$temp,
           "line",
@@ -242,7 +209,8 @@ mod_noaa_climate_server <- function(id) {
           color = "red",
           tooltip = list(valueSuffix = " \u00B0C"),
           highcharter::hcaes(x = month, y = value)
-        ) -> hc
+        ) |>
+        ggeo::hc_dark_web_theme() -> hc
 
       return(hc)
     }

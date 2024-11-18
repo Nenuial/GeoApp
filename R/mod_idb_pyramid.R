@@ -12,31 +12,26 @@
 #'
 #' @keywords internal
 #' @export
+#' @import bslib
 #' @importFrom shiny NS tagList
 mod_idb_pyramid_ui <- function(id) {
   ns <- NS(id)
-  tagList(
 
-    # Warning placeholder -----------------------------------------------------
-    div(id = "idb_error", style = "position: absolute; top: 0; right: 0;"),
-
-    # Plot parameters ---------------------------------------------------------
-    bs4Card(
-      title = "Plot Parameters",
-      closable = FALSE,
-      status = "primary",
-      width = 12,
-      fluidRow(
-        column(
-          width = 4,
+  card(
+    title = "IDB Pyramids",
+    full_screen = TRUE,
+    card_header("IDB Pyramids"),
+    layout_sidebar(
+      sidebar = sidebar(
+        # Sidebar --------------------------------------------------------------
+        layout_column_wrap(
+          width = "200px",
+          fixed_width = FALSE,
           shiny::selectInput(
             inputId = ns("country"),
             label = "Country",
             choices = geoapp_ui_country_code("fips")
-          )
-        ),
-        column(
-          width = 8,
+          ),
           sliderInput(
             inputId = ns("year"),
             label = "Year",
@@ -46,16 +41,8 @@ mod_idb_pyramid_ui <- function(id) {
             value = 2020
           )
         )
-      )
-    ),
-
-    # Plot --------------------------------------------------------------------
-    bs4Card(
-      title = "Plot",
-      maximizable = TRUE,
-      closable = FALSE,
-      status = "primary",
-      width = 12,
+      ),
+      # Plot --------------------------------------------------------------------
       shinyjqui::jqui_resizable(
         highcharter::highchartOutput(
           outputId = ns("plot_area"),
@@ -78,8 +65,6 @@ mod_idb_pyramid_ui <- function(id) {
 #' @rdname mod_idb_pyramid
 #' @export
 #' @keywords internal
-#'
-#' @importFrom magrittr %>%
 mod_idb_pyramid_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # nolint: object_usage_linter
@@ -93,35 +78,14 @@ mod_idb_pyramid_server <- function(id) {
           geographer::gph_highcharter_pyramid(
             countrycode::countrycode(input$country, "fips", "country.name"),
             input$year
-          )
+          ) |>
+            ggeo::hc_dark_web_theme()
         },
         error = function(cond) {
-          bs4Dash::createAlert(
-            id = "idb_error",
-            options = list(
-              title = "Error",
-              closable = TRUE,
-              width = 12,
-              elevations = 4,
-              status = c("danger"),
-              content = "No data could be fetched for this country/year !"
-            )
-          )
-
-          return(NULL)
+          # TODO: Handle error
         },
         warning = function(cond) {
-          bs4Dash::createAlert(
-            id = "idb_error",
-            options = list(
-              title = "Error",
-              closable = TRUE,
-              width = 12,
-              elevations = 4,
-              status = c("danger"),
-              content = "No data could be fetched for this country/year !"
-            )
-          )
+          # TODO: Handle warning
         }
       )
 

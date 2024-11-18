@@ -15,43 +15,28 @@
 #' @importFrom shiny NS tagList
 mod_hmd_demograph_ui <- function(id) {
   ns <- NS(id)
-  codes <- geotools::gtl_hmd_codes() %>%
+  codes <- geotools::gtl_hmd_codes() |>
     tibble::deframe()
 
-  tagList(
-
-    # Plot parameters ---------------------------------------------------------
-    bs4Card(
-      title = "Plot Parameters",
-      closable = FALSE,
-      status = "primary",
-      width = 12,
-      fluidRow(
-        column(
-          width = 4,
+  card(
+    title = "HMD Demography",
+    full_screen = TRUE,
+    card_header("HMD Demography"),
+    layout_sidebar(
+      sidebar = sidebar(
+        layout_column_wrap(
+          width = "200px",
+          fixed_width = FALSE,
           shiny::selectInput(
             inputId = ns("country"),
             label = "Country",
             choices = codes
-          )
-        ),
-        column(
-          width = 8,
+          ),
           shiny::uiOutput(
             outputId = ns("year_ui")
           )
         )
-      )
-    ),
-
-
-    # Plot --------------------------------------------------------------------
-    bs4Card(
-      title = "Plot",
-      maximizable = TRUE,
-      closable = FALSE,
-      status = "primary",
-      width = 12,
+      ),
       shinyjqui::jqui_resizable(
         highcharter::highchartOutput(
           outputId = ns("plot_area"),
@@ -85,7 +70,7 @@ mod_hmd_demograph_server <- function(id) {
     # Filter data -------------------------------------------------------------
     observe(priority = 100, {
       data(
-        full_data %>%
+        full_data |>
           dplyr::filter(Code == input$country)
       )
     })
@@ -112,47 +97,48 @@ mod_hmd_demograph_server <- function(id) {
     observe({
       req(data(), input$year)
 
-      data() %>%
+      data() |>
         dplyr::filter(
           Year >= input$year[1],
           Year <= input$year[2]
         ) -> plot_data
 
       output$plot_area <- highcharter::renderHighchart({
-        highcharter::highchart() %>%
-          highcharter::hc_title(text = glue::glue("Demograph for {get_country_name(input$country)}")) %>%
-          highcharter::hc_xAxis(title = list(text = "Year")) %>%
+        highcharter::highchart() |>
+          highcharter::hc_title(text = glue::glue("Demograph for {get_country_name(input$country)}")) |>
+          highcharter::hc_xAxis(title = list(text = "Year")) |>
           highcharter::hc_yAxis_multiples(
             list(min = 0, title = list(text = "Rates")),
             list(min = 0, title = list(text = "Population", style = list(color = "blue")), opposite = TRUE)
-          ) %>%
-          highcharter::hc_tooltip(shared = TRUE, crosshairs = TRUE) %>%
-          highcharter::hc_plotOptions(series = list(marker = list(enabled = FALSE))) %>%
+          ) |>
+          highcharter::hc_tooltip(shared = TRUE, crosshairs = TRUE) |>
+          highcharter::hc_plotOptions(series = list(marker = list(enabled = FALSE))) |>
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 1,
             name = "population", color = "blue",
             highcharter::hcaes(x = Year, y = Population)
-          ) %>%
+          ) |>
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 0,
             name = "crude birth rate", color = "grey",
             tooltip = list(valueSuffix = " ‰"),
             highcharter::hcaes(x = Year, y = CBR)
-          ) %>%
+          ) |>
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 0,
             name = "crude death rate", color = "black",
             tooltip = list(valueSuffix = " ‰"),
             highcharter::hcaes(x = Year, y = CDR)
-          )
+          ) |>
+          ggeo::hc_dark_web_theme()
       })
     })
 
 
     # Get country name --------------------------------------------------------
     get_country_name <- function(search_code) {
-      hmd_codes %>%
-        dplyr::filter(code == search_code) %>%
+      hmd_codes |>
+        dplyr::filter(code == search_code) |>
         dplyr::pull(name)
     }
   })

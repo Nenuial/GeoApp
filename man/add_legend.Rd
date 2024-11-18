@@ -9,15 +9,15 @@ add_legend(
   position = c("topright", "bottomright", "bottomleft", "topleft"),
   pal,
   values,
-  na.label = "NA",
+  na_label = "NA",
   bins = 7,
   colors,
   opacity = 0.5,
   labels = NULL,
-  labFormat = leaflet::labelFormat(),
+  lab_format = leaflet::labelFormat(),
   title = NULL,
-  className = "info legend",
-  layerId = NULL,
+  class_name = "info legend",
+  layer_id = NULL,
   group = NULL,
   data = leaflet::getMapData(map),
   decreasing = FALSE
@@ -32,8 +32,6 @@ add_legend(
 
 \item{values}{Palettes values}
 
-\item{na.label}{Label for na}
-
 \item{bins}{Number of bins}
 
 \item{colors}{The color}
@@ -42,19 +40,21 @@ add_legend(
 
 \item{labels}{The labels}
 
-\item{labFormat}{Format for labels}
-
 \item{title}{The title}
-
-\item{className}{The class name}
-
-\item{layerId}{The layer id}
 
 \item{group}{The group}
 
 \item{data}{The data}
 
 \item{decreasing}{Decreasing?}
+
+\item{na.label}{Label for na}
+
+\item{labFormat}{Format for labels}
+
+\item{className}{The class name}
+
+\item{layerId}{The layer id}
 }
 \value{
 A leaflet legend

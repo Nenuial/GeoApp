@@ -7,7 +7,7 @@
 \usage{
 mod_home_ui(id)
 
-mod_home_server(id)
+mod_home_server(id, parent)
 }
 \arguments{
 \item{id}{shiny id}
