@@ -4,9 +4,6 @@
 #' @description  A shiny Module.
 #'
 #' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
 #'
 #' @rdname mod_demo_explorer
 #'
@@ -109,7 +106,7 @@ mod_demo_explorer_ui <- function(id) {
 mod_demo_explorer_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns # nolint: object_usage_linter
-    data <- reactiveVal()
+    demo_data <- reactiveVal()
     dim <- reactiveVal()
 
     # Update dimension --------------------------------------------------------
@@ -124,7 +121,7 @@ mod_demo_explorer_server <- function(id) {
 
     # Update data -------------------------------------------------------------
     observe(priority = 90, {
-      data(
+      demo_data(
         get_data(dim())
       )
     })
@@ -132,9 +129,9 @@ mod_demo_explorer_server <- function(id) {
 
     # Update map --------------------------------------------------------------
     observe(priority = 50, {
-      req(data(), input$year)
+      req(demo_data(), input$year)
 
-      data() %>%
+      demo_data() %>%
         dplyr::filter(date == input$year) %>%
         dplyr::select(iso3c, data = dim()$map$indicator) %>%
         dplyr::mutate(cut = santoku::chop(
@@ -208,10 +205,10 @@ mod_demo_explorer_server <- function(id) {
 
     # Update table ------------------------------------------------------------
     observe(priority = 40, {
-      req(data())
+      req(demo_data())
 
       output$table <- DT::renderDataTable({
-        data() %>%
+        demo_data() %>%
           dplyr::mutate(
             country = countrycode::countrycode(
               sourcevar = iso3c,
@@ -241,9 +238,9 @@ mod_demo_explorer_server <- function(id) {
 
     # Update plot -------------------------------------------------------------
     observeEvent(input$map_area_shape_click, {
-      req(data(), input$year, input$map_area_shape_click$id)
+      req(demo_data(), input$year, input$map_area_shape_click$id)
 
-      data() %>%
+      demo_data() %>%
         dplyr::filter(iso3c == input$map_area_shape_click$id) -> plot_data
 
       req(nrow(plot_data) > 0)
@@ -255,9 +252,9 @@ mod_demo_explorer_server <- function(id) {
 
     # Update plot from table --------------------------------------------------
     observeEvent(input$goto, {
-      req(data(), input$year, input$goto$iso)
+      req(demo_data(), input$year, input$goto$iso)
 
-      data() %>%
+      demo_data() %>%
         dplyr::filter(iso3c == input$goto$iso) -> plot_data
 
       req(nrow(plot_data) > 0)
@@ -354,7 +351,7 @@ mod_demo_explorer_server <- function(id) {
                 name = "crude birth rate",
                 color = "whitesmoke",
                 dash_style = "solid",
-                suffix = " ‰",
+                suffix = " \u2030",
                 yaxis = 0
               ),
               list(
@@ -362,7 +359,7 @@ mod_demo_explorer_server <- function(id) {
                 name = "crude death rate",
                 color = "crimson",
                 dash_style = "solid",
-                suffix = " ‰",
+                suffix = " \u2030",
                 yaxis = 0
               )
             )
@@ -416,7 +413,7 @@ mod_demo_explorer_server <- function(id) {
                 name = "child mortality rate",
                 color = "whitesmoke",
                 dash_style = "solid",
-                suffix = " ‰",
+                suffix = " \u2030",
                 yaxis = 1
               )
             )

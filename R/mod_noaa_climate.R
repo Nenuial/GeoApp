@@ -2,7 +2,7 @@
 #'
 #' @description A shiny Module.
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param id shiny id
 #'
 #' @noRd
 #'
@@ -61,7 +61,7 @@ mod_noaa_climate_ui <- function(id) {
 mod_noaa_climate_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns  # nolint: object_usage_linter
-    cities <- geodata::gdt_ncdc_city_list() |> na.omit()
+    cities <- geodata::gdt_ncdc_city_list() |> stats::na.omit()
 
     # Setup map ---------------------------------------------------------------
     observe(priority = 100, {

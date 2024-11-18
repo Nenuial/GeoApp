@@ -10,13 +10,13 @@ geoapp_swiss_votes_date <- function() {
 
 #' Get country name for WB ISO3 code
 #'
-#' @param iso3c A WB ISO3 code
+#' @param code A WB ISO3 code
 #'
 #' @return The country name
 #' @export
 get_wb_country_name <- function(code) {
-  wbstats::wb_countries() %>%
-    dplyr::filter(iso3c == code) %>%
+  wbstats::wb_countries() |>
+    dplyr::filter(iso3c == code) |>
     dplyr::pull(country)
 }
 
@@ -38,15 +38,15 @@ get_country_name <- function(code, code_type) {
 #' @param position The position
 #' @param pal The palettes
 #' @param values Palettes values
-#' @param na.label Label for na
+#' @param na_label Label for na
 #' @param bins Number of bins
 #' @param colors The color
 #' @param opacity The opacity
 #' @param labels The labels
-#' @param labFormat Format for labels
+#' @param lab_format Format for labels
 #' @param title The title
-#' @param className The class name
-#' @param layerId The layer id
+#' @param class_name The class name
+#' @param layer_id The layer id
 #' @param group The group
 #' @param data The data
 #' @param decreasing Decreasing?
@@ -123,8 +123,8 @@ group = NULL, data = leaflet::getMapData(map), decreasing = FALSE) {
     } else if (type == "quantile") {
       p <- args$probs
       n <- length(p)
-      cuts <- quantile(values, probs = p, na.rm = TRUE)
-      mids <- quantile(values,
+      cuts <- stats::quantile(values, probs = p, na.rm = TRUE)
+      mids <- stats::quantile(values,
         probs = (p[-1] + p[-n]) / 2,
         na.rm = TRUE
       )
@@ -136,7 +136,7 @@ group = NULL, data = leaflet::getMapData(map), decreasing = FALSE) {
         labels <- lab_format(type = "quantile", cuts, p)
       }
     } else if (type == "factor") {
-      v <- sort(unique(na.omit(values)))
+      v <- sort(unique(stats::na.omit(values)))
       colors <- pal(v)
       labels <- lab_format(type = "factor", v)
       if (decreasing == TRUE) {

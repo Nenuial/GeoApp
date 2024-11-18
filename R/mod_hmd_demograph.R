@@ -4,9 +4,6 @@
 #' @description  A shiny Module.
 #'
 #' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
 #'
 #' @rdname mod_hmd_demograph
 #'
@@ -64,12 +61,12 @@ mod_hmd_demograph_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     full_data <- geodata::gdt_hmd_demography
-    data <- reactiveVal()
+    demo_data <- reactiveVal()
 
 
     # Filter data -------------------------------------------------------------
     observe(priority = 100, {
-      data(
+      demo_data(
         full_data |>
           dplyr::filter(Code == input$country)
       )
@@ -78,16 +75,16 @@ mod_hmd_demograph_server <- function(id) {
 
     # Update year input -------------------------------------------------------
     observe(priority = 90, {
-      req(data())
+      req(demo_data())
 
       output$year_ui <- shiny::renderUI({
         shiny::sliderInput(
           inputId = ns("year"),
           label = "Year",
           width = "100%",
-          min = min(data()$Year),
-          max = max(data()$Year),
-          value = c(min(data()$Year), max(data()$Year)),
+          min = min(demo_data()$Year),
+          max = max(demo_data()$Year),
+          value = c(min(demo_data()$Year), max(demo_data()$Year)),
           step = 1
         )
       })
@@ -95,9 +92,9 @@ mod_hmd_demograph_server <- function(id) {
 
     # Update plot -------------------------------------------------------------
     observe({
-      req(data(), input$year)
+      req(demo_data(), input$year)
 
-      data() |>
+      demo_data() |>
         dplyr::filter(
           Year >= input$year[1],
           Year <= input$year[2]
@@ -121,13 +118,13 @@ mod_hmd_demograph_server <- function(id) {
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 0,
             name = "crude birth rate", color = "grey",
-            tooltip = list(valueSuffix = " ‰"),
+            tooltip = list(valueSuffix = " \u2030"),
             highcharter::hcaes(x = Year, y = CBR)
           ) |>
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 0,
             name = "crude death rate", color = "black",
-            tooltip = list(valueSuffix = " ‰"),
+            tooltip = list(valueSuffix = " \u2030"),
             highcharter::hcaes(x = Year, y = CDR)
           ) |>
           ggeo::hc_dark_web_theme()

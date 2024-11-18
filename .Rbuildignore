@@ -13,3 +13,7 @@ $run_dev.*
 ^rsconnect$
 ^Dockerfile$
 ^.lintr$
+^\.github$
+^\.gitignore$
+^\.here$
+^.*.code-workspace$

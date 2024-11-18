@@ -11,12 +11,6 @@ mod_idb_pyramid_server(id)
 }
 \arguments{
 \item{id}{shiny id}
-
-\item{input}{internal}
-
-\item{output}{internal}
-
-\item{session}{internal}
 }
 \description{
 A shiny Module.

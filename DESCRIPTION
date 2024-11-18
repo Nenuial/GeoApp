@@ -1,56 +1,61 @@
 Package: GeoApp
 Title: Geography App
 Version: 0.1.0
-Authors@R: person('Pascal', 'Burkhard', email = 'pascal.burkhard@gmail.com', role = c('cre', 'aut'))
+Authors@R: 
+    person("Pascal", "Burkhard", , "pascal.burkhard@gmail.com", role = c("cre", "aut"))
 Description: A visualization tool for geography lessons.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-Imports: 
-    shiny,
-    golem,
-    processx,
-    attempt,
-    DT,
-    glue,
-    htmltools,
-    magrittr,
-    dplyr,
-    ggplot2,
-    tidyr,
-    purrr,
-    readr,
-    pkgload,
-    geographer,
-    highcharter,
-    shinyWidgets,
-    shinydashboard,
-    rnaturalearth,
-    leaflet,
-    leaflet.extras,
-    santoku,
-    ggeo,
-    sf,
-    shinyjqui,
-    forcats,
-    future,
-    countrycode,
-    rnoaa,
-    memoise,
-    wbstats,
-    rappdirs,
-    pals,
-    rnaturalearthdata,
-    swissdd,
-    clock
-RoxygenNote: 7.3.2
 URL: https://github.com/Nenuial/GeoApp.git
 BugReports: https://github.com/Nenuial/GeoApp.git/issues
-Remotes: 
-    Nenuial/geographer,
-    Nenuial/ggeo,
-    nset-ornl/wbstats
-Suggests: 
-    testthat (>= 2.1.0)
 Depends: 
     R (>= 4.1)
+Imports: 
+    bsicons,
+    bslib,
+    clock,
+    config,
+    countrycode,
+    dplyr,
+    DT,
+    forcats,
+    geodata,
+    geographer,
+    geotools,
+    ggeo,
+    glue,
+    golem,
+    highcharter,
+    htmltools,
+    leaflet,
+    leaflet.extras,
+    lifecycle,
+    magrittr,
+    memoise,
+    pals,
+    purrr,
+    rappdirs,
+    rlang,
+    rnaturalearth,
+    rnoaa,
+    santoku,
+    sf,
+    shiny,
+    shinyjqui,
+    shinyWidgets,
+    stringr,
+    swissdd,
+    tibble,
+    wbstats,
+    withr
+Suggests: 
+    testthat (>= 2.1.0)
+Remotes: 
+    Nenuial/geodata,
+    Nenuial/geographer,
+    Nenuial/geotools,
+    Nenuial/ggeo,
+    nset-ornl/wbstats
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

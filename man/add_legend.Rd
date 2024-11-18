@@ -32,6 +32,8 @@ add_legend(
 
 \item{values}{Palettes values}
 
+\item{na_label}{Label for na}
+
 \item{bins}{Number of bins}
 
 \item{colors}{The color}
@@ -40,21 +42,19 @@ add_legend(
 
 \item{labels}{The labels}
 
+\item{lab_format}{Format for labels}
+
 \item{title}{The title}
+
+\item{class_name}{The class name}
+
+\item{layer_id}{The layer id}
 
 \item{group}{The group}
 
 \item{data}{The data}
 
 \item{decreasing}{Decreasing?}
-
-\item{na.label}{Label for na}
-
-\item{labFormat}{Format for labels}
-
-\item{className}{The class name}
-
-\item{layerId}{The layer id}
 }
 \value{
 A leaflet legend

@@ -3,6 +3,7 @@
 #' @param list An R list
 #' @param class a class for the list
 #' @return an HTML list
+#' @export
 #' @examples
 #' list_to_li(c("a","b"))
 #'
@@ -53,9 +54,9 @@ named_to_li <- function(list, class = NULL) {
   }
 }
 
-# Remove a tag attribute
-#
-# @param tag the tag
+#' Remove a tag attribute
+#'
+#' @param tag the tag
 #' @param ... the attributes to remove
 #'
 #' @return a new tag
@@ -75,6 +76,7 @@ tag_remove_attributes <- function(tag, ...) {
 #' Hide or display a tag
 #' @param tag the tag
 #' @return a tag
+#' @export
 #' @examples
 #' ## Hide
 #' a <- shiny::tags$p(src = "plop", "pouet")
@@ -116,6 +118,7 @@ jq_hide <- function(id) {
 #'
 #' @return an html element
 #'
+#' @export
 #' @examples
 #' with_red_star("Enter your name here")
 #'
@@ -170,6 +173,8 @@ enurl <- function(url, text) {
 #' Most shiny columns are 12, 6 or 4 of width.
 #' These are convenient wrappers around
 #' `column(12, ...)`, `column(6, ...)` and `column(4, ...)`.
+#'
+#' @param ... The content of the column
 #'
 #' @export
 #' @rdname columns
