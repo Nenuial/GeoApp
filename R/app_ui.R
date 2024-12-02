@@ -59,7 +59,9 @@ app_ui <- function() {
       nav_panel(
         title = "NOAA Climate",
         mod_noaa_climate_ui("noaa_climate_ui")
-      )
+      ),
+      nav_spacer(),
+      nav_item(a("GeoDoc", href="https://df.geoviews.ch"))
     )
   )
 }
