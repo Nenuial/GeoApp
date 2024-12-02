@@ -112,18 +112,18 @@ mod_hmd_demograph_server <- function(id) {
           highcharter::hc_plotOptions(series = list(marker = list(enabled = FALSE))) |>
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 1,
-            name = "population", color = "blue",
+            name = "population", color = "lightskyblue",
             highcharter::hcaes(x = Year, y = Population)
           ) |>
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 0,
-            name = "crude birth rate", color = "grey",
+            name = "crude birth rate", color = "whitesmoke",
             tooltip = list(valueSuffix = " \u2030"),
             highcharter::hcaes(x = Year, y = CBR)
           ) |>
           highcharter::hc_add_series(
             data = plot_data, "line", yAxis = 0,
-            name = "crude death rate", color = "black",
+            name = "crude death rate", color = "crimson",
             tooltip = list(valueSuffix = " \u2030"),
             highcharter::hcaes(x = Year, y = CDR)
           ) |>
