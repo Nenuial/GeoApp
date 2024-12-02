@@ -36,6 +36,11 @@ mod_idb_pyramid_ui <- function(id) {
             min = 1950,
             max = 2050,
             value = 2020
+          ),
+          checkboxInput(
+            inputId = ns("relative"),
+            label = "Relative?",
+            value = FALSE
           )
         )
       ),
@@ -70,9 +75,15 @@ mod_idb_pyramid_server <- function(id) {
     observe({
       req(input$country, input$year)
 
+      if(input$relative) {
+        pyramid_plot_function <- geographer::gph_hc_pyramid_relative
+      } else {
+        pyramid_plot_function <- geographer::gph_hc_pyramid
+      }
+
       hc <- tryCatch(
         {
-          geographer::gph_highcharter_pyramid(
+          pyramid_plot_function(
             countrycode::countrycode(input$country, "fips", "country.name"),
             input$year
           ) |>
