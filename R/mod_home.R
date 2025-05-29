@@ -40,7 +40,7 @@ mod_home_ui <- function(id) {
   )
 
   layout_column_wrap(
-    width = 1/2,
+    width = 1 / 2,
     fillable = FALSE,
     card(
       card_header("Human geography"),
@@ -71,16 +71,16 @@ mod_home_ui <- function(id) {
           showcase_layout = "top right",
           theme = hmd_theme,
           actionButton(inputId = ns("go_to_hmd"), label = "Open")
-        ),
-        value_box(
-          title = "",
-          fill = FALSE,
-          value = "Swiss Votes",
-          showcase = bsicons::bs_icon("archive-fill"),
-          showcase_layout = "top right",
-          theme = swiss_votes_theme,
-          actionButton(inputId = ns("go_to_swiss_votes"), label = "Open")
         )
+        # value_box(
+        #   title = "",
+        #   fill = FALSE,
+        #   value = "Swiss Votes",
+        #   showcase = bsicons::bs_icon("archive-fill"),
+        #   showcase_layout = "top right",
+        #   theme = swiss_votes_theme,
+        #   actionButton(inputId = ns("go_to_swiss_votes"), label = "Open")
+        # )
       )
     ),
     card(
@@ -177,7 +177,7 @@ mod_home_ui <- function(id) {
 
 mod_home_server <- function(id, parent) {
   moduleServer(id, function(input, output, session) {
-    ns <- session$ns  # nolint: object_usage_linter
+    ns <- session$ns # nolint: object_usage_linter
 
     observeEvent(input$go_to_demo, {
       nav_select("tabs", selected = "Demo Explorer", session = parent)
@@ -198,7 +198,5 @@ mod_home_server <- function(id, parent) {
     observeEvent(input$go_to_noaa, {
       nav_select("tabs", selected = "NOAA Climate", session = parent)
     })
-
-
   })
 }

@@ -14,7 +14,6 @@ app_theme <- function() {
 #' @import bslib
 #' @importFrom shiny tagList
 app_ui <- function() {
-
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
@@ -28,12 +27,12 @@ app_ui <- function() {
       title = div(
         style = "display:flex; align-items:center; margin-right: 10px;",
         img(
-        src = "www/favicon.png",
-        height = 30,
-        width = 30,
-        style = "margin:5px 5px"
+          src = "www/favicon.png",
+          height = 30,
+          width = 30,
+          style = "margin:5px 5px"
         ),
-        span("GeoApp", class="navbar-title")
+        span("GeoApp", class = "navbar-title")
       ),
       theme = app_theme(),
       nav_panel(
@@ -52,16 +51,16 @@ app_ui <- function() {
         title = "HMD Demography",
         mod_hmd_demograph_ui("hmd_demograph_ui")
       ),
-      nav_panel(
-        title = "Swiss Votes",
-        mod_swiss_votes_ui("swiss_votes_ui")
-      ),
+      # nav_panel(
+      #   title = "Swiss Votes",
+      #   mod_swiss_votes_ui("swiss_votes_ui")
+      # ),
       nav_panel(
         title = "NOAA Climate",
         mod_noaa_climate_ui("noaa_climate_ui")
       ),
       nav_spacer(),
-      nav_item(a("GeoDoc", href="https://df.geoviews.ch"))
+      nav_item(a("GeoDoc", href = "https://df.geoviews.ch"))
     )
   )
 }
@@ -69,7 +68,8 @@ app_ui <- function() {
 #' @importFrom shiny addResourcePath
 golem_add_external_resources <- function() {
   shiny::addResourcePath(
-    "www", system.file("app/www", package = "GeoApp")
+    "www",
+    system.file("app/www", package = "GeoApp")
   )
 
   tags$head(
