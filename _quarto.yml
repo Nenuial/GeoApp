@@ -11,6 +11,10 @@ project:
 
 lang: en-US
 
+# French typography on the French pages (non-breaking spaces before ; : ! ? » and units, inside « »)
+filters:
+  - _extensions/geoapp/french-spaces.lua
+
 website:
   site-url: https://app.geoviews.ch/
   title: "GeoApp"

@@ -11,6 +11,7 @@
 //   GeoRes.theme(name)          a palette: "light" (books, print) or "dark" (keynotes)
 //   GeoRes.t(lang, key)         a translated string ("en" or "fr")
 //   GeoRes.num(lang, x, d)      a number with d decimals, French decimal comma in "fr"
+//   GeoRes.typo(lang, s)        non-breaking spaces where the typography wants them (French: before ; : ! ? », units…)
 //   GeoRes.diagrams[name]       (opts) => SVG string    opts: { theme, lang, images, ... }
 //   GeoRes.sims[name]           (container, opts) => void
 (function (G) {
@@ -150,13 +151,31 @@
     },
   };
   const lang = l => (l && String(l).slice(0, 2).toLowerCase() === "fr" ? "fr" : "en");
+  // Typography: the spaces that must not break become non-breaking (U+00A0). In every language, a number and its %;
+  // in French also the space before ; : ! ? » and after «, between a number (or a {placeholder}) and its unit, and
+  // between the groups of digits of a number (1 568 032). Applied to the strings when they are added (texts, lists
+  // and the texts that functions return); GeoRes.typo(lang, s) for a text put together in the code.
+  const NB = "\u00a0";
+  const UNIT = "(?:%|‰|°C|°|km²|km³|km|m²|m³|m|cm|mm|kg|g/kg|g|t|Mt|Gt|h|min|s|ha|ppm|hPa|mm/j|W/m²|CHF|€|\\$|millions?|milliards?)(?![\\p{L}\\d])";
+  const RE_UNIT = new RegExp(`(\\d|\\}) (?=${UNIT})`, "gu");
+  function typo(l, s) {
+    if (typeof s !== "string") return s;
+    s = s.replace(/(\d|\}) (?=[%‰])/g, "$1" + NB);
+    if (lang(l) !== "fr") return s;
+    return s.replace(/ (?=[;:!?»])/g, NB).replace(/« /g, "«" + NB).replace(RE_UNIT, "$1" + NB)
+      .replace(/(?<!\d)\d{1,3}(?: \d{3})+(?!\d)/g, m => m.replace(/ /g, NB));
+  }
+  const typoAll = (l, v) => typeof v === "string" ? typo(l, v) : Array.isArray(v) ? v.map(x => typoAll(l, x))
+    : typeof v === "function" ? (...a) => typoAll(l, v(...a)) : v;
+  Object.keys(STRINGS).forEach(l => { STRINGS[l] = Object.fromEntries(Object.entries(STRINGS[l]).map(([k, v]) => [k, typoAll(l, v)])); });
   function t(l, key) {
     const s = STRINGS[lang(l)][key];
     return s === undefined ? STRINGS.en[key] : s;
   }
   // Each diagram or sim can add its own strings: GeoRes.addStrings({ en: {...}, fr: {...} })
   function addStrings(more) {
-    Object.keys(more).forEach(l => Object.assign(STRINGS[l] = STRINGS[l] || {}, more[l]));
+    Object.keys(more).forEach(l => Object.assign(STRINGS[l] = STRINGS[l] || {},
+      Object.fromEntries(Object.entries(more[l]).map(([k, v]) => [k, typoAll(l, v)]))));
   }
   function num(l, x, d = 0) {
     const s = Number(x).toFixed(d);
@@ -186,7 +205,10 @@
   function text(x, y, s, attrs = {}) {
     const a = Object.entries(attrs).filter(([, v]) => v !== undefined && v !== null)
       .map(([k, v]) => ` ${k}="${v}"`).join("");
-    return `<text x="${r1(x)}" y="${r1(y)}"${a}>${s}</text>`;
+    // the spaces that must not break: a number and its %, and (texts put together from data, in French) the space
+    // before ; : ! ? » and after « — English writes no space there, so this is safe in every language
+    const nb = typeof s === "string" ? s.replace(/(\d) (?=[%‰])/g, "$1\u00a0").replace(/ (?=[;:!?»])/g, "\u00a0").replace(/« /g, "«\u00a0") : s;
+    return `<text x="${r1(x)}" y="${r1(y)}"${a}>${nb}</text>`;
   }
   // An image: href from opts.images[name] (data URI or URL), or nothing
   function image(images, name, attrs) {
@@ -419,7 +441,7 @@
   }
 
   Object.assign(GeoRes, {
-    THEMES, theme, t, addStrings, num, dateText, hm, lang,
+    THEMES, theme, t, addStrings, typo, num, dateText, hm, lang,
     lib: { rad, deg, r1, clamp, P, pts, esc, mix, svgDoc, text, image },
     page: { pageTheme, markTheme, pageLang, onThemeChange, makeCanvas, controls, loop, logValue, logPos, ctxText, arrow, glowSun },
     mount,
@@ -7379,7 +7401,7 @@
       KEYS.forEach((v, j) => {
         const kx = compare ? box.x + 10 + j * 150 : 30, ky = compare ? H - 56 : top + 250 + j * 40;
         out += `<rect x="${kx}" y="${ky - 16}" width="22" height="18" rx="3" fill="${K[v]}"/>`;
-        out += text(kx + 30, ky, esc(`${label[v]} : ${n[j]}`.replace(" :", R_.lang(L) === "fr" ? " :" : ":")), { "font-size": compare ? 16 : 19, "font-weight": v === "N" ? 700 : 400, fill: th.text });
+        out += text(kx + 30, ky, esc(`${label[v]} : ${n[j]}`.replace(" :", R_.lang(L) === "fr" ? "\u00a0:" : ":")), { "font-size": compare ? 16 : 19, "font-weight": v === "N" ? 700 : 400, fill: th.text });
       });
     });
     if (!compare) out += `<rect x="30" y="${top + 412}" width="22" height="18" rx="3" fill="url(#af-hatch)"/>` + text(60, top + 428, esc(tr("auvSahara")), { "font-size": 15, fill: th.text });
@@ -11959,7 +11981,7 @@
     const [vmin, vmax, step] = view === "budget" ? [0, 70, 10] : [-15, 15, 5];
     const y = RU.scale(vmin, vmax, YB, YT), yo = RU.scale(0, 140, YB, YT);
     const value = t => (view === "budget" ? data.share(t) : data.growth(t));
-    const fr = (i, s) => RU.step(opts, i, s), french = R_.lang(L) === "fr", colon = french ? " :" : ":", pct = french ? " %" : "%";
+    const fr = (i, s) => RU.step(opts, i, s), french = R_.lang(L) === "fr", colon = french ? "\u00a0:" : ":", pct = french ? "\u00a0%" : "%";
     let out = `<defs><pattern id="rnt-hatch-${view}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="${C.muted}" stroke-width="2.5"/></pattern></defs>`;
 
     // grid, left axis (bars), right axis (Brent)
@@ -12062,7 +12084,7 @@
   R_.diagrams["russia-trade"] = function (opts = {}) {
     const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), RU = R_.russia, C = COL[th.name === "dark" ? "dark" : "light"];
     const titled = opts.title !== false && opts.title !== "false", { H, top } = frame(titled);
-    const X0 = 200, X1 = 1240, BH = 64, pct = R_.lang(L) === "fr" ? " %" : "%";
+    const X0 = 200, X1 = 1240, BH = 64, pct = R_.lang(L) === "fr" ? "\u00a0%" : "%";
     let out = "";
     // key
     let kx = X0;
@@ -26387,7 +26409,7 @@
     notes.checked = opts.notes === "true";
     const titled = !container.closest(".reveal") && opts.title !== "false";
     const { YT, YB } = lay.frame(titled), x = RU.scale(lay.FROM, lay.TO, lay.X0, lay.X1);
-    const colon = L === "fr" ? " : " : ": ";
+    const colon = L === "fr" ? "\u00a0: " : ": ";
     let hover = null;
 
     function draw() {
@@ -26539,7 +26561,7 @@
         const st = p.state(year), lines = [[p[fr ? "fr" : "en"], 700]];
         if (p.years) lines.push([tr("rgsSince").replace("{y}", p.years), 400]);
         lines.push([tr("rgsCap").replace("{n}", R_.num(L, p.cap, p.cap % 1 ? 2 : 0)), 400]);
-        if (st) lines.push([`${year} : ${R_.t(L, "rgsState")[st]}`.replace(" :", fr ? " :" : ":"), 700]);
+        if (st) lines.push([`${year} : ${R_.t(L, "rgsState")[st]}`.replace(" :", fr ? "\u00a0:" : ":"), 700]);
         const words = D.STORY[fr ? "fr" : "en"][p.id].split(" ");
         let cur = "";
         words.forEach(w => { if ((cur + " " + w).trim().length > 52) { lines.push([cur.trim(), 400]); cur = w; } else cur += " " + w; });
@@ -26600,7 +26622,7 @@
     const titled = !container.closest(".reveal") && opts.title !== "false";
     const { YT, YB } = lay.frame(titled), x = RU.scale(lay.FROM, lay.TO, lay.X0, lay.X1);
     const ch = (k, t) => { const i = t - D.lex.y0; return i >= 0 && i < D.lex.CHE[k].length ? D.lex.CHE[k][i] : null; };
-    const yrs = n => R_.num(L, n, 1) + (L === "fr" ? " ans" : " years");
+    const yrs = n => R_.num(L, n, 1) + (L === "fr" ? "\u00a0ans" : "\u00a0years");
     let hover = null;
 
     function draw() {
@@ -26857,7 +26879,7 @@
     const titled = !container.closest(".reveal") && opts.title !== "false";
     let view = opts.view === "budget" ? "budget" : "growth", hover = null;
     const fmt = (v, d, plus) => (v === null ? "–" : (plus && v > 0 ? "+" : "") + R_.num(L, v, d).replace("-", "−"));
-    const pct = L === "fr" ? " %" : "%";
+    const pct = L === "fr" ? "\u00a0%" : "%";
 
     function draw() {
       const th = R_.theme(pg.markTheme(container));
@@ -26865,9 +26887,9 @@
       if (hover !== null) {
         const t = hover.t, last = t === D.Y1;
         const lines = [[String(t) + (last ? ` (${view === "budget" ? tr("rntPartial") : tr("rntForecast")})` : ""), 700]];
-        lines.push([`${tr("rntGdp")} : ${fmt(D.growth(t), 1, true)}${pct}`.replace(" :", L === "fr" ? " :" : ":"), 400]);
-        lines.push([`Brent : ${tr("rntDollars").replace("{n}", R_.num(L, D.brent(t), 2))}`.replace(" :", L === "fr" ? " :" : ":"), 400]);
-        if (D.share(t) !== null) lines.push([`${tr("rntShare")} : ${fmt(D.share(t), 1)}${pct}`.replace(" :", L === "fr" ? " :" : ":"), 400]);
+        lines.push([`${tr("rntGdp")} : ${fmt(D.growth(t), 1, true)}${pct}`.replace(" :", L === "fr" ? "\u00a0:" : ":"), 400]);
+        lines.push([`Brent : ${tr("rntDollars").replace("{n}", R_.num(L, D.brent(t), 2))}`.replace(" :", L === "fr" ? "\u00a0:" : ":"), 400]);
+        if (D.share(t) !== null) lines.push([`${tr("rntShare")} : ${fmt(D.share(t), 1)}${pct}`.replace(" :", L === "fr" ? "\u00a0:" : ":"), 400]);
         const bw = Math.max(...lines.map(([s]) => s.length)) * 8.4 + 24, bh = lines.length * 23 + 12;
         const bx = hover.x + 16 + bw > 1276 ? hover.x - 16 - bw : hover.x + 16, by = Math.max(4, Math.min(hover.y + 12, 600 - bh));
         let o = `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="6" fill="rgba(20,22,26,0.92)" pointer-events="none"/>`;

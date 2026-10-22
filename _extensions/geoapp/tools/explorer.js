@@ -168,7 +168,7 @@
         if (!p) return tip.hide();
         const v = data[state.ind].values[p.code];
         tip.show(`<div class="geores-tip-head">${esc(name(p.code))} · ${state.year}</div>` +
-          `${tr("exNames")[state.ind]} : <b>${fmt(state.ind, v ? v[idx()] : null)}${v && v[idx()] !== null ? unit(state.ind) : ""}</b>` +
+          `${tr("exNames")[state.ind]}${L === "fr" ? "\u00a0:" : ":"} <b>${fmt(state.ind, v ? v[idx()] : null)}${v && v[idx()] !== null ? unit(state.ind) : ""}</b>` +
           (byCode[p.code] ? `<div class="geores-tip-head">${tr("exClick")}</div>` : ""), e);
       });
       svg.addEventListener("pointerleave", () => tip.hide());
