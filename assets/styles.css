@@ -457,3 +457,30 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
 .app-climogram { margin-top: 0.5rem; }
 .app-climogram svg { display: block; width: 100%; height: auto; }
 .app-climates .geores-controls input[type="search"] { min-width: min(18rem, 60vw); }
+
+/* Swiss votes */
+.app-swiss { background: transparent; }
+.app-swiss .app-units path {
+  fill: #d9d9d9;
+  stroke: var(--bs-body-bg, #fff);
+  stroke-width: 0.4;
+  vector-effect: non-scaling-stroke;
+}
+.app-swiss .app-units path.app-nodata { fill: #bdbdbd; fill-opacity: 0.5; }
+.app-swiss .app-units path:hover { stroke: var(--geores-fg); stroke-width: 1.5; }
+.app-swiss .app-lakes path { fill: #a9cfe8; stroke: none; pointer-events: none; }
+.geores-dark .app-swiss .app-lakes path { fill: #2f5878; }
+.app-swiss .app-canton-lines path {
+  fill: none;
+  stroke: var(--geores-fg);
+  stroke-width: 1;
+  stroke-opacity: 0.55;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.app-vote-title { font-size: 1.05rem; line-height: 1.35; margin-bottom: 0.2rem; }
+.app-head .app-yes { color: #4d9221; }
+.app-head .app-no { color: #c51b7d; }
+.geores-dark .app-head .app-yes { color: #a1d76a; }
+.geores-dark .app-head .app-no { color: #e9a3c9; }
+.app-votes .geores-controls .app-wide select { max-width: min(36rem, 80vw); }

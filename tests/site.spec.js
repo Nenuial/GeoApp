@@ -223,3 +223,25 @@ test.describe("climate explorer", () => {
     await expect(page.locator(".app-climogram")).toContainText(/Mosc/);
   });
 });
+
+test.describe("swiss votes", () => {
+  const url = "/cartography/votes.html";
+
+  test("a vote from the address, by commune: result of the people and of the cantons", async ({ page }) => {
+    await page.goto(`${url}?d=1992-12-06`);
+    await expect(page.locator(".app-head")).toContainText("49.7");
+    await expect(page.locator(".app-head")).toContainText("7 of 23");
+    const coloured = await page.locator(".app-lvl-communes path").evaluateAll(ps => ps.filter(p => p.style.fill).length);
+    expect(coloured).toBeGreaterThan(2000);
+  });
+
+  test("levels and the cartogram", async ({ page }) => {
+    await page.goto(`${url}?d=2021-06-13`);
+    await page.locator(".app-votes [data-lvl='districts']").click();
+    await expect(page).toHaveURL(/lvl=districts/);
+    await expect(page.locator(".app-lvl-districts")).toBeVisible();
+    await page.locator(".app-votes [data-view='cartogram']").click();
+    await expect(page).toHaveURL(/view=cartogram/);
+    await expect(page.locator(".app-votes .geores[data-mounted], .app-votes .geores canvas, .app-votes .geores svg").first()).toBeVisible();
+  });
+});

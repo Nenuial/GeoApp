@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/votes.jpg
+title: "Swiss votes"
+description: "Every federal vote since 1981 by canton, district or commune, with the result of the people and of the cantons."
+categories: [Cartography, Switzerland, Data]
+---
+
+Choose the date of a vote, then one of its proposals. The map shows the share of yes by canton, district or commune, in classes of 10 % (pink for no, green for yes). *Cartogram* redraws the communes as circles sized by their number of voters: the cities, small on the map, become large.
+
+::: {.column-page}
+{{< app tool="votes" presets="d,p,lvl,view" >}}
+:::
+
+## What to look for
+
+- Choose a vote on Europe or on foreign policy: can you see the language border (the *Röstigraben*) between the French- and the German-speaking communes?
+- Compare the map by area and the *Cartogram* of the same vote: why does a rejected proposal sometimes look accepted on the map, or the reverse?
+- Switch from communes to districts and to cantons: what does each level hide or show?
+- Find a vote accepted by the people but rejected by the cantons (or the reverse). Why do some proposals need both majorities?
+- Compare the cities with the surrounding countryside on a vote about the environment, transport or agriculture.
+
+## How it works
+
+The results are those of the Federal Statistical Office, drawn on the communes of 1 January 2026: the results of earlier votes are recomputed by the Office for today's communes, so that every vote since 1981 can be drawn on the same map (a few communes of the oldest votes have no result). The districts are the sums of their communes; the cantons also count their Swiss abroad, as the official results do. A canton is in favour when its yes outnumber its no; the six half-cantons (Obwalden, Nidwalden, Basel-Stadt, Basel-Landschaft and the two Appenzells) count as half a canton. The titles are the official French titles.
+
+## Sources
+
+- Federal Statistical Office, results of the federal votes (opendata.swiss), read with the R package *swissdd*.
+- Federal Statistical Office, geometries of the federal votes as of 1 January 2026 (opendata.swiss).

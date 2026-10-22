@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/votes.jpg
+title: "Votations fédérales"
+description: "Toutes les votations fédérales depuis 1981 par canton, district ou commune, avec le résultat du peuple et des cantons."
+categories: [Cartographie, Suisse, Données]
+---
+
+Choisissez la date d'une votation, puis l'un de ses objets. La carte montre la part de oui par canton, district ou commune, en classes de 10 % (rose pour le non, vert pour le oui). *Cartogramme* redessine les communes en cercles proportionnels à leur nombre de votants : les villes, petites sur la carte, deviennent grandes.
+
+::: {.column-page}
+{{< app tool="votes" presets="d,p,lvl,view" >}}
+:::
+
+## À observer
+
+- Choisissez une votation sur l'Europe ou sur la politique étrangère : voit-on la frontière des langues (le *Röstigraben*) entre les communes francophones et germanophones ?
+- Comparez la carte par surface et le *Cartogramme* de la même votation : pourquoi un objet rejeté paraît-il parfois accepté sur la carte, ou l'inverse ?
+- Passez des communes aux districts puis aux cantons : que cache ou que montre chaque niveau ?
+- Trouvez un objet accepté par le peuple mais rejeté par les cantons (ou l'inverse). Pourquoi certains objets demandent-ils la double majorité ?
+- Comparez les villes et les campagnes voisines lors d'une votation sur l'environnement, les transports ou l'agriculture.
+
+## Fonctionnement
+
+Les résultats sont ceux de l'Office fédéral de la statistique, dessinés sur les communes du 1^er^ janvier 2026 : l'Office recalcule les résultats des votations passées pour les communes d'aujourd'hui, si bien que chaque votation depuis 1981 se dessine sur la même carte (quelques communes des plus anciennes votations n'ont pas de résultat). Les districts sont la somme de leurs communes ; les cantons comptent aussi leurs Suisses de l'étranger, comme les résultats officiels. Un canton est favorable quand ses oui dépassent ses non ; les six demi-cantons (Obwald, Nidwald, Bâle-Ville, Bâle-Campagne et les deux Appenzell) comptent pour un demi-canton.
+
+## Sources
+
+- Office fédéral de la statistique, résultats des votations fédérales (opendata.swiss), lus avec le paquet R *swissdd*.
+- Office fédéral de la statistique, géométries des votations fédérales au 1^er^ janvier 2026 (opendata.swiss).
