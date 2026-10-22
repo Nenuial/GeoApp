@@ -1,0 +1,30 @@
+---
+image: ../../assets/thumbs/russia-gas.jpg
+title: "Les gazoducs russes"
+description: "Les gazoducs d'exportation du gaz russe de 2010 à 2026, leur état année après année, et les exportations par destination."
+categories: [Russie]
+---
+
+Lancez la *Lecture* ou déplacez le curseur *Année* (2010–2026). La carte montre les gazoducs d'exportation de l'année, colorés selon leur destination (Europe, Turquie, Chine) et tracés selon leur état : en service, arrêté, jamais utilisé, en projet. Une note résume l'année en haut à gauche ; en bas à droite, un graphique donne les exportations par destination, l'année choisie encadrée avec son total. Survolez un gazoduc : son nom, ses années de service, sa capacité, son état cette année et son histoire.
+
+::: {.column-page}
+{{< geores sim="russia-gas" presets="year" >}}
+:::
+
+## À observer
+
+- Combien de gazoducs mènent le gaz russe vers l'Europe en 2019 ? Lesquels sont encore en service en 2026 ?
+- Quels gazoducs s'arrêtent en 2022, et dans quelles circonstances ?
+- Survolez TurkStream : pourquoi devient-il important à partir de 2025 ?
+- Dans le graphique, en quelle année la Chine achète-t-elle plus de gaz russe que l'Europe (sans la Turquie) ?
+- Quelle place le gaz naturel liquéfié (GNL) prend-il dans les exportations ? Où sont les usines ?
+
+## Fonctionnement
+
+La carte est une compilation arrêtée au 18 octobre 2026, en projection d'Albers à aires égales. L'épaisseur d'un gazoduc en service est proportionnelle à sa capacité, en milliards de m³ par an, pas au gaz qui y passe réellement. Les tracés en mer sont approximatifs. Un gazoduc apparaît l'année de sa mise en service ; Force de Sibérie 2, sans contrat en octobre 2026, est dessiné comme projet depuis 2020. Le GNL part par bateau : la carte n'en montre que les usines de liquéfaction. Les principaux gisements de gaz sont marqués d'un point. Les exportations vont de 2010 à 2025 ; 2026 n'est pas une année complète, et les ventes de 2025 vers l'ex-URSS ne sont pas publiées.
+
+## Sources
+
+- Energy Institute et bp, Statistical Review of World Energy (édition de chaque année).
+- Gazprom ; Reuters (données ENTSOG) ; EPDK ; IGU.
+- Tracés : Global Energy Monitor, Wikipédia.

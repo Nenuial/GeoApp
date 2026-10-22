@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/tfr-generations.jpg
+title: "La fécondité sur deux générations"
+description: "Combien d'enfants et de petits-enfants ont 100 adultes si la fécondité ne change pas : sous 2,1 enfants par femme, chaque génération est plus petite."
+categories: [Démographie]
+---
+
+Réglez le nombre d'enfants par femme avec le curseur *Enfants par femme* (de 0,5 à 7), ou cliquez sur un bouton : Corée du Sud, Suisse, Monde et Niger (leur valeur de 2024), ou *Remplacement*. Chaque point est une personne ; quand une génération compte moins de 100 personnes, celles qui manquent sont dessinées en points vides.
+
+::: {.column-page}
+{{< geores sim="tfr-generations" presets="tfr" >}}
+:::
+
+## À observer
+
+- Cliquez sur *Suisse* : combien de petits-enfants ont 100 adultes ? Combien de personnes manquent par rapport à aujourd'hui ?
+- Pour quelle valeur chaque génération remplace-t-elle exactement la précédente ? Pourquoi 2,1 et non 2 ?
+- Comparez la Corée du Sud et le Niger : combien de petits-enfants dans chaque cas ?
+- La valeur mondiale dépasse à peine le seuil de remplacement : la population augmente-t-elle encore, et de combien en 60 ans ?
+- Le modèle garde la même fécondité pendant 60 ans et ignore les migrations : qu'est-ce qui pourrait changer le résultat dans la réalité ?
+
+## Fonctionnement
+
+Chaque génération, 30 ans après la précédente, vaut la précédente multipliée par ISF ÷ 2,1. Un indice synthétique de fécondité (ISF) de 2,1 enfants par femme correspond au seuil de remplacement : un peu plus de 2, parce que certains enfants meurent avant d'avoir eux-mêmes des enfants et qu'il naît un peu plus de garçons que de filles. Le modèle est simplifié : le même ISF à chaque génération, pas de migrations, et il compare la taille des générations, non la population totale d'une année donnée.
+
+## Sources
+
+- Banque mondiale, indice synthétique de fécondité 2024 (indicateur SP.DYN.TFRT.IN), pour les boutons des pays.

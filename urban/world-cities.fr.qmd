@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/world-cities.jpg
+title: "La croissance des villes du monde"
+description: "Les grandes villes du monde de 1975 à 2050, en disques proportionnels à leur population, les mégapoles en évidence, et les dix plus grandes de chaque année."
+categories: [Géographie urbaine]
+---
+
+Appuyez sur *Lecture* pour faire défiler les années, ou déplacez le curseur *Année*. Passez sur une ville pour voir son nom, son pays et sa population. À droite, le nombre de mégapoles (10 millions d'habitants ou plus) et les dix plus grandes villes de l'année, en millions.
+
+::: {.column-page}
+{{< geores sim="world-cities" presets="region,year" >}}
+:::
+
+## À observer
+
+- Combien y a-t-il de mégapoles en 1975 ? En 2025 ? En 2050 ?
+- Sur quels continents se trouvent les mégapoles en 1975 ? Et en 2050 ?
+- Quelles villes du classement de 1975 y figurent encore en 2050 ? Lesquelles en sortent, lesquelles y entrent ?
+- Suivez Tokyo et Lagos de 1975 à 2050 : laquelle grandit le plus vite ? Trouvez-vous de grandes villes qui perdent des habitants ?
+
+## Fonctionnement
+
+L'ONU compte les villes selon la même règle dans tous les pays, le degré d'urbanisation : une ville est un ensemble d'au moins 50 000 habitants vivant dans des mailles contiguës de 1 km² peuplées d'au moins 1 500 habitants par km². Une ville correspond donc à toute une agglomération, et non à une commune, et sa population peut s'écarter beaucoup des chiffres nationaux. La carte retient les villes de 300 000 habitants ou plus en 2025 ou en 2050 et les montre aussi loin que l'ONU donne un chiffre : certaines sont encore petites en 1975. L'ONU fournit une valeur tous les cinq ans ; entre deux, les populations sont interpolées, et après 2025 ce sont des projections. La surface de chaque disque est proportionnelle à la population.
+
+## Sources
+
+- ONU DESA, Division de la population (2025), *World Urbanization Prospects: The 2025 Revision*, édition en ligne (villes selon le degré d'urbanisation).
+- Natural Earth, pays au 1:50m (domaine public).

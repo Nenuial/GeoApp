@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/alliances.jpg
+title: "Alliances since 1949"
+description: "The members of NATO, the Warsaw Pact, the CSTO, the Shanghai Cooperation Organisation and BRICS, year by year since 1949."
+categories: [Geopolitics]
+---
+
+Switch the groups on and off with their buttons (*NATO* and *Warsaw Pact* at first); a country that belongs to two of the groups shown is striped in both colours. Press *Play* to let the years go by, or drag the *Year* slider. The box on the map gives, for each group shown, its number of members that year and what kind of group it is. Move over a country to list all its memberships, with their dates.
+
+::: {.column-page}
+{{< geores sim="alliances" presets="blocs,year" >}}
+:::
+
+## What to look for
+
+- With NATO and the Warsaw Pact, play from 1949: when does the Warsaw Pact disappear? Which of its former members join NATO later, and when?
+- Show NATO alone and move from 2021 to 2026: which countries join?
+- Show the CSTO and the SCO together: which countries are striped, members of both?
+- Show BRICS and play from 2009: from which continents do its members come, and in which years does it grow?
+- Why does the box call BRICS "not an alliance"? Compare what it says about NATO and about BRICS.
+
+## How it works
+
+The members were encoded for this course from the organisations' own lists, with the year each country joined and, where it applies, the year it left. The map has today's borders: the Soviet Union is drawn as its 15 republics; Germany is shown in NATO from 1990, although West Germany joined in 1955, and East Germany cannot be shown in the Warsaw Pact. Armenia froze its membership of the CSTO in 2024; the map still shows it as a member.
+
+## Sources
+
+- Members: encoded for this course from the lists of the organisations.
+- Countries: Natural Earth 1:50m (public domain).

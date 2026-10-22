@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/borders-pov.jpg
+title: "Disputed borders"
+description: "Disputed areas of the world as 31 governments draw them, compared with the borders most UN members recognise."
+categories: [Geopolitics]
+---
+
+Choose a *Region* (World, Himalaya, Black Sea, Western Sahara, East Asia, Eastern Mediterranean, Horn of Africa, Falklands), then a point of view: the buttons after *Seen from* give the countries most concerned there, the list *other countries…* all the others. Each country keeps the same colour in every view, so an area that changes colour has changed owner; the country whose view it is has a gold outline. Move over the map: who administers an area, who claims it, and whose it is in this view.
+
+::: {.column-page}
+{{< geores sim="borders-pov" presets="view,region" >}}
+:::
+
+## What to look for
+
+- In the Himalaya, switch between India, Pakistan and China: which areas change colour each time? Move over them: who administers them?
+- In the Black Sea region, compare the views of Russia and Ukraine: which areas does each count as its own?
+- Under the title, the map counts the areas that belong to another country than in the international view. In your region, which point of view differs most from it?
+- In Western Sahara, which of the points of view offered give the territory to Morocco, and which keep it apart?
+- In the international view, find an area with no owner (grey): why might a mapmaker leave an area without an owner?
+
+## How it works
+
+Natural Earth records, for 31 governments, which country each disputed area belongs to on that government's maps. The data were brought up to date for this course: without Artsakh (part of Azerbaijan since 2023) and without the "people's republics" of 2014, but with the four provinces of Ukraine that Russia has claimed since September 2022 (Donetsk, Luhansk, Zaporizhzhia, Kherson), drawn whole although they are only partly occupied. The international view was also drawn for this course: the borders most UN member states recognise, and, where most countries take no side, the country that administers the area (Kashmir along the Line of Control, Aksai Chin, the Kurils). The map uses the Equal Earth projection.
+
+## Sources
+
+- Natural Earth 1:50m: countries, breakaway and disputed areas, and the points of view of 31 governments (public domain).
+- Natural Earth 1:10m provinces, for the four provinces of Ukraine.

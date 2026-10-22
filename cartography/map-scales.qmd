@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/map-scales.jpg
+title: "Map scales"
+description: "Neuchâtel on four swisstopo national maps, from 1:10 000 to 1:1 000 000: what a map leaves out as its scale gets smaller."
+categories: [Cartography]
+---
+
+Zoom out with *− Zoom out*, the slider or a click on one of the four scales above the text: the map shrinks about the same centre and fades into the next one. *+ Zoom in* goes back. Each view shows a scale bar and, in red, the frame of the previous view; the text gives the width and area of the view and describes what the map shows or leaves out.
+
+::: {.column-page}
+{{< geores sim="map-scales" presets="level" >}}
+:::
+
+## What to look for
+
+- How wide is the view at 1:10 000, and at 1:1 000 000? How many times wider is the second, and how many times larger is its area?
+- Follow the old town of Neuchâtel: at which scale are single buildings no longer drawn?
+- At 1:1 000 000, use the scale bar to estimate how wide a motorway is drawn. Is it really that wide?
+- Which of the four maps would you take for a walk in town, a hike, a bike ride across the canton, a drive across Switzerland?
+- Why does the sim say to trust the scale bar rather than the ratio on a screen?
+
+## How it works
+
+The four maps are extracts of the swisstopo national map as it is served on the web, at four zoom levels with the same centre; each one corresponds to the national map at 1:10 000, 1:50 000, 1:200 000 and 1:1 000 000. Each view is four times wider than the one before: about 0.8 km, 3.3 km, 13 km and 52 km. Between two levels, the more detailed map is enlarged and fades into the next one. On a screen, the ratio depends on the size of the screen; the scale bar stays true.
+
+## Sources
+
+- Maps: © swisstopo (free use with the source mentioned).

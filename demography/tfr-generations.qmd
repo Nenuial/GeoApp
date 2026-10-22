@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/tfr-generations.jpg
+title: "Fertility over two generations"
+description: "How many children and grandchildren 100 adults have if fertility stays the same: below 2.1 children per woman, each generation is smaller."
+categories: [Demography]
+---
+
+Set the number of children per woman with the *Children per woman* slider (0.5 to 7), or click a button: South Korea, Switzerland, World and Niger (their rates in 2024), or *Replacement*. Each dot is a person; when a generation has fewer than 100 people, the missing ones are drawn as empty dots.
+
+::: {.column-page}
+{{< geores sim="tfr-generations" presets="tfr" >}}
+:::
+
+## What to look for
+
+- Click *Switzerland*: how many grandchildren do 100 adults have? How many people are missing compared with today?
+- At which value does each generation exactly replace the one before? Why is it 2.1 and not 2?
+- Compare South Korea and Niger: how many grandchildren in each case?
+- The world's rate is just above replacement: does the population still grow, and by how much after 60 years?
+- The model keeps the same rate for 60 years and leaves out migration: what could change the result in reality?
+
+## How it works
+
+Each generation, 30 years after the one before, is the previous one multiplied by TFR ÷ 2.1. A total fertility rate (TFR) of 2.1 children per woman is the replacement level: a little more than 2, because some children die before they have children of their own and slightly more boys than girls are born. The model is simplified: the same TFR in every generation, no migration, and it compares the size of the generations, not the whole population of a given year.
+
+## Sources
+
+- World Bank, total fertility rate 2024 (indicator SP.DYN.TFRT.IN), for the country buttons.

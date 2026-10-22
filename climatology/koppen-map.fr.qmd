@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/koppen-map.jpg
+title: "Carte des climats du monde"
+description: "Les climats de Köppen-Geiger du monde de 1901–1930 à 2071–2099, et leur évolution selon trois scénarios d'émissions."
+categories: [Climatologie]
+---
+
+Choisissez une période avec les boutons. Pour le futur, le menu *Scénario* choisit des émissions faibles, intermédiaires ou très élevées (2041–2070 n'existe que pour le scénario intermédiaire). Cochez *Changements* pour ne garder que les endroits dont le climat diffère de celui de 1991–2020. Passez sur la carte pour voir le climat d'un endroit et son climogramme 1991–2020 ; cliquez sur un groupe de la légende (A à E) pour n'afficher que lui, et à nouveau pour tout afficher.
+
+::: {.column-page}
+{{< geores sim="koppen-map" presets="period" >}}
+:::
+
+## À observer
+
+- Passez sur la Suisse : quel est son climat en 1991–2020 ? Et en 2071–2099 avec des émissions très élevées ?
+- Comparez 1901–1930 et 1991–2020, *Changements* coché : où le climat a-t-il déjà changé ?
+- N'affichez que le groupe E : où se trouvent les climats polaires, et que reste-t-il d'eux en 2071–2099 ?
+- *Changements* coché, comparez les trois scénarios pour 2071–2099 : quelle part des terres change de climat dans chacun ?
+
+## Fonctionnement
+
+Chaque maille de terre de 1° porte les douze moyennes mensuelles de température et de précipitations de Beck et al. (2023). Son code de Köppen-Geiger en est déduit avec les règles de Beck et al. (2018), d'après Peel et al. (2007), comme pour les climogrammes. Les périodes futures sont des projections, la moyenne de modèles climatiques (CMIP6) selon les scénarios SSP1-2.6, SSP2-4.5 et SSP5-8.5. La part des terres qui changent de climat ne compte pas l'Antarctique. La carte est en projection Equal Earth.
+
+## Sources
+
+- Beck, H.E. et al. (2023), High-resolution (1 km) Köppen-Geiger maps for 1901–2099 based on constrained CMIP6 projections, *Scientific Data* 10, 724 (CC BY 4.0).
+- Beck, H.E. et al. (2018), Present and future Köppen-Geiger climate classification maps at 1-km resolution, *Scientific Data* 5, 180214.
+- Côtes : Natural Earth 1:110m (domaine public).

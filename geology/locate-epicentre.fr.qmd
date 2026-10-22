@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/locate-epicentre.jpg
+title: "Localiser un séisme"
+description: "Trois sismographes suisses enregistrent le même séisme : le retard entre les ondes P et S permet de trouver où il s'est produit."
+categories: [Géologie]
+---
+
+Sur chaque sismogramme, la première secousse est l'onde P, les oscillations plus fortes qui suivent sont l'onde S. Cochez *Marquer P et S* pour afficher les deux arrivées et le retard entre elles, puis cliquez sur la carte pour placer votre estimation. *Tracer les cercles* dessine autour de chaque station un cercle de rayon égal à sa distance au séisme, et montre où il s'est vraiment produit. *Séisme suivant* passe par Viège 1855, Bâle 1356 et Unterwald 1601, puis par des séismes au hasard.
+
+::: {.column-page}
+{{< geores sim="locate-epicentre" >}}
+:::
+
+## À observer
+
+- À quelle station le retard entre P et S est-il le plus court ? Qu'est-ce que cela indique avant même de tracer quoi que ce soit ?
+- Avec la règle distance ≈ 8 km × (S − P), calculez la distance à chaque station, puis vérifiez avec les cercles.
+- Pourquoi faut-il trois stations ? Que saurait-on avec une seule, ou avec deux ?
+- À quelle distance de l'épicentre réel était votre estimation ? Recommencez avec le séisme suivant.
+
+## Fonctionnement
+
+Dans la simulation, l'onde P se propage à 6 km/s et l'onde S à 3,5 km/s : chaque seconde de retard entre elles éloigne le séisme d'environ 8 km de la station (8,4 km avec ces vitesses). Les sismogrammes sont calculés, ce ne sont pas de vrais enregistrements ; ils s'affaiblissent avec la distance. Le séisme est placé en surface et les cercles sont tracés sur une carte plane. Les trois séismes historiques sont placés à des épicentres approximatifs ; ensuite, les séismes sont tirés au hasard en Suisse, chacun enregistré par trois des sept stations, situées dans des villes suisses.
+
+## Sources
+
+- Contour de la Suisse : Natural Earth 1:50 M, simplifié (domaine public).
+- Sismogrammes et temps de parcours : modèle schématique.

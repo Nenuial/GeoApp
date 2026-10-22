@@ -21,11 +21,6 @@ website:
     background: "#2f466a"
   page-footer:
     left: "LDDR · Geography"
-    right:
-      - text: "GeoDoc DF"
-        href: https://df.geoviews.ch
-      - text: "GeoDoc OC"
-        href: https://oc.geoviews.ch
 
 format:
   html:

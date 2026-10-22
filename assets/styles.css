@@ -222,3 +222,69 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
   font-size: 0.8rem;
   text-align: right;
 }
+
+/* ---------- GeoApp's own tools (_extensions/geoapp/tools): SVG at the size of the box ---------- */
+
+:root {
+  --app-men: #2f78b7;
+  --app-women: #c2558a;
+}
+.app-tool.geores-dark,
+.geores-tip-dark {
+  --app-men: #7fb8ec;
+  --app-women: #f09cc2;
+}
+.app-svg {
+  display: block;
+  font-family: "Fira Sans", sans-serif;
+}
+.app-svg text {
+  fill: var(--geores-fg);
+}
+.app-svg .app-title {
+  font-size: 1.4em;
+  font-weight: 500;
+}
+.app-svg .app-muted {
+  fill: var(--geores-muted);
+}
+.app-svg .app-small {
+  font-size: 0.85em;
+}
+.app-svg .app-badge {
+  fill: #f39c12;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.app-svg .app-grid {
+  stroke: var(--geores-line);
+  stroke-width: 1;
+}
+.app-svg .app-men { fill: var(--app-men); }
+.app-svg .app-women { fill: var(--app-women); }
+.app-svg .app-men-text { fill: var(--app-men); font-weight: 500; }
+.app-svg .app-women-text { fill: var(--app-women); font-weight: 500; }
+.geores-tip .app-men-text { color: var(--app-men); }
+.geores-tip .app-women-text { color: var(--app-women); }
+.app-svg .app-projected rect {
+  fill-opacity: 0.6;
+}
+.app-svg .app-outline {
+  fill: none;
+  stroke: var(--geores-fg);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.app-svg .app-hover {
+  fill: var(--geores-fg);
+  fill-opacity: 0.08;
+}
+.app-message {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--geores-muted);
+}
+.app-pyramids .geores-controls input[type="range"] {
+  width: min(14rem, 50vw);
+}

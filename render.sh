@@ -25,6 +25,9 @@ rsync -a --delete \
 # The data files are fetched at /data/…: the French copy babelquarto makes is not needed
 rm -rf "$work/_site/fr/data"
 
+# Precompressed copies of the data, served by Caddy (and tools/serve.mjs) to browsers that accept gzip
+[ ! -d "$work/_site/data" ] || find "$work/_site/data" -name '*.json' -exec gzip -kf9 {} +
+
 rsync -a --delete "$work/_site/" "$src/_build/site/"
 
 conflicts=$(find "$src/_build/site" \( -name '*Copie en conflit*' -o -name '*conflicted copy*' \) | wc -l | tr -d ' ')

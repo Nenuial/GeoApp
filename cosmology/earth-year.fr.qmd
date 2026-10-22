@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/earth-year.jpg
+title: "Orbite et saisons"
+description: "La Terre tourne autour du Soleil, son axe toujours orienté dans la même direction ; à côté, le même moment dessiné vue de côté."
+categories: [Cosmologie]
+---
+
+L'année défile toute seule : ❚❚ la met en pause, ▶ la relance, et le curseur *Vitesse* règle le nombre de jours qui passent en une seconde. Les boutons *20 mars*, *21 juin*, *23 septembre* et *21 décembre* arrêtent la Terre à un équinoxe ou à un solstice. L'orbite est colorée selon les saisons de l'hémisphère nord. Le panneau *Vue de côté* indique la latitude où le Soleil est au zénith à midi et la durée du jour à Neuchâtel ; sous les commandes, la date et la saison dans chaque hémisphère.
+
+::: {.column-page}
+{{< geores sim="earth-year" >}}
+:::
+
+## À observer
+
+- Suivez l'axe (N) pendant une année entière : change-t-il un jour de direction ?
+- Arrêtez-vous au 21 juin, puis au 21 décembre : quel hémisphère penche vers le Soleil ? Où le Soleil est-il au zénith à midi ?
+- Le 20 mars et le 23 septembre, où le Soleil est-il au zénith, et combien de temps dure le jour à Neuchâtel ?
+- Quand c'est l'été dans l'hémisphère nord, quelle saison est-ce dans l'hémisphère sud ? Pourquoi ?
+- Comptez les jours entre les quatre dates des boutons : les quatre saisons ont-elles la même durée ?
+
+## Fonctionnement
+
+L'axe est incliné de 23,44° et garde la même direction toute l'année : la latitude où le Soleil est au zénith à midi se déplace donc entre les deux tropiques. La Terre avance un peu plus vite en janvier, quand elle est au plus près du Soleil, mais l'orbite est dessinée comme un cercle ; les distances, les tailles et la rotation de la Terre ne sont pas à l'échelle. La durée du jour à Neuchâtel (47° N) va du lever au coucher du Soleil, avec la correction habituelle pour la réfraction de l'air et la taille du Soleil.
+
+## Sources
+
+- Modèle schématique, sans données.
+- Texture de la Terre : Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

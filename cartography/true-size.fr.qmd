@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/true-size.jpg
+title: "Mercator et vraie taille"
+description: "Des pays déplacés vers une autre latitude sur une carte de Mercator : leur image rétrécit ou grandit, leur vraie taille ne change pas."
+categories: [Cartographie]
+---
+
+Faites glisser un pays coloré sur la carte : sur le globe, il garde sa forme et sa taille, et il est redessiné avec Mercator à sa nouvelle place. L'original reste à sa place, en pâle. À droite, sa surface et combien de fois il paraît plus grand sur cette carte qu'à l'équateur. *Ajouter un pays…* en ajoute un autre (ou l'Afrique entière) ; *Réinitialiser* remet les pays du départ. Survolez ou touchez un pays pour voir son nom.
+
+::: {.column-page}
+{{< geores sim="true-size" presets="countries" >}}
+:::
+
+## À observer
+
+- Amenez le Groenland à l'équateur, à côté de la RD Congo : lequel des deux est le plus grand en réalité ? Combien de fois plus grand le Groenland paraît-il à sa vraie place ?
+- Remontez la RD Congo ou le Brésil jusqu'à la latitude de la Scandinavie : que devient son image ?
+- Ajoutez l'Afrique : combien de Groenlands pourrait-elle contenir ?
+- Ajoutez la Suisse et emmenez-la très au nord : combien de fois plus grande paraît-elle ?
+- Pourquoi les pays éloignés de l'équateur paraissent-ils si grands sur beaucoup de cartes du monde ?
+
+## Fonctionnement
+
+La carte est la projection de Mercator, de 62° S à 84° N. Déplacer un pays fait tourner son contour sur le globe (une rotation de la sphère) : il garde sa forme et sa surface et reste droit, puis il est projeté à nouveau. Le facteur compare la surface de son image sur la carte à celle de son image centrée sur l'équateur. La surface d'un pays est calculée sur la sphère à partir de son contour ; pour les plus grands pays, la Suisse et l'Afrique, un chiffre de référence est affiché à la place. Un pays ne peut pas passer par-dessus un pôle.
+
+## Sources
+
+- Pays : Natural Earth 1:50m (domaine public).
+- Idée : thetruesize.com.

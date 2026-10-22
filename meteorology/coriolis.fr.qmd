@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/coriolis.jpg
+title: "Effet de Coriolis"
+description: "Une balle lancée sur un manège qui tourne : une trajectoire droite vue de l'espace, courbe pour ceux qui sont sur le manège."
+categories: [Météorologie]
+---
+
+Cliquez sur *Lancer la balle* : la balle part du centre vers un ami placé au bord. Le disque de gauche montre sa trajectoire vue de l'espace, celui de droite telle que la voient ceux qui tournent avec le manège. *Hémisphère nord ↺* et *Hémisphère sud ↻* fixent le sens de rotation du manège, *Rotation* sa vitesse.
+
+::: {.column-page}
+{{< geores sim="coriolis" >}}
+:::
+
+## À observer
+
+- Vue de l'espace, la balle dévie-t-elle ? Pourquoi n'atteint-elle pourtant pas l'ami ?
+- Vue du manège, de quel côté la balle dévie-t-elle dans l'hémisphère nord ? Et dans l'hémisphère sud ?
+- Augmentez la *Rotation* et lancez à nouveau : comment la courbe change-t-elle ?
+- Vue d'au-dessus du pôle Nord, la Terre tourne dans le sens inverse des aiguilles d'une montre, comme le manège ↺. De quel côté les vents sont-ils déviés dans l'hémisphère nord ?
+
+## Fonctionnement
+
+Vue de l'espace, la balle file en ligne droite à vitesse constante. Ce que voient ceux qui tournent est la même trajectoire, ramenée en arrière de l'angle dont le manège a tourné pendant le vol. Le manège représente la Terre vue d'au-dessus d'un pôle : dans le sens inverse des aiguilles d'une montre au-dessus du pôle Nord, dans le sens des aiguilles d'une montre au-dessus du pôle Sud. Un disque plat ne montre pas que, sur la Terre, la déviation est la plus forte près des pôles et nulle à l'équateur.
+
+## Sources
+
+Modèle schématique, sans données.

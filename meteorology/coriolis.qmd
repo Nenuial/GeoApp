@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/coriolis.jpg
+title: "Coriolis effect"
+description: "A ball thrown on a turning merry-go-round: a straight path seen from space, a curved one for the riders."
+categories: [Meteorology]
+---
+
+Click *Throw the ball*: the ball leaves the centre towards a friend on the rim. The left disc shows its path seen from space, the right disc as the riders see it. *Northern hemisphere ↺* and *Southern hemisphere ↻* set the direction in which the merry-go-round turns, *Spin* its speed.
+
+::: {.column-page}
+{{< geores sim="coriolis" >}}
+:::
+
+## What to look for
+
+- Seen from space, does the ball curve? Why does it still miss the friend?
+- Seen by the riders, which way does the ball curve in the northern hemisphere? And in the southern hemisphere?
+- Turn *Spin* up and throw again: how does the curve change?
+- Seen from above the North Pole, the Earth turns anticlockwise, like the merry-go-round ↺. Which way are winds deflected in the northern hemisphere?
+
+## How it works
+
+Seen from space, the ball flies in a straight line at a constant speed. The riders' view is the same path, turned back by the angle the merry-go-round has turned during the flight. The merry-go-round stands for the Earth seen from above a pole: anticlockwise above the North Pole, clockwise above the South Pole. A flat disc does not show that on the Earth the deflection is strongest near the poles and disappears at the equator.
+
+## Sources
+
+Schematic model, no data.

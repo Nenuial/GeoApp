@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/rank-size.jpg
+title: "The rank-size rule"
+description: "The cities of ten countries ranked by population on logarithmic axes, against the rank-size rule: dominant capitals and balanced networks."
+categories: [Urban geography]
+---
+
+Choose a *Country*. Each point is a city, the largest in colour. The dashed line is the rank-size rule drawn from the largest city: the second city would have half its population, the third a third, and so on. On the right, the number of cities, the five largest, and how many times larger the first is than the second.
+
+::: {.column-page}
+{{< geores sim="rank-size" presets="country" >}}
+:::
+
+## What to look for
+
+- France: how many times larger is Paris than Lyon? Do the other cities lie above or below the dashed line?
+- Germany and Italy: same questions. Which of these three countries has a primate city, which a balanced network of cities?
+- Which of the ten countries follows the line most closely?
+- Switzerland: how many cities of 50 000 people or more does it have? Is Zurich a primate city?
+- France was a centralised state for centuries, while Germany and Italy were only unified in the 19th century: how does this show in their charts?
+
+## How it works
+
+On logarithmic axes the rank-size rule (Zipf) is a straight line. The cities are those of 2025, counted by the UN with the Degree of Urbanisation (at least 50 000 people living at 1 500 per km² or more), so a city is a whole agglomeration, not a municipality. When the largest city is much bigger than the rule predicts, a primate city, the other cities fall below the line; when no city dominates, they lie above it. For India, only the first 1 000 of more than 2 000 cities are drawn.
+
+## Sources
+
+- UN DESA, Population Division (2025), *World Urbanization Prospects: The 2025 Revision*, Online Edition (cities by the Degree of Urbanisation, 2025).

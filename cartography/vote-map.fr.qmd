@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/vote-map.jpg
+title: "Surface ou population"
+description: "La loi sur le CO2 de 2021 par commune, sur une carte par surface et un cartogramme par votants : pourquoi un vote serré paraît presque tout non."
+categories: [Cartographie]
+---
+
+Passez de *Par surface* à *Par personnes* : les communes quittent leur vraie forme pour devenir des cercles à la taille de leurs votes valables, et inversement. À droite, le résultat national, le nombre de communes qui ont dit oui ou non, et la part de la carte (ou des cercles) qui est « non ». Survolez ou touchez une commune pour voir son nom, son résultat et ses votes.
+
+::: {.column-page}
+{{< geores sim="vote-map" presets="view" >}}
+:::
+
+## À observer
+
+- Par surface, quelle part de la carte est « non » ? Comparez-la au résultat national.
+- Passez à *Par personnes* : quelles communes deviennent les plus grands cercles ? Comment ont-elles voté ?
+- Repérez une grande commune de montagne sur la carte par surface : quelle est la taille de son cercle ?
+- Pourquoi une carte par surface peut-elle tromper quand elle montre le résultat d'une votation ou d'une élection ?
+
+## Fonctionnement
+
+Chaque commune est colorée selon sa majorité : oui, non ou égalité. Dans le cartogramme (un cartogramme de Dorling), chaque commune devient un cercle dont la surface est proportionnelle à ses votes valables, placé au centre de la commune puis écarté de ses voisins pour qu'aucun cercle n'en recouvre un autre. Le résultat national comprend les Suisses de l'étranger, qui n'appartiennent à aucune commune. Les communes et leurs limites sont celles du 1^er^ janvier 2026, simplifiées ; les résultats de 2021 sont donnés pour les communes actuelles.
+
+## Sources
+
+- Résultats : Office fédéral de la statistique, via opendata.swiss (package R swissdd).
+- Communes, cantons et lacs : « Geometries: communes (politics) as of 01.01.2026 », Office fédéral de la statistique, opendata.swiss (utilisation libre, mention de la source obligatoire).

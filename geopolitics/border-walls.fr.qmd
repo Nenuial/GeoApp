@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/border-walls.jpg
+title: "Murs frontaliers"
+description: "Les murs et clôtures construits aux frontières du monde depuis 1945 : où ils se dressent, quand ils ont été commencés et pourquoi."
+categories: [Géopolitique]
+---
+
+Appuyez sur *Lecture* : les années défilent et chaque mur apparaît, en s'allongeant sur sa frontière, l'année où sa construction a commencé ; déplacez le curseur *Année* ou cliquez sur le graphique du bas pour choisir une année. La couleur d'un mur indique son motif principal ; un mur détruit pâlit et passe en tirets. Choisissez une *Région* pour zoomer, puis passez sur un mur : qui l'a construit, à sa frontière avec quel pays, quand et pourquoi. Le graphique compte les murs debout chaque année, par motif.
+
+::: {.column-page}
+{{< geores sim="border-walls" presets="year,region" >}}
+:::
+
+## À observer
+
+- Combien de murs sont debout en 1989, l'année où le graphique signale la chute du mur de Berlin ? Et aujourd'hui ?
+- Quel motif domine avant 2000 ? Lesquels augmentent le plus après 2001, puis après 2015 ?
+- Zoomez sur l'Europe : quels murs sont commencés après 2015 ? Passez dessus : qui les a construits, et sur quelles frontières ?
+- Zoomez sur le Moyen-Orient et l'Afrique du Nord : quels pays construisent des murs, et face à quels voisins ?
+- Trouvez un mur détruit (en tirets) : quand a-t-il été construit, quand a-t-il été détruit ?
+
+## Fonctionnement
+
+Les murs proviennent d'une base de données des murs aux frontières internationales, qui indique pour chacun l'État qui le construit, le voisin, les dates de construction et de destruction, ainsi que les motifs ; la simulation ne montre que le motif principal. Les tracés sont donnés par paire d'États : chaque mur d'une paire prend la date du début du premier de ses tronçons, et n'est compté comme détruit que lorsque tous ses tronçons le sont. Les murs dont le tracé n'est pas connu sont comptés dans le graphique, mais pas dessinés. Les données s'arrêtent aux murs commencés en 2020 ; quatre murs plus récents ont été ajoutés pour ce cours, sur des tracés approximatifs : Lituanie–Biélorussie (2021), Pologne–Biélorussie et Pologne–Russie (Kaliningrad, 2022), Finlande–Russie (2023).
+
+## Sources
+
+- Kenwick, Pauselli & Simmons (2026), Geolocated International Border Wall Data, Harvard Dataverse, doi:10.7910/DVN/XOED3U, CC0.
+- Tracés des murs ajoutés pour ce cours et pays : Natural Earth 1:10 M et 1:50 M (domaine public).

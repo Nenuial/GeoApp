@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/borders-pov.jpg
+title: "Frontières disputées"
+description: "Les zones disputées du monde telles que les dessinent 31 gouvernements, comparées aux frontières reconnues par la plupart des membres de l'ONU."
+categories: [Géopolitique]
+---
+
+Choisissez une *Région* (Monde, Himalaya, mer Noire, Sahara occidental, Asie de l'Est, Méditerranée orientale, Corne de l'Afrique, Malouines), puis un point de vue : après *Vu depuis*, les boutons proposent les pays les plus concernés dans la région, la liste *autres pays…* tous les autres. Chaque pays garde sa couleur d'une vue à l'autre : une zone qui change de couleur a changé de propriétaire. Le pays dont c'est la vue est entouré d'or. Passez sur la carte pour savoir qui administre une zone, qui la revendique et à qui elle revient dans cette vue.
+
+::: {.column-page}
+{{< geores sim="borders-pov" presets="view,region" >}}
+:::
+
+## À observer
+
+- Dans l'Himalaya, passez de l'Inde au Pakistan puis à la Chine : quelles zones changent de couleur à chaque fois ? Passez dessus : qui les administre ?
+- Dans la région de la mer Noire, comparez la vue de la Russie et celle de l'Ukraine : quelles zones chacune compte-t-elle comme siennes ?
+- Sous le titre, la carte compte les zones qui appartiennent à un autre pays que dans la vue internationale. Dans votre région, quel point de vue s'en écarte le plus ?
+- Au Sahara occidental, lesquels des points de vue proposés attribuent le territoire au Maroc, lesquels le laissent à part ?
+- Dans la vue internationale, trouvez une zone sans propriétaire (en gris) : pourquoi un cartographe laisserait-il une zone sans propriétaire ?
+
+## Fonctionnement
+
+Natural Earth indique, pour 31 gouvernements, à quel pays chaque zone disputée appartient sur les cartes de ce gouvernement. Les données ont été mises à jour pour ce cours : sans l'Artsakh (rattaché à l'Azerbaïdjan depuis 2023) ni les « républiques populaires » de 2014, mais avec les quatre provinces ukrainiennes que la Russie revendique depuis septembre 2022 (Donetsk, Louhansk, Zaporijjia, Kherson), dessinées en entier bien qu'elles ne soient que partiellement occupées. La vue internationale a elle aussi été établie pour ce cours : les frontières que reconnaissent la plupart des États membres de l'ONU et, là où la plupart des pays ne prennent pas parti, le pays qui administre la zone (le Cachemire le long de la ligne de contrôle, l'Aksai Chin, les Kouriles). La carte est en projection Equal Earth.
+
+## Sources
+
+- Natural Earth 1:50 M : pays, zones séparatistes et disputées, et points de vue de 31 gouvernements (domaine public).
+- Provinces de Natural Earth 1:10 M, pour les quatre provinces ukrainiennes.

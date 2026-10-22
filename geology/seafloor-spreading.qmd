@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/seafloor-spreading.jpg
+title: "Seafloor spreading"
+description: "At a mid-ocean ridge, new ocean floor records the reversals of the Earth's magnetic field: matching stripes, key evidence for plate tectonics."
+categories: [Geology]
+---
+
+The sim runs by itself, from 8 million years ago to today: *Pause* stops it, *Play* starts it again, *Again* goes back to the beginning. Choose *Slow: Atlantic* or *Fast: Pacific*. From top to bottom: the ocean floor seen from above (dark: normal polarity, as today; light: reversed), what a ship's magnetometer measures as it sails across the ridge, and a cross-section with the plates moving apart over the magma. Move over the floor seen from above to read the age of the rock and its distance from the ridge.
+
+::: {.column-page}
+{{< geores sim="seafloor-spreading" >}}
+:::
+
+## What to look for
+
+- Compare the stripes on the two sides of the ridge: what do you notice? Why?
+- Move over the stripes: where is the youngest rock, where the oldest?
+- Once the sim has reached today, find when the magnetic field last reversed: move over the edge of the central stripe.
+- Switch from Atlantic to Pacific: what changes in the stripes, and what stays the same?
+- How could a ship's measurements, with the dates of the reversals, tell geologists how fast an ocean floor spreads?
+
+## How it works
+
+As the new rock cools at the ridge, it records the direction of the Earth's magnetic field at that time. The dates of the reversals follow the polarity time scale of the last 8 million years, simplified. The floor spreads by 2.5 cm a year (Atlantic) or 15 cm a year (Pacific) in all, half on each side of the ridge; the window shows 300 km on each side. The magnetometer is far above the floor, so its profile smooths the stripes over about 20 km. In this schematic model the ridge is straight and spreads at a constant speed.
+
+## Sources
+
+Schematic model, no data. The reversals follow the geomagnetic polarity time scale of the last 8 million years, simplified.

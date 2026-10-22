@@ -1,0 +1,28 @@
+---
+image: ../../assets/thumbs/russia-peoples.jpg
+title: "Les peuples de Russie"
+description: "Les peuples de Russie au recensement de 2021, en rectangles proportionnels à leur population, avec et sans les Russes."
+categories: [Russie]
+---
+
+*Tous les peuples* montre chaque peuple recensé par un rectangle dont la surface est proportionnelle à sa population ; *Sans les Russes* retire les Russes et partage toute la place entre les autres peuples. Survolez un rectangle : le peuple, son effectif et sa part parmi les personnes qui ont indiqué leur nationalité.
+
+::: {.column-page}
+{{< geores sim="russia-peoples" presets="mode" >}}
+:::
+
+## À observer
+
+- Quelle part des personnes qui ont indiqué leur nationalité se déclarent russes ?
+- Sans les Russes : quels sont les cinq peuples les plus nombreux ? Retrouvez-les sur la carte des régions : lesquels ont une république à leur nom ?
+- Trouvez des peuples dont l'État se trouve hors de Russie (Ukrainiens, Arméniens, Kazakhs…) : quelle place occupent-ils ?
+- Survolez les plus petits rectangles : combien de personnes comptent les plus petits peuples ?
+- 16,6 millions de personnes n'ont pas indiqué leur nationalité : que cela change-t-il à la lecture des parts ?
+
+## Fonctionnement
+
+Au recensement russe, la « nationalité » est l'appartenance ethnique déclarée par chaque personne, pas la citoyenneté. 130,6 millions de personnes l'ont indiquée, 16,6 millions non ; les parts sont calculées sur les 130,6 millions. La sim compte 174 peuples ; les noms n'apparaissent que dans les rectangles assez grands. Les noms français ont été revus, car ceux de geodata étaient en partie des traductions automatiques.
+
+## Sources
+
+- Rosstat, recensement panrusse de la population de 2021 (VPN-2020), via le package R geodata (oc_russie_2020_population_composition).

@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/jet-stream.jpg
+title: "Jet stream and Rossby waves"
+description: "The polar jet stream seen from above the North Pole: its meanders, the highs and lows they bring, and the weather over Switzerland."
+categories: [Meteorology]
+---
+
+The jet moves by itself; *❚❚ Pause* stops it. *Meanders* sets how far the jet swings north and south, *Waves* how many waves go round the pole (3 to 7). The wind speed is in colour, with its key on the right, and the panel tells what weather Switzerland gets where the jet passes now.
+
+::: {.column-page}
+{{< geores sim="jet-stream" >}}
+:::
+
+## What to look for
+
+- In which direction does the jet go round the pole? From which direction does this wind blow?
+- Are the lows (L) east or west of the troughs, where the jet dips furthest south? And the highs (H), compared with the ridges?
+- Raise *Meanders*: how fast do the waves move now? What does that mean for the weather in Switzerland?
+- Wait until Switzerland lies in a trough, then under a ridge: what weather does each bring, in summer and in winter?
+- Where is the wind fastest?
+
+## How it works
+
+The jet is a line of waves around 52° N; their number and size come from the sliders, and they drift east, more slowly the more the jet meanders. The wind is fastest on the axis of the jet (about 185 km/h) and weak elsewhere. The lows and highs are placed by rule, a quarter of a wave east of each trough and each ridge. The winds are drawn as on earth.nullschool.net: the speed in colour, particles with trails. Only the coastlines are real; the rest is a schematic model.
+
+## Sources
+
+- Schematic model of the winds, no data.
+- Coastlines: Natural Earth 1:110m (public domain).

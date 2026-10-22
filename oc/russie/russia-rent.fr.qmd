@@ -1,0 +1,30 @@
+---
+image: ../../assets/thumbs/russia-rent.jpg
+title: "Une économie de rente"
+description: "La croissance russe depuis 1992 et la part du pétrole et du gaz dans le budget fédéral, face au prix du pétrole."
+categories: [Russie]
+---
+
+Les deux boutons changent de vue : *Croissance* montre la croissance du PIB chaque année depuis 1992 (barres vertes ou rouges), *Budget* la part du pétrole et du gaz dans les recettes du budget fédéral depuis 2006 (barres bleues). Dans les deux vues, la courbe donne le prix du baril de Brent, lu sur l'axe de droite. Survolez une année : la croissance, le prix du Brent et, depuis 2006, la part du pétrole et du gaz.
+
+::: {.column-page}
+{{< geores sim="russia-rent" presets="view" >}}
+:::
+
+## À observer
+
+- Vue *Croissance* : quelles récessions suivent une chute du prix du pétrole ? Lesquelles ont une autre cause ?
+- Quel est le rythme de la croissance pendant les années 2000, quand le prix du pétrole monte ?
+- Vue *Budget* : quelle part des recettes fédérales vient du pétrole et du gaz en 2011–2014 ? Et en 2026 ?
+- Le Brent est cher en 2022 comme en 2026 : la part du pétrole et du gaz dans le budget suit-elle ?
+
+## Fonctionnement
+
+Les valeurs sont réelles et inscrites dans la sim. La croissance est celle du PIB réel (en volume) ; la barre hachurée de 2026 est une prévision. Le prix du Brent est une moyenne annuelle en dollars ; pour 2026, il couvre la période du 2 janvier au 14 octobre (trait en tirets). Le Brent sert de prix de référence : le pétrole russe (Urals) se vend à un autre prix, avec une décote d'environ 24 dollars en 2026. La part du pétrole et du gaz ne concerne que le budget fédéral ; pour 2026, elle porte sur janvier à septembre et reste provisoire.
+
+## Sources
+
+- Banque mondiale, World Development Indicators (mise à jour du 8 octobre 2026) : croissance du PIB réel.
+- FMI, prévision du 13 octobre 2026 : croissance de 2026.
+- EIA (États-Unis) : prix annuel moyen du Brent.
+- Ministère russe des Finances : recettes pétrolières et gazières du budget fédéral (2026 : janvier–septembre, provisoire).

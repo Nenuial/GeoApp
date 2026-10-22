@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/redshift.jpg
+title: "Effet Doppler"
+description: "Une source en mouvement émet des ondes plus longues derrière elle, plus courtes devant : une sirène change de son, le spectre d'une galaxie rougit."
+categories: [Cosmologie]
+---
+
+Choisissez *Son* (une sirène) ou *Lumière* (une galaxie), et réglez la *Vitesse de la source* : vers la droite du curseur, la source s'éloigne de vous (l'observateur de gauche) ; vers la gauche, elle s'approche. Les fronts d'onde partent de la source, et chaque observateur reçoit ses ondes. En bas, pour le son, la fréquence que chacun entend ; pour la lumière, le spectre de la galaxie au repos et le spectre que nous observons. ❚❚ met l'animation en pause.
+
+::: {.column-page}
+{{< geores sim="redshift" presets="mode" >}}
+:::
+
+## À observer
+
+- Quand la source est immobile, les deux observateurs reçoivent-ils les mêmes ondes ?
+- En mode *Son*, la source s'éloignant de vous à 30 % de la vitesse des ondes : quelle fréquence entendez-vous, et l'autre observateur ? La sirène émet 440 Hz.
+- Comment les fronts d'onde sont-ils espacés devant la source, et derrière elle ?
+- En mode *Lumière*, éloignez la source de plus en plus vite : à partir de quelle vitesse la raie rouge de l'hydrogène sort-elle du spectre visible ?
+- Presque toutes les galaxies lointaines présentent un décalage vers le rouge. Qu'est-ce que cela nous apprend sur leur mouvement ?
+
+## Fonctionnement
+
+La source émet un front d'onde à intervalles réguliers ; chacun s'étend en cercle à partir du point où il a été émis. Derrière la source, la longueur d'onde reçue est celle émise multipliée par (1 + v), devant elle par (1 − v), v étant la vitesse de la source en fraction de la vitesse des ondes ; pour la lumière, le décalage z vaut v. Cette formule simple n'est valable que pour des vitesses bien inférieures à celle de la lumière. Vitesses et tailles ne sont pas à l'échelle. Le spectre va de 380 à 780 nm, avec quatre raies de l'hydrogène (410, 434, 486 et 656 nm).
+
+## Sources
+
+Modèle schématique, sans données.

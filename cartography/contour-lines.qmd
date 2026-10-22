@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/contour-lines.jpg
+title: "Contour lines"
+description: "A Jura landscape in relief and on a map: each contour line is the shoreline of rising water, and a profile shows the slopes."
+categories: [Cartography]
+---
+
+Move the *Water level* slider, or press *▶ Raise the water*: a lake rises over the relief on the left, and its shoreline, in red, is the contour line of that height on the map on the right. Choose a *Profile* from the list, or drag a line on the map: the cross-section A–B appears below the map, with the slope at its steepest point. *Names* shows or hides the names of the landforms. Hover the map to read the height.
+
+::: {.column-page}
+{{< geores sim="contour-lines" presets="level,profile" >}}
+:::
+
+## What to look for
+
+- Raise the water 20 m at a time: how does the red shoreline on the relief match the lines on the map?
+- Compare the profiles *through the cirque and its cliff*, *down the steep forest* and *across the gentle plateau*: how far apart are the contour lines on each, and how steep is the steepest point?
+- Find the summit: what shape do the contour lines take around it, and how high is it?
+- Find a valley cut into the slope: which way does the V of its contour lines point?
+- Where do the lines on the map almost merge? What does a profile through that place show?
+
+## How it works
+
+The landscape is invented, inspired by the Creux du Van (Jura, Neuchâtel): 4 km × 3 km, from the river below 800 m to the summit at 1 463 m, with a cirque closed by a cliff of about 160 m. The heights are given by a formula; the contour lines, every 20 m and bolder every 100 m, are traced on a grid of heights 20 m apart. The relief is seen obliquely from the south-south-west, with heights exaggerated (×1.6); the profile has its own exaggeration, written above it. The steepest slope is given in percent and in degrees; above 150 %, it is called a cliff.
+
+## Sources
+
+Schematic model, no data.

@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/koppen-key.jpg
+title: "Classifying a climate"
+description: "The Köppen-Geiger key applied step by step to a station: each test with the station's own numbers, until its code is complete."
+categories: [Climatology]
+---
+
+Choose a *Station*; the list is sorted by Köppen code. On the left is its climogram; on the right, the tests of the key in the order they are made, each with the station's numbers, the answer yes or no, and the letter it gives.
+
+::: {.column-page}
+{{< geores sim="koppen-key" presets="station" >}}
+:::
+
+## What to look for
+
+- Bern and Lugano share their first two letters: which test separates them?
+- Why is Davos a D climate, when Bern is a C climate?
+- Choose a desert station such as Cairo: how does its yearly rain compare with the limit of the first test?
+- Look at the coldest month of Bern: how close is Bern to being a D climate?
+
+## How it works
+
+The tests follow the rules of Beck et al. (2018), after Peel et al. (2007): first B (dry, against a threshold computed from the mean temperature and the season of the rain), then E (polar), A (tropical), C or D (separated at 0 °C), then the second and third letters. Summer is the warmer half of the year, so the key works in both hemispheres. The values are the 1991–2020 normals of the stations.
+
+## Sources
+
+- MeteoSwiss climate normals 1991–2020 (open data, "Source: MeteoSwiss").
+- WMO Climatological Standard Normals 1991–2020, NCEI accession 0253808.
+- Beck, H.E. et al. (2018), Present and future Köppen-Geiger climate classification maps at 1-km resolution, *Scientific Data* 5, 180214.

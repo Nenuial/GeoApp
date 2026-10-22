@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/conflicts.jpg
+title: "Armed conflicts since 1946"
+description: "Where the armed conflicts and wars of the world took place each year since 1946, how many there were, and how many people died in battle."
+categories: [Geopolitics]
+---
+
+Press *Play* to let the years go by, or drag the *Year* slider; a click on the chart below also picks a year. On the map, a country in orange had an armed conflict that year, a country in red a war. Move over a country to list its conflicts, with their intensity and battle deaths. Below, the bars count the conflicts of each year by type, and the line gives the battle deaths.
+
+::: {.column-page}
+{{< geores sim="conflicts" presets="year" >}}
+:::
+
+## What to look for
+
+- Play from 1946: when do the colonial conflicts end?
+- Which type of conflict is the most frequent in most years? Which type grows most after 2010?
+- Find the peaks of the line of battle deaths since 1989. Which countries are red in those years?
+- Compare a year of the Cold War, such as 1975, with the latest year: in which regions of the world are the conflicts located?
+
+## How it works
+
+The Uppsala Conflict Data Program (UCDP) counts a conflict in a year when the fighting between a government and another party (another government or an armed group) causes at least 25 battle-related deaths in that year; with 1 000 deaths or more, it is a war. The four types are colonial conflicts, conflicts between states, conflicts within a state, and conflicts within a state in which foreign troops fight on one side. The map colours the countries where UCDP locates the fighting, on today's borders; for a conflict between states, it colours the governments at war, even where no fighting took place on their own soil. Battle deaths (best estimates) are available from 1989 only.
+
+## Sources
+
+- UCDP/PRIO Armed Conflict Dataset 26.1 and UCDP Battle-Related Deaths Dataset 26.1, Uppsala Conflict Data Program, CC BY 4.0 (Davies et al. 2026; Gleditsch et al. 2002).
+- Countries: Natural Earth 1:50m (public domain).

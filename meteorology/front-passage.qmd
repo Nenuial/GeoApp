@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/front-passage.jpg
+title: "Warm and cold fronts"
+description: "A depression passes over a town: the clouds of its warm and cold fronts in cross-section, and the town's temperature, pressure and rain."
+categories: [Meteorology]
+---
+
+The fronts move east, so the town slides under them from the right, and the meteogram below records its temperature, pressure and rain hour by hour. *❚❚ Pause* stops the clock, *Restart* starts again, and the *Hour* slider jumps to any moment of the 52 hours. Above the meteogram, a line describes the sky over the town, with its temperature, the pressure and its trend, and the wind direction.
+
+::: {.column-page}
+{{< geores sim="front-passage" >}}
+:::
+
+## What to look for
+
+- Which clouds announce the warm front, and how many hours before the rain do they appear?
+- How does the temperature change when the warm front passes? And when the cold front passes?
+- When does the pressure fall, and when does it rise again?
+- Compare the rain of the two fronts: which lasts longer, which is heavier?
+- From which direction does the wind blow before the warm front, in the warm sector and behind the cold front?
+
+## How it works
+
+The cross-section is a west–east slice through a mid-latitude depression, with heights exaggerated about 50 times: the warm front rises gently (1 in 150), the cold front is much steeper. The whole system moves east at about 40 km/h. The temperature, pressure, rain and wind are set by rule for each part of the section, with values typical of a winter or spring depression over western Europe: it is not a forecast.
+
+## Sources
+
+Schematic model, no data.

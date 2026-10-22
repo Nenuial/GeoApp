@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/dtm-steps.jpg
+title: "Demographic transition, step by step"
+description: "Birth rate, death rate and population through the five stages of the demographic transition model, with an age pyramid for each stage."
+categories: [Demography]
+---
+
+The tool opens on the whole model. Go back with ◀ to the first step (the curves alone), then move forward with ▶: each stage appears with its column of the table and its pyramid, which grows out of the pyramid of the stage before. *Whole model* shows everything again. Under the chart, a sentence sums up the stage on screen.
+
+::: {.column-page}
+{{< geores sim="dtm-steps" >}}
+:::
+
+## What to look for
+
+- Which falls first, the death rate or the birth rate? What happens to the natural increase (the area between the two curves) while only one of them is falling?
+- Stages 1 and 4 both have a stable population. What is the difference between them?
+- Follow the base of the pyramid from stage 1 to stage 5: in which stage does it start to narrow, and what does a narrow base mean for the years to come?
+- In stage 5 the birth rate is below the death rate: what does the population line do?
+
+## How it works
+
+The model sums up, in five stages, how first the death rate and then the birth rate fall as a country develops. The curves and pyramids are schematic: they show no real country, and the axes carry no figures. Population changes only through births and deaths: migration is left out. In the pyramids, men are on the left and women on the right.
+
+## Sources
+
+Schematic model, no data.

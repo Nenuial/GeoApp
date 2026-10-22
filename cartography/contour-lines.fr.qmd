@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/contour-lines.jpg
+title: "Courbes de niveau"
+description: "Un paysage jurassien en relief et sur la carte : chaque courbe de niveau est le rivage d'une eau qui monte, et un profil montre les pentes."
+categories: [Cartographie]
+---
+
+Déplacez le curseur *Niveau de l'eau* ou cliquez sur *▶ Faire monter l'eau* : un lac monte sur le relief à gauche, et son rivage, en rouge, est la courbe de niveau de cette altitude sur la carte à droite. Choisissez un *Profil* dans la liste, ou tracez une ligne sur la carte : la coupe A–B apparaît sous la carte, avec la pente à son point le plus raide. *Noms* affiche ou masque le nom des formes du relief. Survolez la carte pour lire l'altitude.
+
+::: {.column-page}
+{{< geores sim="contour-lines" presets="level,profile" >}}
+:::
+
+## À observer
+
+- Faites monter l'eau de 20 m en 20 m : comment le rivage rouge sur le relief correspond-il aux courbes de la carte ?
+- Comparez les profils *à travers le cirque et sa falaise*, *dans la forêt en pente raide* et *à travers le plateau en pente douce* : quel est l'écart entre les courbes sur chacun, et quelle est la pente au point le plus raide ?
+- Trouvez le sommet : quelle forme prennent les courbes autour de lui, et quelle est son altitude ?
+- Trouvez un vallon creusé dans la pente : dans quel sens pointe le V de ses courbes ?
+- Où les courbes de la carte se confondent-elles presque ? Que montre un profil tracé à cet endroit ?
+
+## Fonctionnement
+
+Le paysage est inventé, inspiré du Creux du Van (Jura, Neuchâtel) : 4 km × 3 km, de la rivière, sous 800 m, jusqu'au sommet à 1 463 m, avec un cirque fermé par une falaise d'environ 160 m. Les altitudes sont données par une formule ; les courbes de niveau, tous les 20 m et plus épaisses tous les 100 m, sont tracées sur une grille d'altitudes espacées de 20 m. Le relief est vu en oblique depuis le sud-sud-ouest, avec des hauteurs exagérées (×1,6) ; le profil a sa propre exagération, indiquée au-dessus. La pente la plus forte est donnée en pour cent et en degrés ; au-delà de 150 %, on parle de falaise.
+
+## Sources
+
+Modèle schématique, sans données.

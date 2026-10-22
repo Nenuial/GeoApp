@@ -1,0 +1,30 @@
+---
+image: ../assets/thumbs/projection-explorer.jpg
+title: "Projection explorer"
+description: "Eight world map projections with Tissot's circles: which keep shapes, which keep areas and which compromise between the two."
+categories: [Cartography]
+---
+
+Click a projection to draw the world with it; the text under the map names its property. The red circles all have the same size on the globe: their shape and size on the map show what the projection keeps and what it distorts. *Circles* shows or hides them. The *Central meridian* slider turns the world east or west (not for Goode homolosine, whose lobes are fixed).
+
+::: {.column-page}
+{{< geores sim="projection-explorer" presets="projection,set" >}}
+:::
+
+## What to look for
+
+- On Mercator, compare a circle at 60° N with one on the equator: are both still round? Are they the same size?
+- On Gall-Peters, Hobo-Dyer and Equal Earth, the circles keep their area: what happens to their shape towards the poles?
+- On Robinson and Winkel tripel, how do the circles change compared with Mercator and Gall-Peters?
+- Move the central meridian to 150° E: which ocean is now in the middle of the map, and where is Europe?
+- Which projection would you choose for a world map where areas must be compared, such as forest cover? Why?
+
+## How it works
+
+The land of the world is projected with the formula of each projection. Tissot's circles are circles of 5° radius drawn on the globe every 30° of longitude and of latitude (from 60° S to 60° N), then projected like the land. Mercator is conformal; it cannot reach the poles and is cut at 85° N and S. Gall-Peters and Hobo-Dyer (two cylindrical projections with different standard parallels), Goode homolosine and Equal Earth are equal-area. Robinson and Winkel tripel are compromises. The plate carrée is equidistant along the meridians and the equator.
+
+## Sources
+
+- Land: Natural Earth 1:110m (public domain).
+- Robinson projection: the table of Robinson (1974).
+- Equal Earth projection: Šavrič, Patterson & Jenny (2018).

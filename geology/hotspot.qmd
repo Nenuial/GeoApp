@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/hotspot.jpg
+title: "Hotspot islands"
+description: "A plate moves over a fixed plume of hot mantle: each volcano is carried away, dies, erodes and sinks, leaving a chain of islands."
+categories: [Geology]
+---
+
+The sim runs by itself: 30 million years in about 15 seconds, with a new volcano above the plume every 2.5 million years. *Pause* stops it and *Play* starts it again; *Again* goes back to the beginning. The label over each volcano gives its age, and the arrows show the plate moving over the plume.
+
+::: {.column-page}
+{{< geores sim="hotspot" >}}
+:::
+
+## What to look for
+
+- Where is the only active volcano? Why there?
+- Follow one volcano as the plate carries it away: what does it become, step by step?
+- In which direction does the plate move? On which side of the hotspot is the oldest island?
+- The Pacific plate moves 7 to 10 cm a year over the Hawaiian hotspot. How far does it carry a volcano in 2.5 million years?
+- Why does an island get lower as it moves away from the hotspot, even when it no longer erupts?
+
+## How it works
+
+The plume stays in place while the plate moves over it at a constant speed. A new volcano grows over the plume every 2.5 million years, then the plate carries it away: it stops erupting, is worn down by erosion and sinks with the plate, becoming an island, then an atoll ringed with coral and sand, then a seamount under the sea. Heights, distances and speeds are not to scale.
+
+## Sources
+
+Schematic model, no data.

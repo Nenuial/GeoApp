@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/world-cities.jpg
+title: "Growth of the world's cities"
+description: "The large cities of the world from 1975 to 2050 as discs sized by population, megacities highlighted, with the ten largest of each year."
+categories: [Urban geography]
+---
+
+Press *Play* to watch the years go by, or drag the *Year* slider. Move the pointer over a city to see its name, its country and its population. On the right, the number of megacities (10 million people or more) and the ten largest cities of the year, in millions.
+
+::: {.column-page}
+{{< geores sim="world-cities" presets="region,year" >}}
+:::
+
+## What to look for
+
+- How many megacities are there in 1975? In 2025? In 2050?
+- On which continents are the megacities in 1975? And in 2050?
+- Which cities of the 1975 top ten are still in it in 2050? Which have left it, and which have entered it?
+- Follow Tokyo and Lagos from 1975 to 2050: which one grows faster? Can you find large cities that shrink?
+
+## How it works
+
+The UN counts cities with the same rule in every country, the Degree of Urbanisation: a city is an area of at least 50 000 people living in contiguous 1 km² cells of 1 500 people per km² or more. A city is therefore a whole agglomeration, not a municipality, and its population can differ a lot from national figures. The map keeps the cities of 300 000 people or more in 2025 or 2050 and shows them as far back as the UN gives a figure, so some of them are still small in 1975. The UN gives a value every five years: in between, the populations are interpolated, and after 2025 they are projections. The area of each disc is proportional to the population.
+
+## Sources
+
+- UN DESA, Population Division (2025), *World Urbanization Prospects: The 2025 Revision*, Online Edition (cities by the Degree of Urbanisation).
+- Natural Earth, countries 1:50m (public domain).

@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/ww2-deaths.jpg
+title: "Les morts de la Seconde Guerre mondiale"
+description: "Les morts militaires et civils de la Seconde Guerre mondiale dans onze pays, en nombre ou en part de leur population de 1939."
+categories: [Géopolitique, Histoire]
+---
+
+Passez de *Nombre de morts* à *Part de la population* : les barres changent et les pays se reclassent. Chaque barre s'arrête au milieu des estimations ; le trait fin qui la traverse montre leur fourchette, de la plus basse à la plus haute, et les chiffres à côté donnent la même fourchette.
+
+::: {.column-page}
+{{< geores sim="ww2-deaths" presets="mode,highlight" >}}
+:::
+
+## À observer
+
+- Quel pays a perdu le plus de personnes ? Lequel a perdu la plus grande part de sa population ? Pourquoi n'est-ce pas le même pays ?
+- Quelle est l'ampleur de la fourchette des estimations pour l'Union soviétique, en millions ? Pourquoi les estimations peuvent-elles diverger autant ?
+- Comparez la part des morts en France, au Royaume-Uni et aux États-Unis avec celle de la Pologne, de la Yougoslavie et de l'Union soviétique : que constatez-vous ?
+- Combien de morts suisses sont comptés ? Pourquoi si peu ?
+
+## Fonctionnement
+
+Chaque pays a une estimation basse et une estimation haute de ses morts, soldats et civils confondus ; la barre se place au milieu des deux. La part divise ces chiffres par la population du pays au 1er janvier 1939. L'Union soviétique est comptée dans ses frontières de 1946–1991, la Pologne dans ses frontières de 1939, et la Chine de 1937 à 1945. Seuls onze pays sont représentés.
+
+## Sources
+
+- Wikipédia, « World War II casualties », tableau « Total deaths by country » (révision 1379703619, octobre 2026), et les sources qu'il indique pour chaque pays.

@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/map-classes.jpg
+title: "Map classes"
+description: "The yes vote on the 2021 CO2 law in 2 105 communes, mapped with four ways of setting classes: the same data, different messages."
+categories: [Cartography]
+---
+
+Choose a classification with the buttons *Equal intervals*, *Quantiles*, *Around 50 %* and *Yes or no*. For each one, the legend gives the number of communes in each class, the histogram shows the communes' shares of yes with the class breaks, and a text says what the map suggests. Hover or tap a commune for its name and share of yes; hover a class of the legend to see its communes.
+
+::: {.column-page}
+{{< geores sim="map-classes" presets="method" >}}
+:::
+
+## What to look for
+
+- *Equal intervals*: how many of the five classes really hold communes? Why can this map not show whether a commune said yes or no?
+- *Quantiles*: a fifth of the communes are dark blue, yet how many communes said yes? Where does the darkest class start?
+- *Around 50 %*: which communes are blue, and where are they in Switzerland?
+- *Yes or no*: how many communes had between 45 and 55 % of yes? What does this map hide?
+- Which classification would you choose to show the result of the vote? And to show differences between regions? Justify.
+
+## How it works
+
+Each commune is given its share of yes among the yes and no votes. Equal intervals: five classes of 20 points. Quantiles: five classes with the same number of communes. Around 50 %: breaks at 35, 45, 50, 55 and 65 %. Yes or no: a single break at 50 %. A commune with exactly 50 % is counted with the no. The communes and their boundaries are those of 1 January 2026, simplified; the results of 2021 are given for today's communes. The colours are colour-blind safe (ColorBrewer).
+
+## Sources
+
+- Results: Federal Statistical Office, through opendata.swiss (R package swissdd).
+- Communes: "Geometries: communes (politics) as of 01.01.2026", Federal Statistical Office, opendata.swiss (open use, source required).

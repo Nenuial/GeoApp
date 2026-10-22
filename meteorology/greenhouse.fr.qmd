@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/greenhouse.jpg
+title: "Effet de serre"
+description: "Lumière du Soleil qui entre, infrarouge qui sort : comment les gaz à effet de serre et l'albédo fixent la température à la surface de la Terre."
+categories: [Météorologie]
+---
+
+Déplacez les curseurs *Gaz à effet de serre* (la part de l'infrarouge du sol absorbée par les gaz) et *Albédo* (la part de la lumière du Soleil réfléchie), ou choisissez un cas : *Sans gaz à effet de serre*, *Aujourd'hui*, *Plus de CO₂* ou *Terre boule de neige*. Les flèches sont proportionnelles aux flux d'énergie, en W/m², et le thermomètre donne la température de la surface.
+
+::: {.column-page}
+{{< geores sim="greenhouse" >}}
+:::
+
+## À observer
+
+- Quelle est la température de la surface sans gaz à effet de serre ? Et aujourd'hui ?
+- Additionnez les deux flèches d'infrarouge qui sortent en haut et comparez avec la lumière du Soleil qui n'est pas réfléchie. Que remarquez-vous ?
+- Avec *Plus de CO₂*, quelles flèches grandissent ? Pourquoi le sol doit-il émettre plus d'infrarouge ?
+- Avec *Terre boule de neige*, qu'est-ce qui a changé par rapport à *Aujourd'hui* ? Pourquoi la Terre reste-t-elle froide malgré ses gaz à effet de serre ?
+
+## Fonctionnement
+
+C'est le modèle à une couche. L'atmosphère est une seule couche qui laisse passer la lumière du Soleil et absorbe la part choisie de l'infrarouge émis par le sol ; elle renvoie l'énergie absorbée pour moitié vers l'espace, pour moitié vers le sol. La surface se réchauffe jusqu'à ce que l'énergie qui sort en haut égale la lumière absorbée (342 W/m² en moyenne, moins la part réfléchie), selon la loi de Stefan–Boltzmann. La ligne pointillée du thermomètre marque −18 °C, la température sans gaz à effet de serre avec l'albédo actuel. L'atmosphère réelle absorbe aussi une partie de la lumière du Soleil et transporte de la chaleur vers le haut par convection et évaporation, ce que le modèle ignore.
+
+## Sources
+
+Modèle schématique, sans données.

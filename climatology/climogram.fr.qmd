@@ -1,4 +1,5 @@
 ---
+image: ../assets/thumbs/climogram.jpg
 title: "Climogramme"
 description: "Température et précipitations mensuelles d'une station, son climat de Köppen, et une seconde station pour comparer."
 categories: [Climatologie]

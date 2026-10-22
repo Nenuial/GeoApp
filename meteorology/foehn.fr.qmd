@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/foehn.jpg
+title: "Foehn sur les Alpes"
+description: "De l'air humide franchit les Alpes du Tessin à Uri : il pleut au sud, et l'air arrive au nord plus chaud et sec."
+categories: [Météorologie]
+---
+
+Réglez la *Base du nuage*, l'altitude à laquelle l'air qui monte devient saturé, puis cliquez sur *▶ Souffler*. La bulle indique la température de l'air ; sa couleur montre le gradient qu'il suit : corail quand il monte sans nuage, bleu dans le nuage, rouge à la descente.
+
+::: {.column-page}
+{{< geores sim="foehn" >}}
+:::
+
+## À observer
+
+- L'air monte et redescend d'à peu près la même hauteur : pourquoi arrive-t-il plus chaud qu'au départ ?
+- Où pleut-il, et pourquoi seulement de ce côté des Alpes ?
+- Abaissez la *Base du nuage* et soufflez à nouveau : l'air arrive-t-il plus chaud ou plus frais ? Pourquoi ?
+- Placez la *Base du nuage* au-dessus de la crête, à 3000 m ou plus : que reste-t-il du foehn ?
+- Quand le foehn atteint Uri, est-ce un vent humide ou sec ? Où son eau est-elle passée ?
+
+## Fonctionnement
+
+L'air quitte le versant tessinois à 20 °C et suit le relief à environ 150 m au-dessus du sol, par-dessus une crête d'environ 3000 m. Il se refroidit de 10 °C par km tant qu'il n'est pas saturé, d'une valeur fixe de 6 °C par km dans le nuage, où la condensation libère de la chaleur, et se réchauffe de 10 °C par km à la descente, sec après avoir plu sur le versant sud. Le relief est schématique, et la base du nuage est le seul réglage.
+
+## Sources
+
+Modèle schématique, sans données.

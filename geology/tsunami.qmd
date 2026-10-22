@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/tsunami.jpg
+title: "How a tsunami travels"
+description: "A tsunami crosses an ocean in cross-section: fast and low over deep water, slower and higher near the coasts, with its arrival times."
+categories: [Geology]
+---
+
+Press *Earthquake*: the sea floor jumps up at the trench and the wave leaves in both directions; *Pause* stops and restarts the clock. Over each crest, its speed and its height; at the top, the time since the earthquake and when the wave reaches the near and the far coast. The open ocean, right of the dashed line, is compressed.
+
+::: {.column-page}
+{{< geores sim="tsunami" >}}
+:::
+
+## What to look for
+
+- Read the speed of the wave over the deep ocean: how does it compare with a jet plane?
+- What happens to the speed and the height of the wave when it reaches the continental shelf?
+- How long does the wave take to reach the near coast, and the far coast? What does this mean for warning the people who live there?
+- Why does the ship in the open ocean hardly feel the wave?
+- Look at the small arrows in the water as the wave passes: down to what depth does the water move?
+
+## How it works
+
+The speed of the wave depends only on the depth of the water: c = √(g·h), with g = 9.81 m/s² and h the depth in metres. Its height grows as the water gets shallower (Green's law). The section runs from a coast 110 km from the trench to a coast 3000 km away, over an ocean about 4800 m deep. The wave is drawn much higher than in reality, and the flooding of the coast is only sketched.
+
+## Sources
+
+Schematic model, no data.

@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/greenhouse.jpg
+title: "Greenhouse effect"
+description: "Sunlight in, infrared out: how greenhouse gases and albedo set the temperature at the Earth's surface."
+categories: [Meteorology]
+---
+
+Move *Greenhouse gases* (the share of the ground's infrared that the gases absorb) and *Albedo* (the share of sunlight reflected), or choose a case: *No greenhouse gases*, *Today*, *More CO₂* or *Snowball Earth*. The arrows are proportional to the flows of energy, in W/m², and the thermometer gives the temperature of the surface.
+
+::: {.column-page}
+{{< geores sim="greenhouse" >}}
+:::
+
+## What to look for
+
+- What is the temperature of the surface with no greenhouse gases? And today?
+- Add up the two infrared arrows that leave at the top, and compare with the sunlight that is not reflected. What do you notice?
+- With *More CO₂*, which arrows grow? Why must the ground send out more infrared?
+- With *Snowball Earth*, what has changed compared with *Today*? Why does the Earth stay cold despite its greenhouse gases?
+
+## How it works
+
+This is the one-layer model. The atmosphere is a single layer that lets sunlight through and absorbs the chosen share of the infrared from the ground; it sends the energy it absorbs half up to space and half back down to the ground. The surface warms until the energy leaving at the top equals the sunlight absorbed (342 W/m² on average, minus the reflected part), following the Stefan–Boltzmann law. The dashed line on the thermometer marks −18 °C, the temperature without greenhouse gases at today's albedo. The real atmosphere also absorbs part of the sunlight and carries heat up by convection and evaporation, which the model leaves out.
+
+## Sources
+
+Schematic model, no data.

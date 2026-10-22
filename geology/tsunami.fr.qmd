@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/tsunami.jpg
+title: "Le voyage d'un tsunami"
+description: "Un tsunami traverse un océan, vu en coupe : rapide et bas en eau profonde, plus lent et plus haut près des côtes, avec ses heures d'arrivée."
+categories: [Géologie]
+---
+
+Appuyez sur *Séisme* : le fond de la mer se soulève d'un coup à la fosse et la vague part dans les deux directions ; *Pause* arrête puis relance l'horloge. Au-dessus de chaque crête s'affichent sa vitesse et sa hauteur ; en haut, le temps écoulé depuis le séisme et l'heure d'arrivée sur la côte proche et sur la côte lointaine. L'océan ouvert, à droite de la ligne en tirets, est comprimé.
+
+::: {.column-page}
+{{< geores sim="tsunami" >}}
+:::
+
+## À observer
+
+- Lisez la vitesse de la vague au-dessus de l'océan profond : comment se compare-t-elle à celle d'un avion de ligne ?
+- Que deviennent la vitesse et la hauteur de la vague quand elle atteint le plateau continental ?
+- Combien de temps la vague met-elle pour atteindre la côte proche, puis la côte lointaine ? Qu'est-ce que cela implique pour alerter leurs habitants ?
+- Pourquoi le navire en pleine mer sent-il à peine la vague ?
+- Observez les petites flèches dans l'eau au passage de la vague : jusqu'à quelle profondeur l'eau bouge-t-elle ?
+
+## Fonctionnement
+
+La vitesse de la vague ne dépend que de la profondeur de l'eau : c = √(g·h), avec g = 9,81 m/s² et h la profondeur en mètres. Sa hauteur augmente quand l'eau devient moins profonde (loi de Green). La coupe va d'une côte située à 110 km de la fosse jusqu'à une côte à 3000 km, au-dessus d'un océan d'environ 4800 m de profondeur. La vague est dessinée bien plus haute qu'en réalité, et l'inondation de la côte n'est qu'esquissée.
+
+## Sources
+
+Modèle schématique, sans données.

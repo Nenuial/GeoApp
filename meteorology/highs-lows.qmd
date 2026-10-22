@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/highs-lows.jpg
+title: "Highs and lows"
+description: "How the wind turns around a high and a low, in the northern and southern hemispheres, at the ground and aloft."
+categories: [Meteorology]
+---
+
+*North* and *South* choose the hemisphere, *At the ground* and *Aloft* the level. The circles are isobars, and the trails show the wind around the high (H) and the low (L).
+
+::: {.column-page}
+{{< geores sim="highs-lows" >}}
+:::
+
+## What to look for
+
+- In the northern hemisphere, which way does the wind turn around a high? Around a low? And in the southern hemisphere?
+- Aloft, the wind follows the isobars. At the ground, does it blow into or out of each system?
+- At the ground, the air converges into the low: where can it go next? What weather does that bring?
+- In the northern hemisphere, stand with the wind at your back: on which side is the low?
+
+## How it works
+
+Each system has round isobars and a wind of the same strength all around, weaker only near the centre. Aloft, the wind blows along the isobars. At the ground, it also crosses them, out of the high and into the low: the effect of friction with the ground. Real highs and lows are not round, and the sinking air in the high and the rising air in the low are given only in words.
+
+## Sources
+
+Schematic model, no data.

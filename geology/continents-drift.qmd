@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/continents-drift.jpg
+title: "Continental drift"
+description: "The continents every 10 million years, from Pangaea 250 million years ago to today, with the geological periods and the main events."
+categories: [Geology]
+---
+
+Press *Play* to travel from 250 million years ago to today, or drag the *Time* slider: the past is on the left, today on the right. Above the map, the time, the geological period and what happened then; the bar below them shows the periods and where you are.
+
+::: {.column-page}
+{{< geores sim="continents-drift" presets="age" >}}
+:::
+
+## What to look for
+
+- 250 million years ago, which of today's continents can you recognise in Pangaea? Which ocean surrounds it?
+- When does the Atlantic begin to open? Does the North Atlantic or the South Atlantic open first?
+- Follow India from 150 million years ago to today: where does it start, where does it end, and what rises when it meets Asia?
+- When does Australia leave Antarctica?
+- Compare the coasts of South America and Africa today: what in their shapes hints that they were once joined?
+
+## How it works
+
+The coasts are reconstructed every 10 million years with a model of the movements of the plates; between two maps, the sim fades from one to the next, so the continents do not glide smoothly. The shapes are today's coastlines moved back to where their plates were: the shallow seas that covered parts of the continents in the past are not shown. The map uses the Equal Earth projection, centred on the Greenwich meridian.
+
+## Sources
+
+- Müller et al. (2022), plate model, coastlines reconstructed with the GPlates Web Service (CC BY 4.0).

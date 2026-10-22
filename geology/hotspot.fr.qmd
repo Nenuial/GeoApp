@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/hotspot.jpg
+title: "Les îles de point chaud"
+description: "Une plaque se déplace au-dessus d'un panache fixe de manteau chaud : chaque volcan est emporté, s'éteint, s'érode et s'enfonce, laissant une chaîne d'îles."
+categories: [Géologie]
+---
+
+La simulation se déroule d'elle-même : 30 millions d'années en une quinzaine de secondes, avec un nouveau volcan au-dessus du panache tous les 2,5 millions d'années. *Pause* l'arrête et *Lancer* la relance ; *Encore* revient au début. L'étiquette au-dessus de chaque volcan donne son âge, et les flèches montrent la plaque qui avance au-dessus du panache.
+
+::: {.column-page}
+{{< geores sim="hotspot" >}}
+:::
+
+## À observer
+
+- Où se trouve le seul volcan actif ? Pourquoi à cet endroit ?
+- Suivez un volcan emporté par la plaque : que devient-il, étape par étape ?
+- Dans quelle direction la plaque se déplace-t-elle ? De quel côté du point chaud se trouve l'île la plus ancienne ?
+- La plaque pacifique avance de 7 à 10 cm par an au-dessus du point chaud d'Hawaï. Sur quelle distance emporte-t-elle un volcan en 2,5 millions d'années ?
+- Pourquoi une île s'abaisse-t-elle en s'éloignant du point chaud, même lorsqu'elle n'entre plus en éruption ?
+
+## Fonctionnement
+
+Le panache reste en place tandis que la plaque avance au-dessus de lui à vitesse constante. Un nouveau volcan se forme au-dessus du panache tous les 2,5 millions d'années, puis la plaque l'emporte : il s'éteint, l'érosion l'use et il s'enfonce avec la plaque. Il devient une île, puis un atoll bordé de corail et de sable, puis un mont sous-marin. Hauteurs, distances et vitesses ne sont pas à l'échelle.
+
+## Sources
+
+Modèle schématique, sans données.

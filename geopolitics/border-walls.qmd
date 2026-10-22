@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/border-walls.jpg
+title: "Border walls"
+description: "The walls and fences built on the borders of the world since 1945, where they stand, when they were begun and why."
+categories: [Geopolitics]
+---
+
+Press *Play*: the years go by, and each wall appears, growing along its border, in the year its construction began; drag the *Year* slider or click the chart below to pick a year. The colour of a wall is its main motive; a destroyed wall turns faint and dashed. Choose a *Region* to zoom in, and move over a wall: who built it, on its border with whom, when, and why. The chart counts the walls standing each year, by motive.
+
+::: {.column-page}
+{{< geores sim="border-walls" presets="year,region" >}}
+:::
+
+## What to look for
+
+- How many walls stand in 1989, the year the chart marks the fall of the Berlin Wall? How many today?
+- Which motive is the most frequent before 2000? Which ones grow most after 2001 and after 2015?
+- Zoom on Europe: which walls are begun after 2015? Move over them: who built them, and on which borders?
+- Zoom on the Middle East and North Africa: which countries build walls, and against which neighbours?
+- Find a destroyed wall (dashed): when was it built, and when destroyed?
+
+## How it works
+
+The walls come from a dataset of international border walls, which records for each wall the state that builds it, the neighbour, the dates of construction and destruction, and the motives; the sim shows the main motive only. The routes are recorded for each pair of states: every wall of a pair takes the date when the first of its sections was begun, and counts as destroyed only when all its sections are. Walls without a known route are counted in the chart but not drawn. The dataset ends with walls begun in 2020; four walls begun later were added for this course on approximate routes: Lithuania–Belarus (2021), Poland–Belarus and Poland–Russia (Kaliningrad, 2022), Finland–Russia (2023).
+
+## Sources
+
+- Kenwick, Pauselli & Simmons (2026), Geolocated International Border Wall Data, Harvard Dataverse, doi:10.7910/DVN/XOED3U, CC0.
+- Routes of the walls added for this course and countries: Natural Earth 1:10m and 1:50m (public domain).

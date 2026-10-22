@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/enso.jpg
+title: "El Niño and La Niña"
+description: "A section along the equator across the Pacific: winds, rain, sea temperature and the thermocline in normal, El Niño and La Niña years."
+categories: [Meteorology]
+---
+
+Choose *Normal*, *El Niño* or *La Niña*: the section changes gradually from one state to the other. Indonesia and Australia are on the left, Peru and Ecuador on the right. The numbers at the surface are the sea temperatures at both ends; the dashed line is the thermocline, the limit between the warm surface water and the cold deep water.
+
+::: {.column-page}
+{{< geores sim="enso" >}}
+:::
+
+## What to look for
+
+- In a normal year, which way do the trade winds blow, and where is the warmest water? Where does it rain?
+- Compare the sea temperatures at both ends in the three states: when is the difference smallest?
+- What happens to the thermocline and to the upwelling off Peru during El Niño? Why are there fewer fish?
+- During El Niño, where does the air rise now? What does that mean for Indonesia and for Peru?
+- Is La Niña the opposite of El Niño, or a stronger version of a normal year?
+
+## How it works
+
+The air turns in a loop, the Walker circulation: up over the warmest water, across the Pacific aloft, down where it sinks, and back along the surface. The state sets where the air rises and how strong the loop is; during El Niño the rising air moves to the central Pacific and a second loop sinks over Indonesia. The temperatures are typical values, the depths and heights are not to scale, and the change between states takes seconds instead of months.
+
+## Sources
+
+Schematic model, no data.

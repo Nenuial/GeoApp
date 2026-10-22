@@ -1,4 +1,5 @@
 ---
+image: ../assets/thumbs/climogram.jpg
 title: "Climogram"
 description: "The monthly temperature and precipitation of a station, its Köppen climate, and a second station to compare."
 categories: [Climatology]

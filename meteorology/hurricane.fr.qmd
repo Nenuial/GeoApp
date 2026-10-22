@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/hurricane.jpg
+title: "Ouragans et température de la mer"
+description: "Un cyclone tropical vu d'en haut : son vent se renforce sur une mer chaude et faiblit sur terre, et sa catégorie de Saffir-Simpson suit."
+categories: [Météorologie]
+---
+
+Réglez la température de la *Mer* (24 à 31 °C) et suivez le vent maximal et la catégorie à droite ; un compteur de jours tourne en haut (une seconde vaut trois heures). *Toucher terre* pousse la tempête sur le continent, *Recommencer* la ramène sur la mer, et *Nord* et *Sud* choisissent l'hémisphère.
+
+::: {.column-page}
+{{< geores sim="hurricane" >}}
+:::
+
+## À observer
+
+- En dessous de quelle température de la mer la tempête meurt-elle ?
+- Réglez la mer sur 27, puis 29, puis 31 °C : quelle catégorie la tempête atteint-elle chaque fois ?
+- Combien de jours faut-il à la tempête pour atteindre son vent le plus fort ? Combien de temps pour faiblir après avoir touché terre ?
+- Pourquoi la tempête faiblit-elle sur terre, même quand le continent est chaud ?
+- Dans quel sens la tempête tourne-t-elle dans l'hémisphère nord ? Et dans l'hémisphère sud ?
+
+## Fonctionnement
+
+Le vent maximal tend vers une valeur fixée par la seule température de la mer : une simple dépression en dessous de 26,5 °C, puis une tempête d'autant plus forte que la mer est chaude, jusqu'à 300 km/h. Sur terre, cette valeur est nulle, et le vent retombe en un jour environ. La catégorie suit les seuils de l'échelle de Saffir-Simpson en km/h. Les vrais cyclones dépendent aussi d'autres conditions, comme les vents en altitude et l'humidité de l'air, que le modèle ignore.
+
+## Sources
+
+Modèle schématique, sans données.

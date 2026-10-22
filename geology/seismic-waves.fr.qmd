@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/seismic-waves.jpg
+title: "Les ondes sismiques"
+description: "Comment le sol bouge au passage des ondes P, S, de Love et de Rayleigh, et quelle onde arrive la première après un séisme."
+categories: [Géologie]
+---
+
+Chaque bande montre un bloc de roche dessiné en quadrillage, qu'un type d'onde déforme. Un point coloré suit un grain de roche ; le petit cercle marque sa position au repos. Toutes les ondes quittent le séisme, à gauche, au même instant, et la ligne en tirets marque le front de chaque onde. *Séisme* les relance.
+
+::: {.column-page}
+{{< geores sim="seismic-waves" >}}
+:::
+
+## À observer
+
+- Suivez le grain coloré dans chaque bande : bouge-t-il dans la direction de l'onde, ou en travers ?
+- Quelle onde atteint le bord droit la première, laquelle la dernière ? Comparez avec les vitesses indiquées à gauche.
+- Dans quelles bandes le mouvement s'affaiblit-il avec la profondeur ?
+- Quelle forme le grain dessine-t-il dans la bande de Rayleigh ?
+- Un sismographe éloigné enregistre d'abord l'onde P, puis l'onde S : pourquoi le retard entre les deux augmente-t-il avec la distance ?
+
+## Fonctionnement
+
+Le quadrillage bouge comme la roche, avec des mouvements fortement agrandis. Les ondes avancent dans le rapport de leurs vitesses dans la roche ; les vitesses indiquées à gauche sont des fourchettes courantes. Les ondes P et S traversent l'intérieur de la Terre ; les ondes de Love et de Rayleigh se propagent le long de la surface, et leur mouvement s'atténue avec la profondeur. L'onde S est dessinée de haut en bas, mais elle peut secouer dans n'importe quelle direction perpendiculaire à son trajet. Les vraies ondes s'affaiblissent aussi en s'éloignant du séisme ; ici, elles gardent leur force.
+
+## Sources
+
+Modèle schématique, sans données.

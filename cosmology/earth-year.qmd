@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/earth-year.jpg
+title: "Orbit and seasons"
+description: "Earth goes round the Sun with its axis always pointing the same way; beside it, the same moment drawn from the side."
+categories: [Cosmology]
+---
+
+The year plays by itself: ❚❚ pauses it, ▶ starts it again, and the *Speed* slider sets how many days pass in one second. The buttons *20 March*, *21 June*, *23 September* and *21 December* stop Earth at an equinox or a solstice. The orbit is coloured by the seasons of the northern hemisphere. The panel *Seen from the side* gives the latitude where the Sun is overhead at noon and the length of the day in Neuchâtel; under the controls, the date and the season in each hemisphere.
+
+::: {.column-page}
+{{< geores sim="earth-year" >}}
+:::
+
+## What to look for
+
+- Watch the axis (N) during a whole year: does it ever change direction?
+- Stop at 21 June, then at 21 December: which hemisphere leans towards the Sun? Where is the Sun overhead at noon?
+- On 20 March and 23 September, where is the Sun overhead, and how long is the day in Neuchâtel?
+- When it is summer in the northern hemisphere, what season is it in the southern hemisphere? Why?
+- Count the days between the four dates of the buttons: are the four seasons equally long?
+
+## How it works
+
+The axis is tilted by 23.44° and keeps the same direction all year, so the latitude where the Sun is overhead at noon moves between the two tropics. Earth moves a little faster in January, when it is nearest to the Sun, but the orbit is drawn as a circle; distances, sizes and the spin of Earth are not to scale. The length of the day in Neuchâtel (47° N) runs from sunrise to sunset, with the usual allowance for the refraction of the air and the size of the Sun.
+
+## Sources
+
+- Schematic model, no data.
+- Earth texture: Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

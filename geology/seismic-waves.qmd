@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/seismic-waves.jpg
+title: "Seismic waves"
+description: "How the ground moves as P, S, Love and Rayleigh waves pass, and which wave arrives first after an earthquake."
+categories: [Geology]
+---
+
+Each band shows a block of rock drawn as a grid, which one type of wave deforms. A coloured dot follows a grain of rock; the small ring marks where it rests. All the waves leave the earthquake, on the left, at the same moment, and the dashed line marks the front of each wave. *Earthquake* sends them again.
+
+::: {.column-page}
+{{< geores sim="seismic-waves" >}}
+:::
+
+## What to look for
+
+- Follow the coloured grain in each band: does it move along the direction of the wave, or across it?
+- Which wave reaches the right edge first, which last? Compare with the speeds written on the left.
+- In which bands does the movement weaken with depth?
+- What shape does the grain draw in the Rayleigh band?
+- A seismograph far away records the P wave first, then the S wave: why does the delay between them grow with distance?
+
+## How it works
+
+The grid moves like the rock, with the movement greatly enlarged. The waves travel in the ratio of their speeds in rock; the speeds written on the left are usual ranges. The P and S waves cross the inside of the Earth; the Love and Rayleigh waves travel along the surface, and their movement fades with depth. The S wave is drawn shaking up and down, but it can shake in any direction across its path. Real waves also weaken as they spread away from the earthquake; here they keep their strength.
+
+## Sources
+
+Schematic model, no data.

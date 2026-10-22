@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/season-steps.jpg
+title: "Dessiner le solstice de juin"
+description: "La Terre vue de côté au solstice de juin, construite en sept étapes, de l'écliptique aux rayons du Soleil."
+categories: [Cosmologie]
+---
+
+Le dessin complet s'affiche d'abord. Revenez avec ◀ à l'étape 1, puis reconstruisez-le avec ▶ : le texte sous le dessin dit ce qu'il faut tracer à chaque étape, et pourquoi. *Dessin complet* montre toutes les étapes à la fois.
+
+::: {.column-page}
+{{< geores sim="season-steps" presets="season" >}}
+:::
+
+## À observer
+
+- Étape 2 : de quel côté penche le pôle Nord, et de combien de degrés ?
+- Étape 4 : pourquoi les parallèles sont-ils tracés perpendiculairement à l'axe, et non à l'écliptique ?
+- Étape 6 : les cercles polaires passent par les points où la perpendiculaire coupe le bord du globe. Comparez la perpendiculaire et la limite de la nuit : que remarquez-vous ?
+- Une fois la nuit ombrée : quelle région polaire reste au jour toute la journée, et laquelle reste dans la nuit ?
+- Dessinez ensuite le solstice de décembre sur papier : qu'est-ce qui change, qu'est-ce qui reste pareil ?
+
+## Fonctionnement
+
+La Terre est dessinée de côté, le Soleil à gauche : l'axe est incliné de 23,4° par rapport à la perpendiculaire à l'écliptique, le pôle Nord vers le Soleil. Les rayons du Soleil sont tracés comme des lignes parallèles ; les tailles et les distances ne sont pas à l'échelle.
+
+## Sources
+
+Modèle schématique, sans données.

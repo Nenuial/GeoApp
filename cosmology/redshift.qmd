@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/redshift.jpg
+title: "Doppler effect"
+description: "A moving source sends out waves, longer behind it and shorter in front: a siren changes pitch, a galaxy's spectrum shifts to the red."
+categories: [Cosmology]
+---
+
+Choose *Sound* (a siren) or *Light* (a galaxy), and set the *Speed of the source*: towards the right of the slider, the source moves away from you (the observer on the left); towards the left, it comes towards you. Wavefronts spread from the source, and each observer receives its waves. Below, in sound, the pitch each observer hears; in light, the spectrum of the galaxy at rest and the spectrum we observe. ❚❚ pauses the animation.
+
+::: {.column-page}
+{{< geores sim="redshift" presets="mode" >}}
+:::
+
+## What to look for
+
+- With the source at rest, do the two observers receive the same waves?
+- In *Sound*, with the source moving away from you at 30 % of the wave speed: what frequency do you hear, and what does the other observer hear? The siren emits 440 Hz.
+- How are the wavefronts spaced in front of the source, and behind it?
+- In *Light*, move the source away faster and faster: from what speed does the red hydrogen line leave the visible spectrum?
+- Almost all distant galaxies show a redshift. What does that tell us about their motion?
+
+## How it works
+
+The source emits a wavefront at regular intervals; each one spreads as a circle from the point where it was emitted. Behind the source, the received wavelength is the emitted one times (1 + v), in front of it times (1 − v), where v is the speed of the source as a fraction of the speed of the waves; for light, the redshift z equals v. This simple formula holds only for speeds much smaller than the speed of light. Speeds and sizes are not to scale. The spectrum runs from 380 to 780 nm, with four lines of hydrogen (410, 434, 486 and 656 nm).
+
+## Sources
+
+Schematic model, no data.

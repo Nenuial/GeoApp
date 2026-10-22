@@ -1,0 +1,27 @@
+---
+image: ../../assets/thumbs/russia-abortions.jpg
+title: "Naissances et avortements"
+description: "Naissances et avortements enregistrés en Russie depuis 1957 : pendant un demi-siècle, plus d'avortements que de naissances."
+categories: [Russie]
+---
+
+Survolez le graphique : pour chaque année, les naissances, les avortements et le nombre d'avortements pour 100 naissances. La surface colorée entre les courbes marque les années où les avortements dépassent les naissances. Cochez *Repères* pour signaler le maximum de 1965 et l'année 2007, où les naissances repassent devant les avortements.
+
+::: {.column-page}
+{{< geores sim="russia-abortions" >}}
+:::
+
+## À observer
+
+- En quelle année les avortements sont-ils les plus nombreux ? Combien y en a-t-il alors pour 100 naissances ?
+- Pendant combien d'années les avortements dépassent-ils les naissances ?
+- Que suggèrent plus de 200 avortements pour 100 naissances sur l'accès à la contraception en URSS ?
+- Comment le nombre d'avortements évolue-t-il depuis 1990 ? Combien en compte-t-on pour 100 naissances en 2022 ?
+
+## Fonctionnement
+
+Les deux courbes sont des données réelles : les naissances et les avortements enregistrés chaque année par Goskomstat puis Rosstat, sur le territoire actuel de la Fédération de Russie, avec la Crimée annexée depuis 2014. Les avortements s'arrêtent en 2022, les naissances en 2024. Seuls les avortements enregistrés sont comptés.
+
+## Sources
+
+- Goskomstat, puis Rosstat : naissances et avortements enregistrés, d'après les tableaux de l'article « Demographics of Russia » de Wikipédia en anglais (révision du 14 octobre 2026).

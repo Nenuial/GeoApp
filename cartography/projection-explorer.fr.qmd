@@ -1,0 +1,30 @@
+---
+image: ../assets/thumbs/projection-explorer.jpg
+title: "Explorateur de projections"
+description: "Huit projections du monde avec les cercles de Tissot : lesquelles conservent les formes, lesquelles les surfaces, lesquelles font un compromis."
+categories: [Cartographie]
+---
+
+Cliquez sur une projection pour dessiner le monde avec elle ; le texte sous la carte indique sa propriété. Les cercles rouges ont tous la même taille sur le globe : leur forme et leur taille sur la carte montrent ce que la projection conserve et ce qu'elle déforme. *Cercles* les affiche ou les masque. Le curseur *Méridien central* fait tourner le monde vers l'est ou l'ouest (sauf pour Goode homolosine, dont les lobes sont fixes).
+
+::: {.column-page}
+{{< geores sim="projection-explorer" presets="projection,set" >}}
+:::
+
+## À observer
+
+- Sur Mercator, comparez un cercle à 60° N et un cercle sur l'équateur : sont-ils toujours ronds ? Ont-ils la même taille ?
+- Sur Gall-Peters, Hobo-Dyer et Equal Earth, les cercles gardent leur surface : que devient leur forme vers les pôles ?
+- Sur Robinson et Winkel tripel, comment les cercles changent-ils par rapport à Mercator et à Gall-Peters ?
+- Placez le méridien central à 150° E : quel océan se trouve maintenant au milieu de la carte, et où est l'Europe ?
+- Quelle projection choisiriez-vous pour une carte du monde où il faut comparer des surfaces, par exemple celle des forêts ? Pourquoi ?
+
+## Fonctionnement
+
+Les terres du monde sont projetées avec la formule de chaque projection. Les cercles de Tissot sont des cercles de 5° de rayon tracés sur le globe tous les 30° de longitude et de latitude (de 60° S à 60° N), puis projetés comme les terres. Mercator est conforme ; elle ne peut pas atteindre les pôles et s'arrête à 85° N et S. Gall-Peters et Hobo-Dyer (deux projections cylindriques aux parallèles de référence différents), Goode homolosine et Equal Earth sont équivalentes. Robinson et Winkel tripel sont des compromis. La plate carrée est équidistante le long des méridiens et de l'équateur.
+
+## Sources
+
+- Terres : Natural Earth 1:110m (domaine public).
+- Projection de Robinson : la table de Robinson (1974).
+- Projection Equal Earth : Šavrič, Patterson & Jenny (2018).

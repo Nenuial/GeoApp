@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/central-places.jpg
+title: "Les lieux centraux de Christaller"
+description: "Villages, bourgs et villes sur une plaine uniforme, et les aires de marché hexagonales d'un service courant, d'un service moins courant et d'un service rare."
+categories: [Géographie urbaine]
+---
+
+Choisissez un *Service* : du pain (chaque village), un médecin (les bourgs) ou un hôpital (la ville). Les hexagones sont ses aires de marché, une par lieu qui l'offre, et la note à droite explique leur taille. Un lieu qui offre un service offre aussi tous les services plus courants.
+
+::: {.column-page}
+{{< geores sim="central-places" presets="service" >}}
+:::
+
+## À observer
+
+- Choisissez un médecin : combien de villages entourent chaque bourg ? Entre combien de bourgs chacun de ces villages est-il partagé ?
+- Passez du pain au médecin, puis à l'hôpital : combien de fois l'aire de marché s'agrandit-elle à chaque niveau ?
+- Les bourgs sont-ils plus éloignés les uns des autres que les villages ? Et les villes ?
+- Pourquoi un hôpital a-t-il besoin d'une aire de marché bien plus grande qu'une boulangerie ?
+- Pourquoi les aires de marché sont-elles des hexagones et non des cercles ?
+
+## Fonctionnement
+
+Sur une plaine uniforme, chacun se rend au lieu le plus proche qui offre le service cherché. Les lieux forment une grille triangulaire : tous sont des villages, un sur trois est aussi un bourg, un sur neuf aussi une ville. Chaque niveau dessert la zone plus proche de lui que de tout autre lieu du même niveau : ces zones sont des hexagones, qui couvrent la plaine sans vide ni chevauchement. Selon le principe du marché (k = 3), l'aire de marché de chaque niveau vaut trois fois celle du niveau inférieur : un bourg dessert sa propre population et un tiers de chacun des six villages voisins.
+
+## Sources
+
+Modèle schématique d'après Christaller (1933), principe du marché ; sans données.

@@ -1,0 +1,30 @@
+---
+image: ../assets/thumbs/russia-territory.jpg
+title: "Le territoire de la Russie au fil du temps"
+description: "Seize cartes, de la Rus' de Kiev en 1000 à la Fédération de Russie en 1991 : comment le territoire de l'État russe s'est étendu et réduit."
+categories: [Géopolitique, Histoire]
+---
+
+Cliquez sur une date de la frise du bas, ou passez d'une date à l'autre avec ‹ et › ; *Lecture* montre toutes les dates à la suite. Sur la carte, la Russie à cette date est en rouge, son territoire à la date précédente en teinte claire, et les frontières de 1991 en tirets. À gauche : le nom de l'État, sa superficie et ce qui s'est passé. Les barres de la frise donnent la superficie à chaque date.
+
+::: {.column-page}
+{{< geores sim="russia-territory" presets="year" >}}
+:::
+
+## À observer
+
+- Entre quelles dates la superficie augmente-t-elle le plus ? Quelle région est alors conquise ?
+- Quand la Russie atteint-elle pour la première fois le Pacifique ? Et la mer Noire ?
+- L'Alaska : à quelles dates est-il russe, et que lui arrive-t-il ?
+- Que perd la Russie entre 1914 et 1920 ? Qu'est-ce que l'URSS a repris en 1945 ?
+- Comparez 1945 et 1991 : quels territoires faisaient partie de l'URSS mais sont hors de la Fédération de Russie ?
+
+## Fonctionnement
+
+Chaque carte montre l'État que la source dessine pour la Russie à cette date. Les frontières historiques sont approximatives ; elles sont découpées selon les côtes actuelles pour que toutes les cartes aient le même littoral. La dernière carte reprend les frontières de 1994 et porte la date de 1991. Les superficies sont calculées sur ces cartes et sont donc approximatives elles aussi : pour la Fédération de Russie, la carte donne 16,5 millions de km², contre 17,1 millions dans les chiffres officiels, qui comptent les eaux intérieures. Les légendes suivent un atlas historique de la Russie.
+
+## Sources
+
+- Frontières : A. Ourednik, *historical-basemaps*, github.com/aourednik/historical-basemaps (GPL-3.0).
+- Côtes : Natural Earth 1:50 M (domaine public).
+- Légendes d'après F.-X. Nérard et M.-P. Rey, *Atlas historique de la Russie* (2024).

@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/conflicts.jpg
+title: "Les conflits armés depuis 1946"
+description: "Où se sont déroulés les conflits armés et les guerres du monde chaque année depuis 1946, combien il y en a eu et combien de personnes sont mortes au combat."
+categories: [Géopolitique]
+---
+
+Appuyez sur *Lecture* pour faire défiler les années, ou déplacez le curseur *Année* ; un clic sur le graphique du bas choisit aussi une année. Sur la carte, un pays en orange a connu un conflit armé cette année-là, un pays en rouge une guerre. Passez sur un pays pour voir la liste de ses conflits, avec leur intensité et le nombre de morts au combat. En bas, les barres comptent les conflits de chaque année par type, et la courbe donne les morts au combat.
+
+::: {.column-page}
+{{< geores sim="conflicts" presets="year" >}}
+:::
+
+## À observer
+
+- Lancez la lecture depuis 1946 : quand les conflits coloniaux prennent-ils fin ?
+- Quel type de conflit est le plus fréquent la plupart des années ? Quel type augmente le plus après 2010 ?
+- Repérez les pics de la courbe des morts au combat depuis 1989. Quels pays sont en rouge ces années-là ?
+- Comparez une année de la guerre froide, par exemple 1975, avec la dernière année : dans quelles régions du monde les conflits se situent-ils ?
+
+## Fonctionnement
+
+L'Uppsala Conflict Data Program (UCDP) compte un conflit pour une année lorsque les combats entre un gouvernement et une autre partie (un autre gouvernement ou un groupe armé) font au moins 25 morts au combat dans l'année ; à partir de 1 000 morts, c'est une guerre. Les quatre types sont les conflits coloniaux, les conflits entre États, les conflits à l'intérieur d'un État, et ceux à l'intérieur d'un État où des troupes étrangères combattent aux côtés d'un camp. La carte colore les pays où l'UCDP situe les combats, dans les frontières actuelles ; pour un conflit entre États, elle colore les gouvernements en guerre, même là où aucun combat n'a eu lieu sur leur sol. Les morts au combat (meilleures estimations) ne sont disponibles qu'à partir de 1989.
+
+## Sources
+
+- UCDP/PRIO Armed Conflict Dataset 26.1 et UCDP Battle-Related Deaths Dataset 26.1, Uppsala Conflict Data Program, CC BY 4.0 (Davies et al. 2026 ; Gleditsch et al. 2002).
+- Pays : Natural Earth 1:50 M (domaine public).

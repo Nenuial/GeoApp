@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/foehn.jpg
+title: "Föhn over the Alps"
+description: "Moist air crosses the Alps from Ticino to Uri: it rains on the southern side and arrives in the north warmer and dry."
+categories: [Meteorology]
+---
+
+Set the *Cloud base*, the height at which the rising air becomes saturated, then click *▶ Blow*. The bubble carries the temperature of the air; its colour shows the rate it follows: coral while it rises without cloud, blue in the cloud, red on the way down.
+
+::: {.column-page}
+{{< geores sim="foehn" >}}
+:::
+
+## What to look for
+
+- The air goes up and comes down by about the same height: why does it arrive warmer than it left?
+- Where does it rain, and why only on that side of the Alps?
+- Lower the *Cloud base* and blow again: does the air arrive warmer or cooler? Why?
+- Put the *Cloud base* above the crest, at 3000 m or more: what is left of the föhn?
+- When the föhn reaches Uri, is it a moist or a dry wind? Where has its water gone?
+
+## How it works
+
+The air leaves the Ticino side at 20 °C and follows the relief about 150 m above it, over a crest of about 3000 m. It cools by 10 °C per km while it is not saturated, by a fixed 6 °C per km in the cloud, where condensation releases heat, and warms by 10 °C per km on the way down, dry after raining on the southern side. The relief is schematic, and the cloud base is the only setting.
+
+## Sources
+
+Schematic model, no data.

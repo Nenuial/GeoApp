@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/front-passage.jpg
+title: "Fronts chaud et froid"
+description: "Une dépression passe sur une ville : les nuages de ses fronts chaud et froid en coupe, et la température, la pression et la pluie en ville."
+categories: [Météorologie]
+---
+
+Les fronts se déplacent vers l'est : la ville glisse donc sous eux depuis la droite, et le météogramme en dessous enregistre heure après heure sa température, sa pression et ses pluies. *❚❚ Pause* arrête l'horloge, *Recommencer* repart du début, et le curseur *Heure* permet d'aller à n'importe quel moment des 52 heures. Au-dessus du météogramme, une ligne décrit le ciel de la ville, avec la température, la pression et sa tendance, et la direction du vent.
+
+::: {.column-page}
+{{< geores sim="front-passage" >}}
+:::
+
+## À observer
+
+- Quels nuages annoncent le front chaud, et combien d'heures avant la pluie apparaissent-ils ?
+- Comment la température change-t-elle au passage du front chaud ? Et au passage du front froid ?
+- Quand la pression baisse-t-elle, et quand remonte-t-elle ?
+- Comparez les pluies des deux fronts : lesquelles durent le plus longtemps, lesquelles sont les plus fortes ?
+- D'où souffle le vent avant le front chaud, dans le secteur chaud et derrière le front froid ?
+
+## Fonctionnement
+
+La coupe est une tranche ouest–est d'une dépression des latitudes moyennes, avec des hauteurs exagérées environ 50 fois : le front chaud monte en pente douce (1 pour 150), le front froid est bien plus raide. Tout le système avance vers l'est à environ 40 km/h. La température, la pression, la pluie et le vent sont fixés par des règles pour chaque partie de la coupe, avec des valeurs typiques d'une dépression d'hiver ou de printemps sur l'Europe de l'Ouest : ce n'est pas une prévision.
+
+## Sources
+
+Modèle schématique, sans données.

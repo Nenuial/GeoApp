@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/bid-rent.jpg
+title: "Bid rent in the city"
+description: "Shops, housing and farming bid for land at each distance from the centre: the highest bid wins, and the city takes the shape of rings."
+categories: [Urban geography]
+---
+
+On the left, each line is the rent a use can pay at each distance from the centre; the bold part is where it outbids the others, and the band under the axis shows the winner. On the right, the city seen from above. Move the *Transport cost* slider, or tick *a tram line* or *a second centre*, and watch the map change.
+
+::: {.column-page}
+{{< geores sim="bid-rent" >}}
+:::
+
+## What to look for
+
+- At what distance does housing start to outbid shops and offices? Where does farming take over?
+- Why can shops and offices pay the highest rent at the centre, but nothing at all 10 km away?
+- Make transport cheaper (slider to the left): what happens to the rings? Why does the city spread?
+- Tick *a tram line*: how does the housing area change along it? What shape do the rings take?
+- Tick *a second centre*: where do shops and offices win now?
+
+## How it works
+
+Each use can pay a rent that falls with distance, because reaching the centre costs time and money: steeply for shops and offices, which need many customers, more gently for housing, hardly at all for farming. At each distance the highest bid wins the land, so the city forms rings, as in Burgess's model. *Transport cost* makes all three lines steeper or flatter. Along a tram line the trip to the centre costs less for housing, which reaches further out: the rings turn into sectors, as in Hoyt's model. A second business centre gives a city with several nuclei, as in Harris and Ullman's model. The rents are in imaginary units. The graph shows a single direction from the centre, away from the tram and the second centre: these two options change only the map.
+
+## Sources
+
+Schematic model after Alonso (1964) and von Thünen, with the city models of Burgess, Hoyt, and Harris and Ullman; no data.

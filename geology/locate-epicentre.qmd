@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/locate-epicentre.jpg
+title: "Locating an earthquake"
+description: "Three Swiss seismographs record the same earthquake: use the delay between the P and S waves to find where it happened."
+categories: [Geology]
+---
+
+On each seismogram, the first jolt is the P wave and the larger shaking that follows is the S wave. Tick *Mark P and S* to show both arrivals and the delay between them, then click on the map to place your guess. *Draw the circles* draws around each station a circle as large as its distance to the earthquake, and shows where it really was. *Next earthquake* goes through Visp 1855, Basel 1356 and Unterwalden 1601, then random earthquakes.
+
+::: {.column-page}
+{{< geores sim="locate-epicentre" >}}
+:::
+
+## What to look for
+
+- At which station is the delay between P and S shortest? What does that tell you even before drawing anything?
+- Use the rule distance ≈ 8 km × (S − P) to find the distance from each station, then check with the circles.
+- Why are three stations needed? What would you know with only one, or with two?
+- How far from the real epicentre was your guess? Try again with the next earthquake.
+
+## How it works
+
+In the sim, the P wave travels at 6 km/s and the S wave at 3.5 km/s: each second of delay between them puts the earthquake about 8 km farther from the station (8.4 km with these speeds). The seismograms are computed, not real recordings, and they weaken with distance. The earthquake is placed at the surface and the circles are drawn on a flat map. The three historical earthquakes are placed at approximate epicentres; after them, the earthquakes are drawn at random inside Switzerland, each recorded by three of seven stations placed in Swiss towns.
+
+## Sources
+
+- Outline of Switzerland: Natural Earth 1:50m, simplified (public domain).
+- Seismograms and travel times: schematic model.

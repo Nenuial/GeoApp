@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/rock-cycle.jpg
+title: "How rocks are recycled"
+description: "Igneous, sedimentary and metamorphic rocks in one block of landscape, and the journey of a grain through the whole cycle."
+categories: [Geology]
+---
+
+*Next step* moves the grain on by one step; *Follow a grain* goes through the eight steps by itself, and *Pause* stops it. On the right, the name of each step and what happens, and the three families of rocks, each with a Swiss example: the family the grain is part of at that step lights up.
+
+::: {.column-page}
+{{< geores sim="rock-cycle" >}}
+:::
+
+## What to look for
+
+- Follow the grain through the eight steps: at which steps is it part of a rock, and of which family?
+- Which steps happen at the surface, which deep underground?
+- Gneiss and granite both form deep underground: what is the difference between the way they form?
+- Where in Switzerland could you see an example of each family?
+- The sim follows one path round the cycle. Could a sandstone be eroded again without ever becoming gneiss?
+
+## How it works
+
+A block of landscape cut open: mountains, a river running to the sea, and in front a section with the granite of a pluton under the mountains, layers of sediment that dip under the range, fold and turn into gneiss, and deeper, rock that melts into magma. The grain follows one path: granite, sand, sandstone, gneiss, magma and granite again. In nature, a rock can take a shortcut at almost any step (a sandstone can be eroded again, a granite can turn into gneiss), and the whole cycle takes hundreds of millions of years.
+
+## Sources
+
+Schematic model, no data.

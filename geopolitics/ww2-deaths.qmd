@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/ww2-deaths.jpg
+title: "Deaths in the Second World War"
+description: "The military and civilian dead of the Second World War in eleven countries, as a number or as a share of their population of 1939."
+categories: [Geopolitics, History]
+---
+
+Switch between *Number of dead* and *Share of the population*: the bars change and the countries sort themselves again. Each bar ends at the middle of the estimates; the thin line across it shows their range, from the lowest to the highest, and the figures beside it give the same range.
+
+::: {.column-page}
+{{< geores sim="ww2-deaths" presets="mode,highlight" >}}
+:::
+
+## What to look for
+
+- Which country lost the most people? Which lost the largest share of its population? Why is it not the same country?
+- How wide is the range of the estimates for the Soviet Union, in millions? Why might the estimates differ so much?
+- Compare the shares of France, the United Kingdom and the United States with those of Poland, Yugoslavia and the Soviet Union: what do you notice?
+- How many Swiss dead are counted? Why so few?
+
+## How it works
+
+Each country has a low and a high estimate of its dead, soldiers and civilians together; the bar stands at the middle of the two. The share divides these figures by the population of the country on 1 January 1939. The Soviet Union is counted within its borders of 1946–1991, Poland within its borders of 1939, and China from 1937 to 1945. Only eleven countries are shown.
+
+## Sources
+
+- Wikipedia, "World War II casualties", table "Total deaths by country" (revision 1379703619, October 2026), and the sources it gives for each country.

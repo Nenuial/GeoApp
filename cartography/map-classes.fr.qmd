@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/map-classes.jpg
+title: "Discrétisation"
+description: "Le oui à la loi sur le CO2 de 2021 dans 2 105 communes, cartographié avec quatre découpages en classes : mêmes données, messages différents."
+categories: [Cartographie]
+---
+
+Choisissez un découpage avec les boutons *Intervalles égaux*, *Quantiles*, *Autour de 50 %* et *Oui ou non*. Pour chacun, la légende donne le nombre de communes par classe, l'histogramme montre la part de oui des communes avec les limites des classes, et un texte dit ce que la carte suggère. Survolez ou touchez une commune pour voir son nom et sa part de oui ; survolez une classe de la légende pour voir ses communes.
+
+::: {.column-page}
+{{< geores sim="map-classes" presets="method" >}}
+:::
+
+## À observer
+
+- *Intervalles égaux* : combien des cinq classes contiennent vraiment des communes ? Pourquoi cette carte ne peut-elle pas montrer si une commune a dit oui ou non ?
+- *Quantiles* : un cinquième des communes est en bleu foncé, mais combien de communes ont dit oui ? Où commence la classe la plus foncée ?
+- *Autour de 50 %* : quelles communes sont en bleu, et où se trouvent-elles en Suisse ?
+- *Oui ou non* : combien de communes avaient entre 45 et 55 % de oui ? Que cache cette carte ?
+- Quel découpage choisiriez-vous pour montrer le résultat de la votation ? Et pour montrer les différences entre régions ? Justifiez.
+
+## Fonctionnement
+
+Pour chaque commune, on calcule la part de oui parmi les oui et les non. Intervalles égaux : cinq classes de 20 points. Quantiles : cinq classes du même nombre de communes. Autour de 50 % : limites à 35, 45, 50, 55 et 65 %. Oui ou non : une seule limite, à 50 %. Une commune à exactement 50 % est comptée avec le non. Les communes et leurs limites sont celles du 1^er^ janvier 2026, simplifiées ; les résultats de 2021 sont donnés pour les communes actuelles. Les couleurs sont lisibles par les daltoniens (ColorBrewer).
+
+## Sources
+
+- Résultats : Office fédéral de la statistique, via opendata.swiss (package R swissdd).
+- Communes : « Geometries: communes (politics) as of 01.01.2026 », Office fédéral de la statistique, opendata.swiss (utilisation libre, mention de la source obligatoire).

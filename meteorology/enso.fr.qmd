@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/enso.jpg
+title: "El Niño et La Niña"
+description: "Une coupe du Pacifique le long de l'équateur : vents, pluie, température de la mer et thermocline en année normale, El Niño et La Niña."
+categories: [Météorologie]
+---
+
+Choisissez *Normal*, *El Niño* ou *La Niña* : la coupe passe progressivement d'un état à l'autre. L'Indonésie et l'Australie sont à gauche, le Pérou et l'Équateur à droite. Les nombres à la surface sont les températures de la mer aux deux extrémités ; la ligne pointillée est la thermocline, la limite entre l'eau chaude de surface et l'eau froide profonde.
+
+::: {.column-page}
+{{< geores sim="enso" >}}
+:::
+
+## À observer
+
+- En année normale, dans quel sens soufflent les alizés, et où se trouve l'eau la plus chaude ? Où pleut-il ?
+- Comparez les températures de la mer aux deux extrémités dans les trois états : quand l'écart est-il le plus faible ?
+- Que deviennent la thermocline et la remontée d'eau froide au large du Pérou pendant El Niño ? Pourquoi y a-t-il moins de poissons ?
+- Pendant El Niño, où l'air monte-t-il désormais ? Qu'est-ce que cela signifie pour l'Indonésie et pour le Pérou ?
+- La Niña est-elle le contraire d'El Niño, ou une année normale en plus marqué ?
+
+## Fonctionnement
+
+L'air tourne en boucle, la circulation de Walker : il monte au-dessus de l'eau la plus chaude, traverse le Pacifique en altitude, redescend là où il s'enfonce et revient le long de la surface. L'état choisi fixe l'endroit où l'air monte et la force de la boucle ; pendant El Niño, l'ascendance se déplace vers le centre du Pacifique et une seconde boucle redescend sur l'Indonésie. Les températures sont des valeurs typiques, les profondeurs et les hauteurs ne sont pas à l'échelle, et le passage d'un état à l'autre prend quelques secondes au lieu de plusieurs mois.
+
+## Sources
+
+Modèle schématique, sans données.

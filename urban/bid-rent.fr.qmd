@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/bid-rent.jpg
+title: "La rente foncière en ville"
+description: "Commerces, logement et agriculture enchérissent pour le sol à chaque distance du centre : l'offre la plus haute l'emporte, et la ville se dessine en anneaux."
+categories: [Géographie urbaine]
+---
+
+À gauche, chaque ligne indique le loyer qu'un usage peut payer selon la distance au centre ; la partie en gras montre où il l'emporte sur les autres, et la bande sous l'axe indique le gagnant. À droite, la ville vue d'en haut. Déplacez le curseur *Coût du transport*, ou cochez *une ligne de tram* ou *un second centre*, et observez la carte changer.
+
+::: {.column-page}
+{{< geores sim="bid-rent" >}}
+:::
+
+## À observer
+
+- À quelle distance le logement l'emporte-t-il sur les commerces et bureaux ? Où l'agriculture prend-elle le relais ?
+- Pourquoi les commerces et bureaux peuvent-ils payer le loyer le plus élevé au centre, mais plus rien du tout à 10 km ?
+- Rendez le transport moins cher (curseur vers la gauche) : que deviennent les anneaux ? Pourquoi la ville s'étale-t-elle ?
+- Cochez *une ligne de tram* : comment la zone de logement change-t-elle le long de la ligne ? Quelle forme prennent les anneaux ?
+- Cochez *un second centre* : où les commerces et bureaux l'emportent-ils maintenant ?
+
+## Fonctionnement
+
+Le loyer que chaque usage peut payer diminue avec la distance, car rejoindre le centre coûte du temps et de l'argent : fortement pour les commerces et bureaux, qui ont besoin de beaucoup de clients, plus doucement pour le logement, à peine pour l'agriculture. À chaque distance, l'offre la plus haute remporte le sol : la ville forme des anneaux, comme dans le modèle de Burgess. Le *Coût du transport* rend les trois lignes plus raides ou plus plates. Le long d'une ligne de tram, le trajet vers le centre coûte moins cher pour le logement, qui s'étend plus loin : les anneaux deviennent des secteurs, comme dans le modèle de Hoyt. Un second centre d'affaires donne une ville à plusieurs noyaux, comme dans le modèle de Harris et Ullman. Les loyers sont en unités fictives. Le graphique montre une seule direction depuis le centre, à l'écart du tram et du second centre : ces deux options ne modifient que la carte.
+
+## Sources
+
+Modèle schématique d'après Alonso (1964) et von Thünen, avec les modèles de ville de Burgess, de Hoyt et de Harris et Ullman ; sans données.

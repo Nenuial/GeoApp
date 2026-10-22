@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/vote-map.jpg
+title: "Area or people"
+description: "The 2021 CO2 law by commune, on a map by area and on a cartogram by voters: why the map looks almost all no in a close vote."
+categories: [Cartography]
+---
+
+Switch between *By area* and *By people*: the communes turn from their real shapes into circles sized by their valid votes, and back. On the right, the national result, the number of communes that said yes or no, and the share of the map (or of the circles) that is no. Hover or tap a commune for its name, its result and its votes.
+
+::: {.column-page}
+{{< geores sim="vote-map" presets="view" >}}
+:::
+
+## What to look for
+
+- By area, what share of the map is no? Compare it with the national result.
+- Switch to *By people*: which communes become the largest circles? How did they vote?
+- Find a large mountain commune on the map by area: how big is its circle?
+- Why can a map by area mislead when it shows the result of a vote or an election?
+
+## How it works
+
+Each commune is coloured by its majority: yes, no or tied. In the cartogram (a Dorling cartogram), each commune becomes a circle whose area is proportional to its valid votes, placed at the centre of the commune and then pushed aside so that no circles overlap. The national result includes the Swiss abroad, who belong to no commune. The communes and their boundaries are those of 1 January 2026, simplified; the results of 2021 are given for today's communes.
+
+## Sources
+
+- Results: Federal Statistical Office, through opendata.swiss (R package swissdd).
+- Communes, cantons and lakes: "Geometries: communes (politics) as of 01.01.2026", Federal Statistical Office, opendata.swiss (open use, source required).

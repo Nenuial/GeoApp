@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/season-steps.jpg
+title: "Drawing the June solstice"
+description: "The side view of Earth at the June solstice, built in seven steps from the ecliptic to the Sun's rays."
+categories: [Cosmology]
+---
+
+The whole drawing is shown first. Go back with ◀ to step 1, then build it again with ▶: the text under the drawing says what to draw at each step, and why. *Whole drawing* shows all the steps at once.
+
+::: {.column-page}
+{{< geores sim="season-steps" presets="season" >}}
+:::
+
+## What to look for
+
+- Step 2: in which direction does the North Pole lean, and by how many degrees?
+- Step 4: why are the parallels drawn at right angles to the axis, and not to the ecliptic?
+- Step 6: the polar circles go through the points where the perpendicular cuts the edge of the globe. Compare the perpendicular with the limit of the night: what do you notice?
+- With the night shaded: which polar region stays in daylight all day long, and which stays in the dark?
+- Then draw the December solstice on paper: what changes, and what stays the same?
+
+## How it works
+
+Earth is drawn from the side, with the Sun on the left: the axis is tilted by 23.4° from the perpendicular to the ecliptic, the North Pole towards the Sun. The Sun's rays are drawn as parallel lines; sizes and distances are not to scale.
+
+## Sources
+
+Schematic model, no data.

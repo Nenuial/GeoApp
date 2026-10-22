@@ -1,0 +1,29 @@
+---
+image: ../../assets/thumbs/russia-lifeexp.jpg
+title: "Espérance de vie en Russie"
+description: "L'espérance de vie à la naissance des hommes et des femmes en Russie depuis 1959, comparée à celle de la Suisse."
+categories: [Russie]
+---
+
+Cochez *Suisse* pour ajouter les courbes suisses (en tirets) et *Repères* pour afficher la campagne anti-alcool, le minimum de 1994, le COVID-19 et l'écart entre femmes et hommes en fin de période. Survolez le graphique : pour chaque année, l'espérance de vie des hommes et des femmes russes, leur écart et, si la case est cochée, celle des Suisses et des Suissesses.
+
+::: {.column-page}
+{{< geores sim="russia-lifeexp" presets="compare" >}}
+:::
+
+## À observer
+
+- Comparez l'espérance de vie des hommes russes en 1965 et en 2005 : qu'ont-ils gagné en quarante ans ?
+- Cochez *Repères* : que se passe-t-il pendant la campagne anti-alcool de 1985–1987, puis au début des années 1990 ?
+- Quel est l'écart entre femmes et hommes en Russie ? Et en Suisse ?
+- Quel effet le COVID-19 a-t-il en 2020 et 2021 ?
+- Comparez les femmes russes et les hommes suisses en 1960, puis en 2023 : qu'est-ce qui a changé ?
+
+## Fonctionnement
+
+L'espérance de vie à la naissance est l'âge moyen au décès d'une génération qui connaîtrait toute sa vie la mortalité de l'année. Pour la Russie, ce sont les chiffres de Goskomstat puis Rosstat, de 1959 à 2023 (depuis 2014 avec la Crimée annexée) ; pour la Suisse, les estimations des Nations Unies. Les deux pays viennent donc de deux sources différentes.
+
+## Sources
+
+- Russie : Goskomstat, puis Rosstat, d'après les tableaux de l'article « Demographics of Russia » de Wikipédia en anglais (révision du 14 octobre 2026).
+- Suisse : Nations Unies, World Population Prospects 2024 (CC BY 3.0 IGO).

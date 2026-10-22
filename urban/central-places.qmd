@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/central-places.jpg
+title: "Christaller's central places"
+description: "Villages, towns and cities on an even plain, and the hexagonal market areas of a common, a less common and a rare service."
+categories: [Urban geography]
+---
+
+Choose a *Service*: bread (every village), a doctor (towns) or a hospital (the city). The hexagons are its market areas, one for each place that offers it, and the note on the right explains their size. A place that offers a service also offers all the more common ones.
+
+::: {.column-page}
+{{< geores sim="central-places" presets="service" >}}
+:::
+
+## What to look for
+
+- Choose a doctor: how many villages surround each town? Between how many towns is each of these villages shared?
+- Switch from bread to a doctor, then to a hospital: how many times larger does the market area get at each level?
+- Are the towns further apart than the villages? And the cities?
+- Why does a hospital need a much larger market area than a bakery?
+- Why are the market areas hexagons, and not circles?
+
+## How it works
+
+On an even plain, people get each service at the nearest place that offers it. The places sit on a triangular grid: every place is a village, every third place is also a town, every ninth also a city. Each level serves the area closer to it than to any other place of the same level: these areas are hexagons, which cover the plain without gaps or overlaps. Under the market principle (k = 3), the market area of each level is three times that of the level below: a town serves itself and a third of each of its six neighbouring villages.
+
+## Sources
+
+Schematic model after Christaller (1933), the market principle; no data.

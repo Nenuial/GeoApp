@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/hurricane.jpg
+title: "Hurricanes and sea temperature"
+description: "A tropical cyclone seen from above: its wind grows over a warm sea and weakens over land, and its Saffir-Simpson category follows."
+categories: [Meteorology]
+---
+
+Set the temperature of the *Sea* (24 to 31 °C) and follow the maximum wind and the category on the right; a day counter runs at the top (one second is three hours). *Landfall* pushes the storm onto the land, *Restart* brings it back over the sea, and *North* and *South* choose the hemisphere.
+
+::: {.column-page}
+{{< geores sim="hurricane" >}}
+:::
+
+## What to look for
+
+- Below which sea temperature does the storm die?
+- Set the sea to 27, 29 and 31 °C in turn: which category does the storm reach each time?
+- How many days does the storm take to reach its strongest wind? How long does it take to weaken after *Landfall*?
+- Why does the storm weaken over land, even when the land is hot?
+- Which way does the storm turn in the northern hemisphere? In the southern hemisphere?
+
+## How it works
+
+The maximum wind moves towards a target set by the sea temperature alone: only a weak depression below 26.5 °C, then a stronger storm the warmer the sea, up to 300 km/h. Over land the target is zero, and the wind dies down within about a day. The category follows the Saffir-Simpson thresholds in km/h. Real cyclones also depend on other conditions, such as the winds higher up and the humidity of the air, which the model leaves out.
+
+## Sources
+
+Schematic model, no data.

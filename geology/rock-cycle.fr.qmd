@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/rock-cycle.jpg
+title: "Comment les roches se recyclent"
+description: "Roches magmatiques, sédimentaires et métamorphiques dans un même bloc de paysage, et le voyage d'un grain à travers tout le cycle."
+categories: [Géologie]
+---
+
+*Étape suivante* fait avancer le grain d'une étape ; *Suivre un grain* parcourt les huit étapes à la suite, et *Pause* l'arrête. À droite s'affichent le nom de chaque étape et ce qui s'y passe, ainsi que les trois familles de roches, chacune avec un exemple suisse : la famille dont fait partie le grain à cette étape s'allume.
+
+::: {.column-page}
+{{< geores sim="rock-cycle" >}}
+:::
+
+## À observer
+
+- Suivez le grain à travers les huit étapes : à quelles étapes fait-il partie d'une roche, et de quelle famille ?
+- Quelles étapes se déroulent en surface, lesquelles en profondeur ?
+- Le gneiss et le granite se forment tous deux en profondeur : quelle différence y a-t-il dans leur formation ?
+- Où pourrait-on voir en Suisse un exemple de chaque famille ?
+- La simulation suit un seul chemin dans le cycle. Un grès pourrait-il être de nouveau érodé sans jamais devenir du gneiss ?
+
+## Fonctionnement
+
+Un bloc de paysage ouvert : des montagnes, une rivière qui descend vers la mer et, sur la face avant, une coupe avec le granite d'un pluton sous les montagnes, des couches de sédiments qui plongent sous la chaîne, se plissent et deviennent du gneiss, et plus bas une roche qui fond en magma. Le grain suit un seul chemin : granite, sable, grès, gneiss, magma, puis de nouveau granite. Dans la nature, une roche peut prendre un raccourci à presque chaque étape (un grès peut être de nouveau érodé, un granite devenir du gneiss), et un cycle complet dure des centaines de millions d'années.
+
+## Sources
+
+Modèle schématique, sans données.

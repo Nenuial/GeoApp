@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/chokepoints.jpg
+title: "Les détroits du commerce maritime"
+description: "Les navires qui passent chaque jour par 28 détroits et canaux du commerce mondial, mois par mois depuis 2019, et les événements qui ont changé ce trafic."
+categories: [Géopolitique]
+---
+
+Appuyez sur *Lecture* pour faire défiler les mois, ou déplacez le curseur *Mois*. Sur la carte, la taille d'un cercle donne le nombre de navires par jour ce mois-là, sa couleur l'écart avec 2023 ; un anneau en tirets rappelle la taille de 2023 quand les deux diffèrent. Cliquez sur un cercle, ou choisissez-le dans la liste *Détroit*, pour afficher son histoire en bas : navires par jour depuis 2019, part des pétroliers, marchandises principales et événements notés sur le graphique. Un clic sur le graphique amène au mois correspondant.
+
+::: {.column-page}
+{{< geores sim="chokepoints" presets="chokepoint,month" >}}
+:::
+
+## À observer
+
+- Repérez sur la carte les deux passages les plus fréquentés : quelles mers et quels océans relient-ils ?
+- Choisissez le canal de Suez, puis le cap de Bonne-Espérance : comment leur trafic évolue-t-il après les attaques des Houthis de fin 2023 ? Quel lien y a-t-il entre les deux courbes ?
+- Choisissez le canal de Panama : quand son trafic a-t-il baissé, et pour quelle raison selon le graphique ?
+- Choisissez le détroit d'Ormuz : quelle part de ses navires sont des pétroliers ? Comment son trafic évolue-t-il en 2025 et 2026, et quels événements le graphique signale-t-il ?
+- Faites défiler les mois en observant les couleurs : quels passages sont en rouge (beaucoup moins de navires qu'en 2023) ces derniers mois ?
+
+## Fonctionnement
+
+IMF PortWatch compte les navires qui franchissent chaque passage. Les cercles donnent le nombre moyen de navires par jour pour chaque mois depuis janvier 2019 ; pour six passages (Suez, Panama, Bab el-Mandeb, Malacca, Ormuz, cap de Bonne-Espérance), le graphique ajoute les comptages quotidiens depuis 2023, en moyenne sur 7 jours. La couleur compare un mois à la moyenne de 2023 : moins de 50 % beaucoup moins de navires, de 50 à 85 % moins, de 85 à 115 % comme en 2023, plus de 115 % davantage. La part des pétroliers et les marchandises principales sont une seule valeur par passage, pas une valeur par mois. Les routes maritimes montrent les grands axes ; elles ne changent pas avec le mois. Les événements du graphique ont été choisis pour ce cours. Données téléchargées en octobre 2026.
+
+## Sources
+
+- FMI, IMF PortWatch, portwatch.imf.org (conditions d'utilisation du FMI ; sources : UN Global Platform ; IMF PortWatch).
+- Routes maritimes : Benden (2022), CC BY 4.0.

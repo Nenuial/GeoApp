@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/map-scales.jpg
+title: "Échelles des cartes"
+description: "Neuchâtel sur quatre cartes nationales de swisstopo, du 1 : 10 000 au 1 : 1 000 000 : ce qu'une carte omet quand son échelle diminue."
+categories: [Cartographie]
+---
+
+Dézoomez avec *− Dézoomer*, le curseur ou un clic sur l'une des quatre échelles au-dessus du texte : la carte rétrécit autour du même centre et se fond dans la suivante. *+ Zoomer* revient en arrière. Chaque vue montre une échelle graphique et, en rouge, le cadre de la vue précédente ; le texte donne la largeur et la surface de la vue et décrit ce que la carte montre ou omet.
+
+::: {.column-page}
+{{< geores sim="map-scales" presets="level" >}}
+:::
+
+## À observer
+
+- Quelle est la largeur de la vue au 1 : 10 000, puis au 1 : 1 000 000 ? Combien de fois la seconde est-elle plus large, et sa surface plus grande ?
+- Suivez la vieille ville de Neuchâtel : à quelle échelle les bâtiments ne sont-ils plus dessinés un à un ?
+- Au 1 : 1 000 000, estimez avec l'échelle graphique la largeur du trait d'une autoroute. Est-elle vraiment aussi large ?
+- Laquelle des quatre cartes prendriez-vous pour une promenade en ville, une randonnée, un tour du canton à vélo, une traversée de la Suisse en voiture ?
+- Pourquoi la simulation conseille-t-elle de se fier à l'échelle graphique plutôt qu'à l'échelle numérique sur un écran ?
+
+## Fonctionnement
+
+Les quatre cartes sont des extraits de la carte nationale de swisstopo telle qu'elle est diffusée sur le web, à quatre niveaux de zoom autour du même centre ; chacune correspond à la carte nationale au 1 : 10 000, 1 : 50 000, 1 : 200 000 et 1 : 1 000 000. Chaque vue est quatre fois plus large que la précédente : environ 0,8 km, 3,3 km, 13 km et 52 km. Entre deux niveaux, la carte la plus détaillée est agrandie et se fond dans la suivante. Sur un écran, l'échelle numérique dépend de la taille de l'écran ; l'échelle graphique, elle, reste juste.
+
+## Sources
+
+- Cartes : © swisstopo (utilisation libre avec mention de la source).

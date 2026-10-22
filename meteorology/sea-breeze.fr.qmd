@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/sea-breeze.jpg
+title: "Brises de mer et de terre"
+description: "Le vent sur une côte, le jour et la nuit : la terre se réchauffe et se refroidit plus vite que la mer, et l'air tourne en boucle."
+categories: [Météorologie]
+---
+
+Passez de *☀️ Jour* à *🌙 Nuit* : la circulation ralentit, s'arrête puis s'inverse. Les traînées montrent l'air, les grandes flèches sa boucle, et les lettres les hautes (A) et basses (D) pressions au sol et en altitude ; les températures de la mer et de la terre sont indiquées en bas.
+
+::: {.column-page}
+{{< geores sim="sea-breeze" >}}
+:::
+
+## À observer
+
+- Le jour, qui est le plus chaud, la terre ou la mer ? Où se trouve la basse pression au sol ?
+- En altitude, la haute et la basse pression sont-elles aux mêmes endroits qu'au sol ?
+- Le jour, où le nuage se forme-t-il, et pourquoi à cet endroit ?
+- Comparez l'écart de température entre la terre et la mer le jour et la nuit : pourquoi la brise de terre est-elle plus faible ?
+- Qu'est-ce qui va le plus vite : la brise au sol ou le courant de retour en altitude ? Lequel est le plus épais ?
+
+## Fonctionnement
+
+L'air tourne en une seule boucle fermée. Le jour : une brise de mer peu épaisse et forte au sol, qui monte dans une bande étroite un peu à l'intérieur des terres (le front de brise), et un courant de retour plus épais et plus faible en altitude. La nuit, la boucle tourne dans l'autre sens, à 60 % de sa force de jour. Les températures sont des valeurs typiques, pas des mesures.
+
+## Sources
+
+Modèle schématique, sans données.

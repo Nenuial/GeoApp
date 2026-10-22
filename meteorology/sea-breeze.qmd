@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/sea-breeze.jpg
+title: "Sea and land breezes"
+description: "The wind at a coast by day and by night: the land warms and cools faster than the sea, and the air turns in a loop."
+categories: [Meteorology]
+---
+
+Switch between *☀️ Day* and *🌙 Night*: the circulation slows down, stops and turns the other way. The trails show the air, the large arrows its loop, and the letters the high (H) and low (L) pressure at the ground and aloft; the temperatures of the sea and the land are written below.
+
+::: {.column-page}
+{{< geores sim="sea-breeze" >}}
+:::
+
+## What to look for
+
+- By day, which is warmer, the land or the sea? Where is the low pressure at the ground?
+- Aloft, are the high and the low in the same places as at the ground?
+- By day, where does the cloud form, and why there?
+- Compare the difference between land and sea temperatures by day and by night: why is the land breeze weaker?
+- Which is faster: the breeze at the ground or the return flow aloft? Which is deeper?
+
+## How it works
+
+The air turns in a single closed loop. By day: a shallow, strong sea breeze at the ground, rising in a narrow band a little inland (the sea-breeze front), and a deeper, weaker return flow aloft. At night the loop turns the other way at 60 % of its daytime strength. The temperatures are typical values, not measurements.
+
+## Sources
+
+Schematic model, no data.

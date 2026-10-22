@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/dtm-steps.jpg
+title: "La transition démographique pas à pas"
+description: "Natalité, mortalité et population au fil des cinq phases du modèle de la transition démographique, avec une pyramide des âges par phase."
+categories: [Démographie]
+---
+
+L'outil s'ouvre sur le modèle complet. Revenez avec ◀ jusqu'à la première étape (les courbes seules), puis avancez avec ▶ : chaque phase apparaît avec sa colonne du tableau et sa pyramide, qui se forme à partir de celle de la phase précédente. *Modèle complet* réaffiche le tout. Sous le graphique, une phrase résume la phase affichée.
+
+::: {.column-page}
+{{< geores sim="dtm-steps" >}}
+:::
+
+## À observer
+
+- Lequel baisse en premier, le taux de mortalité ou le taux de natalité ? Que devient l'accroissement naturel (la surface entre les deux courbes) tant qu'un seul des deux baisse ?
+- Les phases 1 et 4 ont toutes deux une population stable. Qu'est-ce qui les distingue ?
+- Suivez la base de la pyramide de la phase 1 à la phase 5 : à quelle phase commence-t-elle à se rétrécir, et qu'annonce une base étroite pour les années suivantes ?
+- En phase 5, la natalité passe sous la mortalité : que fait la courbe de la population ?
+
+## Fonctionnement
+
+Le modèle résume en cinq phases la baisse de la mortalité, puis celle de la natalité, à mesure qu'un pays se développe. Les courbes et les pyramides sont schématiques : elles ne représentent aucun pays réel et les axes ne portent pas de valeurs. La population ne varie que par les naissances et les décès : les migrations sont laissées de côté. Dans les pyramides, les hommes sont à gauche et les femmes à droite.
+
+## Sources
+
+Modèle schématique, sans données.

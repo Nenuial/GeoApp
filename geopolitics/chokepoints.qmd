@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/chokepoints.jpg
+title: "Shipping chokepoints"
+description: "Ships per day through 28 straits and canals of world shipping, month by month since 2019, and the events that changed their traffic."
+categories: [Geopolitics]
+---
+
+Press *Play* to let the months go by, or drag the *Month* slider. On the map, the size of each circle gives the ships per day that month, its colour the change against 2023; a dashed ring shows the size of 2023 when the two differ. Click a circle, or pick it in the *Chokepoint* list, to see its story below: ships per day since 2019, the share of tankers, the main goods, and the events marked on the chart. A click on the chart jumps to that month.
+
+::: {.column-page}
+{{< geores sim="chokepoints" presets="chokepoint,month" >}}
+:::
+
+## What to look for
+
+- Find the two busiest chokepoints on the map: which seas and oceans do they link?
+- Choose the Suez Canal, then the Cape of Good Hope: how does their traffic change after the Houthi attacks of late 2023? How are the two curves linked?
+- Choose the Panama Canal: when did its traffic fall, and what reason does the chart give?
+- Choose the Strait of Hormuz: what share of its ships are tankers? How does its traffic change in 2025 and 2026, and which events does the chart mark?
+- Play the months and watch the colours: which chokepoints are red (far fewer ships than in 2023) in the latest months?
+
+## How it works
+
+IMF PortWatch counts the ships that pass each chokepoint. The circles give the mean number of ships per day in each month since January 2019; for six chokepoints (Suez, Panama, Bab el-Mandeb, Malacca, Hormuz, Cape of Good Hope) the chart adds the daily counts since 2023, as a 7-day mean. The colour compares a month with the mean of 2023: under 50 % far fewer ships, 50 to 85 % fewer, 85 to 115 % as in 2023, over 115 % more. The share of tankers and the main goods are one figure per chokepoint, not month by month. The shipping lanes show the main routes; they do not change with the month. The events on the chart were chosen for this course. Data downloaded in October 2026.
+
+## Sources
+
+- IMF PortWatch, portwatch.imf.org (IMF terms of use; sources: UN Global Platform; IMF PortWatch).
+- Shipping lanes: Benden (2022), CC BY 4.0.

@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/alliances.jpg
+title: "Les alliances depuis 1949"
+description: "Les membres de l'OTAN, du Pacte de Varsovie, de l'OTSC, de l'Organisation de coopération de Shanghai et des BRICS, année par année depuis 1949."
+categories: [Géopolitique]
+---
+
+Affichez ou masquez chaque groupe avec son bouton (*OTAN* et *Pacte de Varsovie* au départ) ; un pays membre de deux des groupes affichés est hachuré de leurs deux couleurs. Appuyez sur *Lecture* pour faire défiler les années, ou déplacez le curseur *Année*. L'encadré de la carte donne, pour chaque groupe affiché, son nombre de membres cette année-là et la nature du groupe. Passez sur un pays pour voir toutes ses appartenances, avec leurs dates.
+
+::: {.column-page}
+{{< geores sim="alliances" presets="blocs,year" >}}
+:::
+
+## À observer
+
+- Avec l'OTAN et le Pacte de Varsovie, lancez la lecture depuis 1949 : quand le Pacte de Varsovie disparaît-il ? Lesquels de ses anciens membres rejoignent ensuite l'OTAN, et quand ?
+- Affichez l'OTAN seule et passez de 2021 à 2026 : quels pays y entrent ?
+- Affichez ensemble l'OTSC et l'OCS : quels pays sont hachurés, membres des deux ?
+- Affichez les BRICS et lancez la lecture depuis 2009 : de quels continents viennent leurs membres, et en quelles années le groupe s'élargit-il ?
+- Pourquoi l'encadré dit-il que les BRICS ne sont « pas une alliance » ? Comparez ce qu'il dit de l'OTAN et des BRICS.
+
+## Fonctionnement
+
+Les membres ont été saisis pour ce cours d'après les listes des organisations elles-mêmes, avec l'année d'entrée de chaque pays et, le cas échéant, celle de sa sortie. La carte suit les frontières actuelles : l'Union soviétique y figure sous la forme de ses 15 républiques ; l'Allemagne apparaît dans l'OTAN à partir de 1990, alors que la RFA y est entrée en 1955, et la RDA ne peut pas être montrée dans le Pacte de Varsovie. L'Arménie a gelé sa participation à l'OTSC en 2024 ; la carte la montre toujours comme membre.
+
+## Sources
+
+- Membres : saisis pour ce cours d'après les listes des organisations.
+- Pays : Natural Earth 1:50 M (domaine public).

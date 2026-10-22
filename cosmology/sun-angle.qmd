@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/sun-angle.jpg
+title: "Noon Sun"
+description: "How high the Sun stands at noon, how far its light spreads on the ground and how long the day lasts, for any date and latitude."
+categories: [Cosmology]
+---
+
+Set the *Date* and *Latitude* sliders, or use the buttons *21 June*, *20 March*, *21 December* and *Neuchâtel* (47° N). The picture shows the noon Sun, its beam, the area it lights on the ground and the shadow of a person; the box gives the height of the Sun, the light per m² and the length of the day.
+
+::: {.column-page}
+{{< geores sim="sun-angle" >}}
+:::
+
+## What to look for
+
+- In Neuchâtel, compare the noon Sun on 21 June and on 21 December: how high is it, and how much light reaches each m²?
+- On 21 June, find the latitude where the Sun is overhead at noon. What is this line called?
+- On 21 December, move north from Neuchâtel: from what latitude does the Sun stay below the horizon all day?
+- At the equator, how does the length of the day change over the year? And at 60° N?
+- Why does the same beam of sunlight heat the ground less when the Sun is low?
+
+## How it works
+
+The latitude where the Sun is overhead at noon (its declination) is computed from the date with a simple formula; the height of the noon Sun is 90° minus the difference between the latitude and this declination. The light per m² is that of a Sun overhead times the sine of its height, without the atmosphere; the lit area grows in the same proportion. The length of the day runs from sunrise to sunset, with the usual allowance for the refraction of the air and the size of the Sun. The year has 365 days.
+
+## Sources
+
+Schematic model, no data.

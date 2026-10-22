@@ -1,0 +1,29 @@
+---
+image: ../../assets/thumbs/russia-cross.jpg
+title: "La croix russe"
+description: "Naissances et décès en Russie depuis 1946 : en 1992, les décès dépassent les naissances et les deux courbes se croisent."
+categories: [Russie]
+---
+
+Lancez la *Lecture* ou déplacez le curseur *Année* : les deux courbes se dessinent année après année depuis 1946. Survolez le graphique pour lire, pour une année, les naissances, les décès et leur bilan. Cochez *Totaux* pour additionner les naissances et les décès de 1976–1991 et de 1992–2007 ; chaque total apparaît quand sa période est atteinte.
+
+::: {.column-page}
+{{< geores sim="russia-cross" presets="year,totals" >}}
+:::
+
+## À observer
+
+- En quelle année les décès dépassent-ils les naissances ? Quel événement est marqué juste avant ?
+- Comparez 1987 et 1994 : la croix vient-elle plutôt de la baisse des naissances ou de la hausse des décès ?
+- Cochez *Totaux* : comment le bilan de 1976–1991 se compare-t-il à celui de 1992–2007 ?
+- Quand la Russie a-t-elle de nouveau eu plus de naissances que de décès, et pendant combien d'années ?
+- Quelle année compte le plus de décès de toute la série ?
+
+## Fonctionnement
+
+Les courbes sont les naissances et les décès enregistrés chaque année par Goskomstat puis Rosstat, sur le territoire actuel de la Fédération de Russie ; depuis 2014, la Crimée et Sébastopol, annexées, sont comptées. La surface entre les courbes est verte quand les naissances l'emportent (accroissement naturel), rouge quand les décès l'emportent (diminution naturelle). Le bilan ne tient pas compte des migrations. Les deux périodes de 16 ans des totaux reprennent celles d'Eberstadt (2010). La série s'arrête en 2024.
+
+## Sources
+
+- Goskomstat, puis Rosstat : naissances et décès enregistrés, d'après les tableaux de l'article « Demographics of Russia » de Wikipédia en anglais (révision du 14 octobre 2026).
+- Eberstadt (2010) : les périodes 1976–1991 et 1992–2007.

@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/true-size.jpg
+title: "Mercator and true size"
+description: "Countries dragged to another latitude on a Mercator map: their picture shrinks or grows, while their true size stays the same."
+categories: [Cartography]
+---
+
+Drag a coloured country across the map: on the globe it keeps its shape and its size, and it is drawn again with Mercator at its new place. The original stays where it is, faded. On the right, its area and how many times bigger it looks on this map than at the equator. *Add a country…* adds another one (or Africa as a whole); *Reset* brings back the starting countries. Hover or tap a country for its name.
+
+::: {.column-page}
+{{< geores sim="true-size" presets="countries" >}}
+:::
+
+## What to look for
+
+- Drag Greenland to the equator, next to DR Congo: which of the two is bigger in reality? How many times bigger does Greenland look at its real place?
+- Drag DR Congo or Brazil north to the latitude of Scandinavia: what happens to its picture?
+- Add Africa: how many Greenlands would fit into it?
+- Add Switzerland and drag it far north: how much bigger does it look there?
+- Why do countries far from the equator look so big on many world maps?
+
+## How it works
+
+The map is Mercator's projection, from 62° S to 84° N. Moving a country turns its outline on the globe (a rotation of the sphere): it keeps its shape and its area and stays upright, then it is projected again. The factor compares the area of its picture on the map with that of its picture centred on the equator. The area of a country is computed on the sphere from its outline; for the largest countries, Switzerland and Africa, a reference figure is given instead. A country cannot be dragged over a pole.
+
+## Sources
+
+- Countries: Natural Earth 1:50m (public domain).
+- Idea: thetruesize.com.

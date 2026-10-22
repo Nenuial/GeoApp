@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/highs-lows.jpg
+title: "Anticyclones et dépressions"
+description: "Comment le vent tourne autour d'un anticyclone et d'une dépression, dans les hémisphères nord et sud, au sol et en altitude."
+categories: [Météorologie]
+---
+
+*Nord* et *Sud* choisissent l'hémisphère, *Au sol* et *En altitude* le niveau. Les cercles sont des isobares, et les traînées montrent le vent autour de l'anticyclone (A) et de la dépression (D).
+
+::: {.column-page}
+{{< geores sim="highs-lows" >}}
+:::
+
+## À observer
+
+- Dans l'hémisphère nord, dans quel sens le vent tourne-t-il autour d'un anticyclone ? Autour d'une dépression ? Et dans l'hémisphère sud ?
+- En altitude, le vent suit les isobares. Au sol, entre-t-il dans chaque système ou en sort-il ?
+- Au sol, l'air converge vers la dépression : où peut-il aller ensuite ? Quel temps cela apporte-t-il ?
+- Dans l'hémisphère nord, placez-vous dos au vent : de quel côté se trouve la dépression ?
+
+## Fonctionnement
+
+Chaque système a des isobares circulaires et un vent de même force tout autour, plus faible seulement près du centre. En altitude, le vent souffle le long des isobares. Au sol, il les traverse aussi, en sortant de l'anticyclone et en entrant dans la dépression : c'est l'effet du frottement sur le sol. Les vrais anticyclones et dépressions ne sont pas ronds, et l'air qui descend dans l'anticyclone ou monte dans la dépression n'est décrit qu'en mots.
+
+## Sources
+
+Modèle schématique, sans données.

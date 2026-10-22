@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/rank-size.jpg
+title: "La règle rang-taille"
+description: "Les villes de dix pays classées par population sur des axes logarithmiques, face à la règle rang-taille : capitales dominantes et réseaux équilibrés."
+categories: [Géographie urbaine]
+---
+
+Choisissez un *Pays*. Chaque point est une ville, la plus grande en couleur. La ligne tiretée est la règle rang-taille tracée à partir de la plus grande ville : la deuxième ville en aurait la moitié de la population, la troisième le tiers, et ainsi de suite. À droite, le nombre de villes, les cinq plus grandes, et combien de fois la première dépasse la deuxième.
+
+::: {.column-page}
+{{< geores sim="rank-size" presets="country" >}}
+:::
+
+## À observer
+
+- France : combien de fois Paris est-elle plus grande que Lyon ? Les autres villes se trouvent-elles au-dessus ou au-dessous de la ligne tiretée ?
+- Allemagne et Italie : mêmes questions. Lequel de ces trois pays a une ville primatiale, lequel un réseau urbain équilibré ?
+- Lequel des dix pays suit le mieux la ligne ?
+- Suisse : combien compte-t-elle de villes de 50 000 habitants ou plus ? Zurich est-elle une ville primatiale ?
+- La France est un État centralisé depuis des siècles, alors que l'Allemagne et l'Italie n'ont été unifiées qu'au XIX^e^ siècle : comment cela se voit-il dans leurs graphiques ?
+
+## Fonctionnement
+
+Sur des axes logarithmiques, la règle rang-taille (Zipf) est une droite. Les villes sont celles de 2025, comptées par l'ONU selon le degré d'urbanisation (au moins 50 000 habitants à 1 500 habitants par km² ou plus) : une ville correspond donc à toute une agglomération, et non à une commune. Quand la plus grande ville dépasse de loin ce que prévoit la règle, on parle de ville primatiale : les autres villes tombent sous la ligne. Quand aucune ville ne domine, elles se placent au-dessus. Pour l'Inde, seules les 1 000 premières de plus de 2 000 villes sont dessinées.
+
+## Sources
+
+- ONU DESA, Division de la population (2025), *World Urbanization Prospects: The 2025 Revision*, édition en ligne (villes selon le degré d'urbanisation, 2025).

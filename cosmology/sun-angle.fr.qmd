@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/sun-angle.jpg
+title: "Le Soleil de midi"
+description: "La hauteur du Soleil à midi, l'étalement de sa lumière au sol et la durée du jour, pour n'importe quelle date et latitude."
+categories: [Cosmologie]
+---
+
+Réglez les curseurs *Date* et *Latitude*, ou utilisez les boutons *21 juin*, *20 mars*, *21 décembre* et *Neuchâtel* (47° N). L'image montre le Soleil de midi, son faisceau, la surface qu'il éclaire au sol et l'ombre d'une personne ; l'encadré donne la hauteur du Soleil, la lumière par m² et la durée du jour.
+
+::: {.column-page}
+{{< geores sim="sun-angle" >}}
+:::
+
+## À observer
+
+- À Neuchâtel, comparez le Soleil de midi le 21 juin et le 21 décembre : à quelle hauteur est-il, et combien de lumière reçoit chaque m² ?
+- Le 21 juin, cherchez la latitude où le Soleil est au zénith à midi. Comment s'appelle cette ligne ?
+- Le 21 décembre, montez vers le nord depuis Neuchâtel : à partir de quelle latitude le Soleil reste-t-il sous l'horizon toute la journée ?
+- À l'équateur, comment la durée du jour change-t-elle au cours de l'année ? Et à 60° N ?
+- Pourquoi un même faisceau de lumière chauffe-t-il moins le sol quand le Soleil est bas ?
+
+## Fonctionnement
+
+La latitude où le Soleil est au zénith à midi (sa déclinaison) est calculée à partir de la date avec une formule simple ; la hauteur du Soleil à midi vaut 90° moins l'écart entre la latitude et cette déclinaison. La lumière par m² est celle d'un Soleil au zénith multipliée par le sinus de sa hauteur, sans l'atmosphère ; la surface éclairée augmente dans la même proportion. La durée du jour va du lever au coucher du Soleil, avec la correction habituelle pour la réfraction de l'air et la taille du Soleil. L'année compte 365 jours.
+
+## Sources
+
+Modèle schématique, sans données.

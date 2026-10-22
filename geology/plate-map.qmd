@@ -1,0 +1,31 @@
+---
+image: ../assets/thumbs/plate-map.jpg
+title: "Plates, earthquakes and volcanoes"
+description: "The tectonic plates and their boundaries, with the strong earthquakes since 1975, the volcanoes of the Holocene and the age of the ocean floor."
+categories: [Geology]
+---
+
+Tick the layers to show: *Plate boundaries* (the only one at first), *Earthquakes*, *Volcanoes* and *Age of the ocean floor*. *Centre: Pacific* moves the middle of the map to the Pacific, and *Centre: Europe* back. Move over the map: the plate under the pointer and, depending on the layers shown, the type of boundary and how fast the plates move there, an earthquake (magnitude, depth, year), a volcano (type, last eruption) or the age of the ocean floor.
+
+::: {.column-page}
+{{< geores sim="plate-map" presets="layers,lon0" >}}
+:::
+
+## What to look for
+
+- Show the earthquakes: where are most of them? Where are there almost none?
+- Along the west coast of South America, how does the depth of the earthquakes change from the trench towards the east? What does it tell you about the plate that dives?
+- Show the boundaries and the volcanoes: along which kinds of boundary are most volcanoes? Find volcanoes far from any boundary.
+- Show the age of the ocean floor: where is the youngest floor, where the oldest? Compare the Atlantic and the Pacific.
+- Move over the Mid-Atlantic Ridge, then over the ridge of the eastern Pacific: which one spreads faster?
+
+## How it works
+
+The plate model PB2002 divides the Earth's surface into 52 plates. Its boundaries are grouped here into four kinds: moving apart (mid-ocean ridges, continental rifts), moving together (subduction zones, with the teeth on the side of the overriding plate, and converging oceanic plates), collision of two continents, and sliding past (transform faults). The speed under the pointer is the speed of the two plates relative to each other. The earthquakes are those of magnitude 6 or more from 1975 to 2025: the circle grows with the magnitude, its colour gives the depth. The volcanoes are those active in the Holocene, the last 11 700 years or so. The age of the ocean floor is given on a grid of 1° by 1°. The map uses the Equal Earth projection.
+
+## Sources
+
+- Plates and boundaries: PB2002 (Bird 2003), digital version by Ahlenius (2014), github.com/fraxen/tectonicplates (ODC-BY).
+- Earthquakes: USGS ComCat earthquake catalogue (public domain).
+- Volcanoes: Smithsonian Institution, Global Volcanism Program, *Volcanoes of the World* 5, Holocene volcanoes.
+- Age of the ocean floor: Seton et al. (2020), EarthByte, via GMT (CC BY 4.0).

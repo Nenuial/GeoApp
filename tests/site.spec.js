@@ -106,3 +106,37 @@ test.describe("languages", () => {
     expect(existsSync(join(site, "oc"))).toBe(false);
   });
 });
+
+test.describe("pyramids", () => {
+  const url = "/demography/pyramids.html";
+
+  test("the address sets the place and the year, and follows the controls", async ({ page }) => {
+    await page.goto(`${url}?c=JPN&y=2000`);
+    await expect(page.locator(".app-pyramids select.place")).toHaveValue("JPN");
+    await expect(page.locator(".app-pyramids .year-out")).toHaveText("2000");
+    await expect(page.locator(".app-svg .app-title")).toContainText("2000");
+    await page.locator(".app-pyramids select.place").selectOption("NER");
+    await expect(page).toHaveURL(/c=NER/);
+    await page.locator(".app-pyramids input.rel").check();
+    await expect(page).toHaveURL(/rel=1/);
+    expect(await page.locator(".app-svg rect.app-men").count()).toBe(21);
+  });
+
+  test("one bar per year of age, an outline to compare", async ({ page }) => {
+    await page.goto(`${url}?c=CHE&y=2024&cmp=IND`);
+    expect(await page.locator(".app-svg rect.app-men").count()).toBe(101);
+    await expect(page.locator(".app-svg path.app-outline")).toHaveCount(2);
+  });
+
+  test("play moves the years on", async ({ page }) => {
+    await page.goto(`${url}?y=1950`);
+    await page.locator(".app-pyramids button.play").click();
+    await expect(page.locator(".app-pyramids .year-out")).not.toHaveText("1950");
+  });
+
+  test("French labels and the French name of the place", async ({ page }) => {
+    await page.goto(`/fr${url}?c=CHE`);
+    await expect(page.locator(".app-svg .app-title")).toContainText("Suisse");
+    await expect(page.locator(".app-pyramids .geores-controls")).toContainText("Lieu");
+  });
+});

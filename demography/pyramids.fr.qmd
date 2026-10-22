@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/pyramids.jpg
+title: "Pyramides des âges"
+description: "La pyramide des âges de chaque pays, du monde et des continents, année après année de 1950 à 2100."
+categories: [Démographie, Données]
+---
+
+Choisissez un lieu et une année, ou lancez la *Lecture* pour voir les générations monter dans la pyramide. Chaque barre est une année d'âge ; les années de naissance sont à droite. Cochez *Groupes de 5 ans (%)* pour comparer les formes de lieux de tailles très différentes, et utilisez *Comparer avec* pour dessiner le contour d'une autre année ou d'un autre lieu.
+
+::: {.column-page}
+{{< app tool="pyramids" presets="c,y,rel,cmp" >}}
+:::
+
+## À observer
+
+- Faites défiler les années d'un pays que vous connaissez : repérez un creux ou une bosse et suivez-le dans la pyramide. Quand ces personnes sont-elles nées, et que s'est-il passé alors ?
+- Comparez le Niger et le Japon la même année avec *Groupes de 5 ans (%)* : quelle part de la population a moins de 15 ans, et plus de 65 ans, dans chacun ?
+- Comparez un pays avec lui-même en 1950 et en 2050 : à quelle étape de la transition démographique se trouve-t-il à chaque date ?
+- Au-delà de 70 ou 80 ans, quelles barres sont les plus longues, celles des hommes ou des femmes ? Est-ce le cas partout ?
+- Dès 2024, les barres sont plus pâles : ce sont des projections. Que supposent-elles de l'avenir ?
+
+## Fonctionnement
+
+Les barres donnent la population au 1^er^ juillet de chaque année par année d'âge (0 à 99 ans, puis 100 ans et plus) et par sexe, estimée par les Nations unies jusqu'en 2023 et projetée dès 2024 (variante moyenne). L'axe reste le même pendant la lecture, pour que la croissance et le déclin se voient. Le contour d'un autre lieu est ramené à la même population totale, pour ne comparer que les formes. L'âge médian partage la population en deux moitiés.
+
+## Sources
+
+- Nations unies, Département des affaires économiques et sociales, Division de la population (2024), *World Population Prospects 2024*, variante moyenne (CC BY 3.0 IGO).

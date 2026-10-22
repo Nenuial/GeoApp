@@ -1,0 +1,30 @@
+---
+image: ../assets/thumbs/russia-territory.jpg
+title: "The territory of Russia through time"
+description: "Sixteen maps, from the Rus' of Kiev in 1000 to the Russian Federation in 1991: how the territory of the Russian state grew and shrank."
+categories: [Geopolitics, History]
+---
+
+Click a date on the strip at the bottom, or step from one date to the next with ‹ and ›; *Play* shows all the dates in turn. On the map, Russia at that date is in red, its territory at the date before in a lighter shade, and the borders of 1991 are dashed. On the left: the name of the state, its area and what happened. The bars of the strip give the area at every date.
+
+::: {.column-page}
+{{< geores sim="russia-territory" presets="year" >}}
+:::
+
+## What to look for
+
+- Between which two dates does the area grow the most? Which region is conquered then?
+- When does Russia first reach the Pacific? When does it reach the Black Sea?
+- Alaska: at which dates is it Russian, and what happens to it?
+- What does Russia lose between 1914 and 1920? What has the USSR taken back by 1945?
+- Compare 1945 with 1991: which territories were in the USSR but are outside the Russian Federation?
+
+## How it works
+
+Each map shows the state that the source draws for Russia at that date. The historical borders are approximations, clipped to today's coasts so that all the maps have the same coastline; the last map uses the borders of 1994 and is labelled 1991. The areas are computed on these maps, so they are approximate too: for the Russian Federation, the map gives 16.5 million km², against 17.1 million in official figures, which include inland waters. The captions follow a historical atlas of Russia.
+
+## Sources
+
+- Borders: A. Ourednik, *historical-basemaps*, github.com/aourednik/historical-basemaps (GPL-3.0).
+- Coasts: Natural Earth 1:50m (public domain).
+- Captions after F.-X. Nérard and M.-P. Rey, *Atlas historique de la Russie* (2024).

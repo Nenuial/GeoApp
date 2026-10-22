@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/koppen-map.jpg
+title: "World climate map"
+description: "The Köppen-Geiger climates of the world from 1901–1930 to 2071–2099, and how they change under three emission scenarios."
+categories: [Climatology]
+---
+
+Choose a period with the buttons. For the future, the *Scenario* menu chooses low, intermediate or very high emissions (2041–2070 exists only for the intermediate scenario). Tick *Changes* to keep only the places whose climate differs from 1991–2020. Move over the map for the climate of a place and its 1991–2020 climogram; click a group of the legend (A to E) to show only that group, and again to show them all.
+
+::: {.column-page}
+{{< geores sim="koppen-map" presets="period" >}}
+:::
+
+## What to look for
+
+- Move over Switzerland: what is its climate in 1991–2020? And in 2071–2099 with very high emissions?
+- Compare 1901–1930 with 1991–2020, with *Changes* ticked: where has the climate already changed?
+- Show only group E: where are the polar climates, and how much of them is left in 2071–2099?
+- With *Changes* ticked, compare the three scenarios for 2071–2099: what share of the land changes climate in each?
+
+## How it works
+
+Each land cell of 1° carries the twelve monthly mean temperatures and precipitations of Beck et al. (2023). Its Köppen-Geiger code is computed from them with the rules of Beck et al. (2018), after Peel et al. (2007), as for the climograms. The future periods are projections, the average of climate models (CMIP6) under the scenarios SSP1-2.6, SSP2-4.5 and SSP5-8.5. The share of land that changes climate leaves out Antarctica. The map uses the Equal Earth projection.
+
+## Sources
+
+- Beck, H.E. et al. (2023), High-resolution (1 km) Köppen-Geiger maps for 1901–2099 based on constrained CMIP6 projections, *Scientific Data* 10, 724 (CC BY 4.0).
+- Beck, H.E. et al. (2018), Present and future Köppen-Geiger climate classification maps at 1-km resolution, *Scientific Data* 5, 180214.
+- Coastlines: Natural Earth 1:110m (public domain).

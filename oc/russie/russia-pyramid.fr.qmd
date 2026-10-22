@@ -1,4 +1,5 @@
 ---
+image: ../../assets/thumbs/russia-pyramid.jpg
 title: "Pyramide des âges de la Russie"
 description: "La pyramide de la Russie de 1950 à 2050, année après année : les creux de la guerre et des années 1990 montent avec leur génération."
 categories: [Russie]

@@ -1,0 +1,29 @@
+---
+image: ../../assets/thumbs/russia-regions.jpg
+title: "Les régions de Russie"
+description: "Les régions de Russie selon la fécondité, l'accroissement naturel, l'espérance de vie, l'évolution de la population ou la richesse."
+categories: [Russie]
+---
+
+Choisissez l'indicateur dans le menu *Carte*, puis lancez la *Lecture* ou déplacez le curseur *Année* ; pour la richesse par habitant, seule l'année 2024 existe et le curseur disparaît. Survolez une région : son nom, son statut (république, oblast, kraï…), la valeur de l'année et celles de la première et de la dernière année. Les républiques sont cernées d'un trait épais ; le Caucase du Nord est agrandi en bas à droite.
+
+::: {.column-page}
+{{< geores sim="russia-regions" presets="indicator,year" >}}
+:::
+
+## À observer
+
+- Fécondité : quelles régions atteignent au moins 2,1 enfants par femme en 2024 ? Quel est leur statut ?
+- Accroissement naturel : en 2024, quelles régions ont encore plus de naissances que de décès ? Lesquelles ne sont pas des républiques ?
+- Population depuis 1990 : quelles régions ont perdu plus de 40 % de leurs habitants ? Où se trouvent-elles ?
+- Richesse par habitant : quelles régions arrivent devant Moscou ? Où se trouvent-elles, et que produisent-elles ?
+
+## Fonctionnement
+
+La carte montre les 83 sujets de la Fédération de Russie reconnus internationalement, colorés en six classes. La Crimée et Sébastopol, annexées en 2014, sont hachurées et ne sont pas colorées ; les régions d'Ukraine annexées en 2022 ne figurent pas dans les données. Les années disponibles varient selon l'indicateur : fécondité (indice synthétique, enfants par femme) 2012–2024, accroissement naturel (pour 1000 habitants) 2017–2024, espérance de vie 2016–2022, évolution de la population depuis le 1^er^ janvier 1990 de 1991 à 2023, produit régional brut par habitant (prix courants) 2024 seulement. Les districts autonomes sont comptés à part de l'oblast dont ils font partie (Arkhangelsk, Tioumen). La projection est d'Albers, à aires égales.
+
+## Sources
+
+- Rosstat, via le package R geodata (oc_russie_2024_fecondite, oc_russie_2024_accroissement, oc_russie_2022_esperance_vie, oc_russie_2023_population, oc_russie_2020_evolution_population).
+- Rosstat, produit régional brut par habitant des sujets de la Fédération de Russie 2016–2024, d'après le modèle « ВРП на душу населения региона России (данные, 2024) » de Wikipédia en russe.
+- Natural Earth, limites administratives 1:10m (domaine public).

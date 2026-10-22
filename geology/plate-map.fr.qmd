@@ -1,0 +1,31 @@
+---
+image: ../assets/thumbs/plate-map.jpg
+title: "Plaques, séismes et volcans"
+description: "Les plaques tectoniques et leurs limites, avec les forts séismes depuis 1975, les volcans de l'Holocène et l'âge du plancher océanique."
+categories: [Géologie]
+---
+
+Cochez les couches à afficher : *Limites des plaques* (seule affichée au départ), *Séismes*, *Volcans* et *Âge du plancher océanique*. *Centre : Pacifique* place le Pacifique au milieu de la carte, *Centre : Europe* revient à l'Europe. Passez sur la carte : la plaque sous le pointeur et, selon les couches affichées, le type de limite et la vitesse des plaques à cet endroit, un séisme (magnitude, profondeur, année), un volcan (type, dernière éruption) ou l'âge du plancher océanique.
+
+::: {.column-page}
+{{< geores sim="plate-map" presets="layers,lon0" >}}
+:::
+
+## À observer
+
+- Affichez les séismes : où sont-ils les plus nombreux ? Où n'y en a-t-il presque pas ?
+- Le long de la côte ouest de l'Amérique du Sud, comment la profondeur des séismes change-t-elle de la fosse vers l'est ? Qu'est-ce que cela nous apprend sur la plaque qui plonge ?
+- Affichez les limites et les volcans : le long de quels types de limites se trouvent la plupart des volcans ? Trouvez des volcans éloignés de toute limite.
+- Affichez l'âge du plancher océanique : où le plancher est-il le plus jeune, où le plus ancien ? Comparez l'Atlantique et le Pacifique.
+- Passez sur la dorsale médio-atlantique, puis sur la dorsale du Pacifique Est : laquelle s'ouvre le plus vite ?
+
+## Fonctionnement
+
+Le modèle de plaques PB2002 découpe la surface de la Terre en 52 plaques. Ses limites sont regroupées ici en quatre types : les plaques qui s'écartent (dorsales océaniques, rifts continentaux), celles qui se rapprochent (zones de subduction, avec les dents du côté de la plaque chevauchante, et plaques océaniques convergentes), la collision de deux continents, et les plaques qui coulissent (failles transformantes). La vitesse indiquée sous le pointeur est celle des deux plaques l'une par rapport à l'autre. Les séismes sont ceux de magnitude 6 ou plus, de 1975 à 2025 : le cercle grandit avec la magnitude, sa couleur indique la profondeur. Les volcans sont ceux qui ont été actifs pendant l'Holocène, soit les quelque 11 700 dernières années. L'âge du plancher océanique est donné sur une grille de 1° sur 1°. La carte est en projection Equal Earth.
+
+## Sources
+
+- Plaques et limites : PB2002 (Bird 2003), version numérique d'Ahlenius (2014), github.com/fraxen/tectonicplates (ODC-BY).
+- Séismes : catalogue ComCat de l'USGS (domaine public).
+- Volcans : Smithsonian Institution, Global Volcanism Program, *Volcanoes of the World* 5, volcans de l'Holocène.
+- Âge du plancher océanique : Seton et al. (2020), EarthByte, via GMT (CC BY 4.0).

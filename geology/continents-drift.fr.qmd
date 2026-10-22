@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/continents-drift.jpg
+title: "La dérive des continents"
+description: "Les continents tous les 10 millions d'années, de la Pangée il y a 250 millions d'années à aujourd'hui, avec les périodes géologiques et les grands événements."
+categories: [Géologie]
+---
+
+Appuyez sur *Lancer* pour voyager d'il y a 250 millions d'années jusqu'à aujourd'hui, ou déplacez le curseur *Temps* : le passé est à gauche, aujourd'hui à droite. Au-dessus de la carte s'affichent le temps, la période géologique et ce qui s'est passé alors ; la barre en dessous montre les périodes et l'endroit où vous vous trouvez.
+
+::: {.column-page}
+{{< geores sim="continents-drift" presets="age" >}}
+:::
+
+## À observer
+
+- Il y a 250 millions d'années, quels continents actuels reconnaissez-vous dans la Pangée ? Quel océan l'entoure ?
+- Quand l'Atlantique commence-t-il à s'ouvrir ? L'Atlantique Nord s'ouvre-t-il avant l'Atlantique Sud, ou l'inverse ?
+- Suivez l'Inde d'il y a 150 millions d'années à aujourd'hui : d'où part-elle, où arrive-t-elle, et que se soulève-t-il quand elle rencontre l'Asie ?
+- Quand l'Australie quitte-t-elle l'Antarctique ?
+- Comparez les côtes actuelles de l'Amérique du Sud et de l'Afrique : qu'est-ce qui, dans leur forme, suggère qu'elles ont été réunies ?
+
+## Fonctionnement
+
+Les côtes sont reconstituées tous les 10 millions d'années à l'aide d'un modèle des mouvements des plaques ; entre deux cartes, la simulation passe de l'une à l'autre en fondu, si bien que les continents ne glissent pas en continu. Les contours sont les côtes actuelles, ramenées là où se trouvaient leurs plaques : les mers peu profondes qui recouvraient autrefois une partie des continents ne sont pas représentées. La carte est en projection Equal Earth, centrée sur le méridien de Greenwich.
+
+## Sources
+
+- Müller et al. (2022), modèle de plaques, côtes reconstituées avec le GPlates Web Service (CC BY 4.0).

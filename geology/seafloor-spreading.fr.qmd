@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/seafloor-spreading.jpg
+title: "L'expansion océanique"
+description: "À une dorsale, le nouveau plancher océanique enregistre les inversions du champ magnétique terrestre : des bandes symétriques, une preuve clé de la tectonique."
+categories: [Géologie]
+---
+
+La simulation se déroule d'elle-même, d'il y a 8 millions d'années à aujourd'hui : *Pause* l'arrête, *Lancer* la relance, *Encore* revient au début. Choisissez *Lente : Atlantique* ou *Rapide : Pacifique*. De haut en bas : le plancher océanique vu d'en haut (sombre : polarité normale, comme aujourd'hui ; clair : inversée), ce que mesure le magnétomètre d'un navire qui traverse la dorsale, et une coupe où les plaques s'écartent au-dessus du magma. Passez sur le plancher vu d'en haut pour lire l'âge de la roche et sa distance à la dorsale.
+
+::: {.column-page}
+{{< geores sim="seafloor-spreading" >}}
+:::
+
+## À observer
+
+- Comparez les bandes des deux côtés de la dorsale : que remarquez-vous ? Pourquoi ?
+- Passez sur les bandes : où se trouve la roche la plus jeune, où la plus ancienne ?
+- Une fois la simulation arrivée à aujourd'hui, trouvez quand le champ magnétique s'est inversé pour la dernière fois : passez sur le bord de la bande centrale.
+- Passez de l'Atlantique au Pacifique : qu'est-ce qui change dans les bandes, qu'est-ce qui reste pareil ?
+- Comment les mesures d'un navire, avec les dates des inversions, permettent-elles aux géologues de calculer la vitesse d'expansion d'un océan ?
+
+## Fonctionnement
+
+En refroidissant à la dorsale, la nouvelle roche enregistre la direction du champ magnétique terrestre du moment. Les dates des inversions suivent l'échelle des polarités des 8 derniers millions d'années, simplifiée. Le plancher s'écarte de 2,5 cm par an (Atlantique) ou de 15 cm par an (Pacifique) au total, la moitié de chaque côté de la dorsale ; la fenêtre montre 300 km de part et d'autre. Le magnétomètre étant loin au-dessus du fond, son profil lisse les bandes sur une vingtaine de kilomètres. Dans ce modèle schématique, la dorsale est rectiligne et s'ouvre à vitesse constante.
+
+## Sources
+
+Modèle schématique, sans données. Les inversions suivent l'échelle des polarités géomagnétiques des 8 derniers millions d'années, simplifiée.

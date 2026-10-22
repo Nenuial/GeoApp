@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/jet-stream.jpg
+title: "Courant-jet et ondes de Rossby"
+description: "Le courant-jet polaire vu d'au-dessus du pôle Nord : ses méandres, les anticyclones et dépressions qu'ils créent, et le temps sur la Suisse."
+categories: [Météorologie]
+---
+
+Le courant-jet avance tout seul ; *❚❚ Pause* l'arrête. *Méandres* règle jusqu'où il ondule vers le nord et le sud, *Ondes* le nombre d'ondes autour du pôle (3 à 7). La vitesse du vent est en couleur, avec sa légende à droite, et le panneau indique le temps que reçoit la Suisse selon l'endroit où passe le courant-jet.
+
+::: {.column-page}
+{{< geores sim="jet-stream" >}}
+:::
+
+## À observer
+
+- Dans quel sens le courant-jet fait-il le tour du pôle ? D'où souffle ce vent ?
+- Les dépressions (D) se trouvent-elles à l'est ou à l'ouest des creux, là où le courant-jet descend le plus au sud ? Et les anticyclones (A), par rapport aux dorsales ?
+- Augmentez les *Méandres* : à quelle vitesse les ondes avancent-elles maintenant ? Qu'est-ce que cela signifie pour le temps en Suisse ?
+- Attendez que la Suisse soit dans un creux, puis sous une dorsale : quel temps chacun apporte-t-il, en été et en hiver ?
+- Où le vent est-il le plus rapide ?
+
+## Fonctionnement
+
+Le courant-jet est une ligne d'ondes autour de 52° N ; leur nombre et leur taille viennent des curseurs, et elles dérivent vers l'est, d'autant plus lentement que le courant-jet ondule. Le vent est le plus fort sur l'axe du courant-jet (environ 185 km/h) et faible ailleurs. Les dépressions et les anticyclones sont placés par une règle, un quart d'onde à l'est de chaque creux et de chaque dorsale. Les vents sont dessinés comme sur earth.nullschool.net : la vitesse en couleur, des particules avec leur traînée. Seules les côtes sont réelles ; le reste est un modèle schématique.
+
+## Sources
+
+- Modèle schématique des vents, sans données.
+- Côtes : Natural Earth 1:110m (domaine public).
