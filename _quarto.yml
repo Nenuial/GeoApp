@@ -23,8 +23,6 @@ website:
   navbar:
     logo: assets/logo-lddr.png
     background: "#2f466a"
-  page-footer:
-    left: "LDDR · Geography"
 
 format:
   html:

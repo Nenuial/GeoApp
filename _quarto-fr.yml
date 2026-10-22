@@ -1,6 +1,9 @@
 lang: fr-CH
 
 website:
+  # The same footer on every Geo site (GeoApp, GeoDoc, GeoBook)
+  page-footer:
+    left: "LDDR · Géographie"
   navbar:
     left:
       - text: "Géographie humaine"
