@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Cosmologie"
+description: "L'orbite de la Terre, les saisons et la hauteur du Soleil."
+image: ../assets/fields/cosmology.jpg
+order: 5
+body-classes: "app-field-page app-field-cosmology"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/cosmology.jpg
+  sort: "title asc"
+---

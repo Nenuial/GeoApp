@@ -1,0 +1,21 @@
+---
+title: "Pyramide des âges de la Russie"
+description: "La pyramide de la Russie de 1950 à 2050, année après année : les creux de la guerre et des années 1990 montent avec leur génération."
+categories: [Russie]
+---
+
+Lancez la lecture ou déplacez le curseur des années. Survolez une barre pour voir l'âge, l'année de naissance, les hommes et les femmes ; cliquez sur une barre pour suivre cette génération (cliquez à nouveau pour arrêter). La Suisse peut être superposée, ramenée à la même population totale.
+
+::: {.column-page}
+{{< geores sim="russia-pyramid" presets="year,compare,cohort" >}}
+:::
+
+## À observer
+
+- Suivez la génération née en 1943 : pourquoi est-elle si peu nombreuse ?
+- Les creux reviennent environ 25 ans plus tard : lesquels, et pourquoi ?
+- Comparez avec la Suisse en 2024 : où la Russie a-t-elle relativement moins d'hommes ?
+
+## Sources
+
+- Nations Unies, World Population Prospects 2024 (CC BY 3.0 IGO).

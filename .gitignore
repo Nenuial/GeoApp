@@ -1,0 +1,24 @@
+# Builds (rendered outside Dropbox by render.sh, copied back here)
+_build/
+_site/
+.quarto/
+*_files/
+*_cache/
+/.luarc.json
+
+# GeoResources print SVGs: copied by sync.sh, never used by the website (115 MB)
+_extensions/geores/dist/svg/
+
+# Tests
+tests/node_modules/
+tests/test-results/
+tests/playwright-report/
+tests/screens/
+
+# R
+.Rhistory
+.RData
+.Rproj.user
+
+# OS
+.DS_Store

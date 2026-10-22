@@ -1,0 +1,224 @@
+/* GeoApp — the look of GeoDoc (flatly/darkly, Fira Sans, navbar #2f466a), plus the tiles of the fields
+   and chapters, the toolbar of a tool page and the embed / present modes (assets/geoapp.js). */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+/* Accent of each DF field and OC chapter, from the GeoKey chapter palettes, adjusted to ≥ 3:1 against
+   the page in each theme (light: #fff, dark: #222) */
+:root {
+  --app-demography: #8b9549;
+  --app-cartography: #1d5a8a;
+  --app-geopolitics: #ad8733;
+  --app-urban: #e2531a;
+  --app-cosmology: #ac82a4;
+  --app-geology: #d4694c;
+  --app-meteorology: #00496f;
+  --app-climatology: #dd4123;
+  --app-russie: #5f95b1;
+  --app-chine: #be3b49;
+  --app-israel-palestine: #5c96bf;
+  --app-geo-au-feminin: #518ee7;
+  --app-ecocitoyennete: #4f8a4c;
+}
+body.quarto-dark {
+  --app-demography: #919c4c;
+  --app-cartography: #2675b4;
+  --app-geopolitics: #c9a24a;
+  --app-urban: #ff6a2b;
+  --app-cosmology: #b48ead;
+  --app-geology: #d4694c;
+  --app-meteorology: #0078b6;
+  --app-climatology: #dd4123;
+  --app-russie: #699cb6;
+  --app-chine: #c54451;
+  --app-israel-palestine: #6098c0;
+  --app-geo-au-feminin: #90b7f0;
+  --app-ecocitoyennete: #6aa866;
+}
+.app-field-demography { --app-accent: var(--app-demography); }
+.app-field-cartography { --app-accent: var(--app-cartography); }
+.app-field-geopolitics { --app-accent: var(--app-geopolitics); }
+.app-field-urban { --app-accent: var(--app-urban); }
+.app-field-cosmology { --app-accent: var(--app-cosmology); }
+.app-field-geology { --app-accent: var(--app-geology); }
+.app-field-meteorology { --app-accent: var(--app-meteorology); }
+.app-field-climatology { --app-accent: var(--app-climatology); }
+.app-field-russie { --app-accent: var(--app-russie); }
+.app-field-chine { --app-accent: var(--app-chine); }
+.app-field-israel-palestine { --app-accent: var(--app-israel-palestine); }
+.app-field-geo-au-feminin { --app-accent: var(--app-geo-au-feminin); }
+.app-field-ecocitoyennete { --app-accent: var(--app-ecocitoyennete); }
+
+/* Dark theme: pictures with a transparent background are drawn for a white page (as GeoDoc) */
+body.quarto-dark main img:not(.dark-content img):not(.app-tile-img) {
+  background-color: #fff;
+}
+
+/* ---------- Tiles: fields on the home page, chapters of the OC ---------- */
+
+.app-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+a.app-tile {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--bs-border-color);
+  border-top: 6px solid var(--app-accent, var(--bs-primary));
+  border-radius: 0.25rem;
+  color: inherit;
+  text-decoration: none;
+  background: var(--bs-body-bg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+a.app-tile:hover,
+a.app-tile:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+.app-tile-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.app-tile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0.8rem 0.8rem;
+}
+.app-tile-title {
+  font-weight: 500;
+  font-size: 1.15rem;
+}
+.app-tile-title .bi {
+  color: var(--app-accent);
+  margin-right: 0.3rem;
+}
+.app-tile-desc {
+  color: var(--bs-secondary-color);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+/* Phones: two tiles a row, the title only */
+@media (max-width: 600px) {
+  .app-tiles {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+  .app-tile-desc {
+    display: none;
+  }
+  .app-tile-title {
+    font-size: 1rem;
+  }
+}
+
+/* Field and chapter pages: the accent under the title */
+.app-field-page #title-block-header .title {
+  border-bottom: 4px solid var(--app-accent);
+  padding-bottom: 0.3rem;
+  display: inline-block;
+}
+
+/* ---------- Tool pages ---------- */
+
+/* The GeoRes "Enlarge" button would cover the text of some figures (a pyramid's year): the toolbar's
+   "Full screen" does the same. It stays in the enlarged view, finger-sized, to close it. */
+main .geores:not(.geores-expanded) > .geores-expand {
+  display: none;
+}
+.geores-expanded > .geores-expand {
+  width: 44px;
+  height: 44px;
+}
+.geores-expanded > .geores-expand svg {
+  width: 22px;
+  height: 22px;
+}
+/* Controls: finger-sized on phones */
+@media (pointer: coarse) {
+  main .geores-controls button,
+  main .geores-controls select {
+    min-height: 44px;
+  }
+}
+
+.app-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1.5rem;
+}
+.app-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.3rem 0.9rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--bs-body-color);
+  background: transparent;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.app-toolbar button:hover,
+.app-toolbar button:focus-visible {
+  color: var(--bs-link-color);
+  border-color: var(--bs-link-color);
+}
+.app-toolbar .app-done {
+  color: var(--bs-success);
+  border-color: var(--bs-success);
+}
+
+/* A canvas sim on a phone held upright: its text is tiny, suggest turning the phone or enlarging */
+.app-rotate {
+  display: none;
+  margin: -0.5rem 0 1rem;
+  font-size: 0.9rem;
+  color: var(--bs-secondary-color);
+}
+@media (max-width: 600px) and (orientation: portrait) {
+  .app-rotate {
+    display: block;
+  }
+}
+
+/* ---------- Present mode (?present or key P): the tool fills the projector ---------- */
+
+html.app-present .geores-expanded .geores-controls {
+  font-size: 1.3rem;
+}
+html.app-present .geores-expanded .geores-controls button,
+html.app-present .geores-expanded .geores-controls select {
+  min-height: 2.6rem;
+}
+html.app-present.app-idle,
+html.app-present.app-idle * {
+  cursor: none !important;
+}
+
+/* ---------- Embed mode (?embed): the tool alone, for iframes (Moodle) ---------- */
+
+html.app-embed body > :not(.app-embed-wrap):not(script) {
+  display: none !important;
+}
+.app-embed-wrap {
+  padding: 0.5rem;
+}
+.app-embed-wrap .geores {
+  margin: 0;
+}
+.app-embed-link {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  text-align: right;
+}

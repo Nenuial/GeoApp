@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Géologie"
+description: "Plaques, séismes, volcans et cycle des roches."
+image: ../assets/fields/geology.jpg
+order: 6
+body-classes: "app-field-page app-field-geology"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/geology.jpg
+  sort: "title asc"
+---

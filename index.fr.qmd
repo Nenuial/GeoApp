@@ -1,0 +1,33 @@
+---
+page-layout: full
+title: "GeoApp"
+subtitle: "Cartes, graphiques et simulations pour le cours de géographie"
+listing:
+  - id: human
+    contents: [demography/index.qmd, cartography/index.qmd, geopolitics/index.qmd, urban/index.qmd]
+    template: assets/tiles.ejs
+    sort: "order asc"
+  - id: physical
+    contents: [cosmology/index.qmd, geology/index.qmd, meteorology/index.qmd, climatology/index.qmd]
+    template: assets/tiles.ejs
+    sort: "order asc"
+  - id: oc
+    contents: ["oc/*/index.qmd"]
+    template: assets/tiles.ejs
+    sort: "order asc"
+---
+
+## Géographie humaine
+
+::: {#human}
+:::
+
+## Géographie physique
+
+::: {#physical}
+:::
+
+## Option complémentaire
+
+::: {#oc}
+:::

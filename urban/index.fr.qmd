@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Géographie urbaine"
+description: "Villes du monde, taille des villes et usage du sol en ville."
+image: ../assets/fields/urban.jpg
+order: 4
+body-classes: "app-field-page app-field-urban"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/urban.jpg
+  sort: "title asc"
+---

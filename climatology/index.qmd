@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Climatology"
+description: "Climograms, Köppen climates and climate change."
+image: ../assets/fields/climatology.jpg
+order: 8
+body-classes: "app-field-page app-field-climatology"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/climatology.jpg
+  sort: "title asc"
+---

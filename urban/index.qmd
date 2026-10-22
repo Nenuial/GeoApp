@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Urban geography"
+description: "Cities of the world, city sizes and land use in the city."
+image: ../assets/fields/urban.jpg
+order: 4
+body-classes: "app-field-page app-field-urban"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/urban.jpg
+  sort: "title asc"
+---

@@ -1,0 +1,26 @@
+lang: fr-CH
+
+website:
+  navbar:
+    left:
+      - text: "Géographie humaine"
+        menu:
+          - demography/index.qmd
+          - cartography/index.qmd
+          - geopolitics/index.qmd
+          - urban/index.qmd
+      - text: "Géographie physique"
+        menu:
+          - cosmology/index.qmd
+          - geology/index.qmd
+          - meteorology/index.qmd
+          - climatology/index.qmd
+      - text: "Option complémentaire"
+        href: oc/index.qmd
+    right:
+      - text: "GeoDoc"
+        menu:
+          - text: "Discipline fondamentale"
+            href: https://df.geoviews.ch/fr
+          - text: "Option complémentaire"
+            href: https://oc.geoviews.ch

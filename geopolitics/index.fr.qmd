@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Géopolitique"
+description: "Frontières, conflits, alliances et passages stratégiques."
+image: ../assets/fields/geopolitics.jpg
+order: 3
+body-classes: "app-field-page app-field-geopolitics"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/geopolitics.jpg
+  sort: "title asc"
+---

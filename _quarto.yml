@@ -1,0 +1,50 @@
+project:
+  type: website
+  # babelquarto copies output-dir as one folder: it must sit at the top (no "_build/site").
+  # render.sh renders in a work folder outside Dropbox and copies _site to _build/site.
+  output-dir: _site
+  resources:
+    - robots.txt
+    - assets/geoapp.js
+    - assets/fields/
+    - data/
+
+lang: en-US
+
+website:
+  site-url: https://app.geoviews.ch/
+  title: "GeoApp"
+  favicon: assets/favicon.png
+  page-navigation: false
+  navbar:
+    logo: assets/logo-lddr.png
+    background: "#2f466a"
+  page-footer:
+    left: "LDDR · Geography"
+    right:
+      - text: "GeoDoc DF"
+        href: https://df.geoviews.ch
+      - text: "GeoDoc OC"
+        href: https://oc.geoviews.ch
+
+format:
+  html:
+    theme:
+      dark: [darkly, assets/geoapp.scss]
+      light: [flatly, assets/geoapp.scss]
+    css: assets/styles.css
+    mainfont: "Fira Sans"
+    toc: false
+    include-after-body:
+      - assets/geoapp.html
+
+babelquarto:
+  languagelinks: navbar
+  languagecodes:
+  - name: fr
+    text: "Français"
+  - name: en
+    text: "English"
+  mainlanguage: 'en'
+  languages: ['fr']
+title-fr: "GeoApp"

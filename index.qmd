@@ -1,0 +1,40 @@
+---
+page-layout: full
+title: "GeoApp"
+subtitle: "Maps, charts and simulations for the geography class"
+listing:
+  - id: human
+    contents: [demography/index.qmd, cartography/index.qmd, geopolitics/index.qmd, urban/index.qmd]
+    template: assets/tiles.ejs
+    sort: "order asc"
+  - id: physical
+    contents: [cosmology/index.qmd, geology/index.qmd, meteorology/index.qmd, climatology/index.qmd]
+    template: assets/tiles.ejs
+    sort: "order asc"
+---
+
+## Human geography
+
+::: {#human}
+:::
+
+## Physical geography
+
+::: {#physical}
+:::
+
+## Elective Discipline
+
+The tools of the Elective Discipline (Option complémentaire) are in French.
+
+```{=html}
+<div class="app-tiles">
+  <a class="app-tile app-field-russie" href="/fr/oc/index.html">
+    <img class="app-tile-img" src="assets/fields/russie.jpg" alt="" loading="lazy">
+    <span class="app-tile-body">
+      <span class="app-tile-title"><i class="bi bi-mortarboard" aria-hidden="true"></i>Option complémentaire</span>
+      <span class="app-tile-desc">The chapters of the Elective Discipline, in French.</span>
+    </span>
+  </a>
+</div>
+```

@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Demography"
+description: "Population pyramids, growth, fertility and mortality of every country."
+image: ../assets/fields/demography.jpg
+order: 1
+body-classes: "app-field-page app-field-demography"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/demography.jpg
+  sort: "title asc"
+---

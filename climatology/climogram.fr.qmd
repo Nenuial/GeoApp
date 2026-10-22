@@ -1,0 +1,28 @@
+---
+title: "Climogramme"
+description: "Température et précipitations mensuelles d'une station, son climat de Köppen, et une seconde station pour comparer."
+categories: [Climatologie]
+---
+
+Choisissez une station : son climogramme montre la température moyenne (courbe) et les précipitations (barres) de chaque mois, à l'échelle de Walter–Lieth (10 °C pour 20 mm), avec son climat de Köppen. Cochez *Comparer* pour placer une seconde station à côté.
+
+::: {.column-page}
+{{< geores sim="climogram" presets="station,compare" >}}
+:::
+
+## À observer
+
+- Quand la courbe passe-t-elle au-dessus des barres ? Ces mois sont secs : l'évaporation permise par la chaleur dépasse la pluie.
+- Comparez une station au bord de la mer et une station à l'intérieur du continent, à la même latitude : en quoi leurs amplitudes thermiques annuelles diffèrent-elles ?
+- Trouvez deux stations du même groupe de Köppen sur deux continents : qu'ont leurs climogrammes en commun ?
+- Dans l'hémisphère sud, quels mois sont l'été ?
+
+## Fonctionnement
+
+Les stations sont classées par groupe de Köppen–Geiger (A à E), les stations suisses en premier. Le code de Köppen est calculé à partir des douze moyennes mensuelles selon les règles de Beck et al. (2018), d'après Peel et al. (2007). Les valeurs sont les normales 1991–2020.
+
+## Sources
+
+- Normales climatologiques 1991–2020 de MétéoSuisse (données ouvertes, « Source : MétéoSuisse »).
+- Normales climatologiques standard 1991–2020 de l'OMM, NCEI accession 0253808.
+- Beck, H.E. et al. (2018), Present and future Köppen-Geiger climate classification maps at 1-km resolution, *Scientific Data* 5, 180214.

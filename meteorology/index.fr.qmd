@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Météorologie"
+description: "Vents, pression, fronts et systèmes météorologiques."
+image: ../assets/fields/meteorology.jpg
+order: 7
+body-classes: "app-field-page app-field-meteorology"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../assets/fields/meteorology.jpg
+  sort: "title asc"
+---

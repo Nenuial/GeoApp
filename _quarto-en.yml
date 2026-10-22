@@ -1,0 +1,26 @@
+lang: en-US
+
+website:
+  navbar:
+    left:
+      - text: "Human geography"
+        menu:
+          - demography/index.qmd
+          - cartography/index.qmd
+          - geopolitics/index.qmd
+          - urban/index.qmd
+      - text: "Physical geography"
+        menu:
+          - cosmology/index.qmd
+          - geology/index.qmd
+          - meteorology/index.qmd
+          - climatology/index.qmd
+      - text: "OC (fr)"
+        href: /fr/oc/index.html
+    right:
+      - text: "GeoDoc"
+        menu:
+          - text: "Foundational Discipline"
+            href: https://df.geoviews.ch
+          - text: "Elective Discipline (fr)"
+            href: https://oc.geoviews.ch

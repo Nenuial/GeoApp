@@ -1,0 +1,11 @@
+---
+page-layout: full
+title: "Option complémentaire"
+description: "Les outils des chapitres de l'option complémentaire."
+listing:
+  contents: ["*/index.qmd"]
+  template: ../assets/tiles.ejs
+  sort: "order asc"
+---
+
+Un chapitre apparaît ici dès qu'il a ses premiers outils.

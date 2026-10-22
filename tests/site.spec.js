@@ -1,0 +1,108 @@
+// Every page of the built site, in both themes: no script error, no sideways scrolling, every sim mounted;
+// then the modes of a tool page (presets, ?embed, ?present) and the links between the languages.
+import { test, expect } from "@playwright/test";
+import { readdirSync, statSync, existsSync } from "node:fs";
+import { join, relative } from "node:path";
+
+const site = new URL("../_build/site/", import.meta.url).pathname;
+const pages = [];
+(function walk(dir) {
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) { if (name !== "site_libs") walk(p); }
+    else if (name.endsWith(".html")) pages.push("/" + relative(site, p));
+  }
+})(site);
+
+// Quarto keeps the theme choice in localStorage: the dark theme (listed first, the default) is "alternate"
+const THEMES = { dark: "alternate", light: "default" };
+
+for (const [theme, value] of Object.entries(THEMES)) {
+  test.describe(`${theme} theme`, () => {
+    test.beforeEach(async ({ page }) => {
+      await page.addInitScript(v => { try { localStorage.setItem("quarto-color-scheme", v); } catch (e) {} }, value);
+    });
+    for (const path of pages) {
+      test(path, async ({ page }) => {
+        const errors = [];
+        page.on("pageerror", e => errors.push(e.message));
+        page.on("console", m => { if (m.type() === "error") errors.push(m.text()); });
+        await page.goto(path, { waitUntil: "load" });
+        await expect(page.locator("body")).toHaveClass(theme === "dark" ? /quarto-dark/ : /quarto-light/);
+        // no sideways scrolling
+        const overflow = await page.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+        expect(overflow, "page wider than the screen").toBeLessThanOrEqual(1);
+        // every sim mounted, with something drawn
+        for (const sim of await page.locator(".geores[data-sim]").all()) {
+          await expect(sim).toHaveAttribute("data-mounted", "");
+          expect(await sim.locator("canvas, svg").count()).toBeGreaterThan(0);
+        }
+        if (path.startsWith("/fr/")) expect(await page.getAttribute("html", "lang")).toMatch(/^fr/);
+        expect(errors, errors.join("\n")).toEqual([]);
+      });
+    }
+  });
+}
+
+test.describe("tool page", () => {
+  const url = "/climatology/climogram.html";
+
+  test("presets from the address", async ({ page }) => {
+    await page.goto(url);
+    const second = await page.locator(".geores-controls select.a option").nth(3).getAttribute("value");
+    await page.goto(`${url}?station=${second}`);
+    await expect(page.locator(".geores-controls select.a")).toHaveValue(second);
+  });
+
+  test("toolbar under the tool", async ({ page }) => {
+    await page.goto(url);
+    await expect(page.locator(".app-toolbar button")).toHaveCount(3);
+  });
+
+  test("?embed shows the tool alone", async ({ page }) => {
+    await page.goto(`${url}?embed`);
+    await expect(page.locator("#quarto-header")).toBeHidden();
+    await expect(page.locator(".app-embed-wrap .geores[data-sim]")).toBeVisible();
+    await expect(page.locator(".app-embed-link")).toHaveAttribute("href", /climogram\.html$/);
+  });
+
+  test("?present fills the screen, Escape leaves", async ({ page }) => {
+    await page.goto(`${url}?present`);
+    await expect(page.locator(".geores.geores-expanded")).toBeVisible();
+    await expect(page.locator("html")).toHaveClass(/app-present/);
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".geores.geores-expanded")).toHaveCount(0);
+    await expect(page.locator("html")).not.toHaveClass(/app-present/);
+  });
+
+  test("key P toggles present mode", async ({ page }) => {
+    await page.goto(url);
+    await page.locator("h1").click();
+    await page.keyboard.press("p");
+    await expect(page.locator(".geores.geores-expanded")).toBeVisible();
+  });
+});
+
+test.describe("languages", () => {
+  test("English page links to its French twin", async ({ page }) => {
+    await page.goto("/climatology/climogram.html");
+    await expect(page.locator('#languages-links a[href$="/fr/climatology/climogram.html"]')).toHaveCount(1);
+  });
+
+  test("French sims are in French", async ({ page }) => {
+    await page.goto("/fr/climatology/climogram.html");
+    await expect(page.locator(".geores-controls")).toContainText("Comparer");
+  });
+
+  test("the OC link of the English site leads to the French OC page", async ({ page }) => {
+    await page.goto("/index.html");
+    const href = await page.locator('a.nav-link[href*="/fr/oc/"]').first().getAttribute("href");
+    const res = await page.request.get(new URL(href, page.url()).toString());
+    expect(res.status()).toBe(200);
+  });
+
+  test("OC pages exist only in French", () => {
+    expect(existsSync(join(site, "fr/oc/russie/index.html"))).toBe(true);
+    expect(existsSync(join(site, "oc"))).toBe(false);
+  });
+});

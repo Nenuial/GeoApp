@@ -1,0 +1,331 @@
+/* GeoResources — styles of the diagrams and sims on web pages (books and keynotes).
+   Colours follow the page: geores.js adds .geores-dark when the background behind is dark.
+   Canvas sims sit on a dark "stage" in both themes. */
+
+.geores {
+  --geores-fg: #1d2433;
+  --geores-muted: #5d6575;
+  --geores-line: #c9ced8;
+  --geores-btn: #f3f5f8;
+  --geores-accent: #0f2d61;
+  --geores-menu: #ffffff;
+  margin: 1rem 0;
+  font-family: "Fira Sans", sans-serif;
+}
+
+.geores.geores-dark {
+  --geores-fg: #e6e9ef;
+  --geores-muted: #a7aebb;
+  --geores-line: #4a5160;
+  --geores-btn: #2b3040;
+  --geores-accent: #f2c46d;
+  --geores-menu: #20242f;
+}
+
+.geores svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Canvas sims */
+
+.geores-stage {
+  --geores-fg: #eddaeb;
+  --geores-muted: rgba(237, 218, 235, 0.7);
+  --geores-line: rgba(237, 218, 235, 0.35);
+  --geores-btn: rgba(255, 255, 255, 0.08);
+  --geores-accent: #f2c46d;
+  --geores-menu: #1b1f2a;
+  background: #10131c;
+  border-radius: 12px;
+  padding: 10px 12px 12px;
+  color: var(--geores-fg);
+}
+
+.geores-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Controls */
+
+.geores-controls {
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--geores-fg);
+}
+
+.geores-controls button {
+  font: inherit;
+  color: var(--geores-fg);
+  background: var(--geores-btn);
+  border: 1px solid var(--geores-line);
+  border-radius: 6px;
+  padding: 0.15rem 0.6rem;
+  cursor: pointer;
+}
+
+/* drop-down menus: the page's colours, the list on a solid background (readable in the dark theme) */
+.geores-controls select {
+  font: inherit;
+  color: var(--geores-fg);
+  background: var(--geores-menu);
+  border: 1px solid var(--geores-line);
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+  color-scheme: light dark;
+}
+
+.geores-controls select:disabled {
+  opacity: 0.4;
+}
+
+.geores-controls select option {
+  color: var(--geores-fg);
+  background: var(--geores-menu);
+}
+
+.geores-controls button:hover:not(:disabled) {
+  border-color: var(--geores-accent);
+}
+
+.geores-controls button[aria-pressed="true"] {
+  border-color: var(--geores-accent);
+  box-shadow: inset 0 0 0 1px var(--geores-accent);
+}
+
+.geores-controls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.geores-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.geores-controls input[type="range"] {
+  width: 9rem;
+  accent-color: var(--geores-accent);
+}
+
+/* a year shown next to its slider: four digits, not the room of a rate (keeps the controls on one line) */
+.reveal .sim-controls .rate.year {
+  min-width: 3.2em;
+}
+
+.geores-controls .rate,
+.geores-controls .readout,
+.geores-controls .date {
+  color: var(--geores-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.geores-controls .readout b,
+.geores-controls .date b {
+  color: var(--geores-fg);
+  font-weight: 500;
+}
+
+/* Step-by-step drawings */
+
+.geores-steps-figure {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.geores-wide .geores-steps-figure,
+.geores-wide .geores-steps-text {
+  max-width: none;
+}
+
+/* on a slide: the drawing fits the height of the .sim box */
+.reveal .sim .geores-steps-figure { max-width: none; }
+.reveal .sim .geores-steps-figure svg {
+  display: block;
+  height: 440px;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.geores-steps .geores-controls {
+  justify-content: center;
+}
+
+.geores-steps-text {
+  max-width: 640px;
+  text-align: left;
+  min-height: 3em;
+  margin: 0.5rem auto 0;
+  font-size: 0.95rem;
+  color: var(--geores-fg);
+}
+
+.geores-steps-text b {
+  font-weight: 500;
+}
+
+/* Atmosphere profile */
+
+.geores-atmo-figure {
+  max-width: 640px;
+  margin: 0 auto;
+  cursor: crosshair;
+}
+
+.geores-atmo .geores-controls {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Maps */
+
+.geores-drag {
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.geores-drag:active {
+  cursor: grabbing;
+}
+
+/* Tooltip of the climograms (diagrams/climatology/climogram.js) */
+
+.geores-tip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  padding: 6px 10px;
+  border: 1px solid #c9ced8;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  color: #1d2433;
+  font: 14px/1.45 "Fira Sans", sans-serif;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.geores-tip.geores-tip-dark {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(16, 19, 28, 0.94);
+  color: #e6e9ef;
+}
+
+.geores-tip-head {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Enlarge a sim (button at the top right, see expandable() in core.js) */
+
+.geores[data-sim] {
+  position: relative;
+}
+
+.geores-expand {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0 !important;   /* the icon stays in the middle whatever the page's rules */
+  margin: 0;
+  line-height: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(17, 22, 33, 0.42);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22), 0 4px 14px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* not the full width of the other SVG of the sims (.geores svg) */
+.geores .geores-expand svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.geores[data-sim]:hover > .geores-expand,
+.geores-expand:focus-visible {
+  opacity: 1;
+}
+
+.geores-expand:hover {
+  background: rgba(17, 22, 33, 0.68);
+  transform: scale(1.08);
+}
+
+.geores-expand:focus-visible {
+  outline: 2px solid var(--geores-accent);
+  outline-offset: 2px;
+}
+
+.geores.geores-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  margin: 0;
+  border-radius: 0;
+  padding: 3rem 2rem 1.5rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.geores.geores-expanded.geores-dark {
+  background: #1d2026;
+}
+
+.geores.geores-expanded.geores-stage {
+  background: #10131c;
+}
+
+.geores-expanded > :not(.geores-expand) {
+  width: 100%;
+  max-width: var(--geores-fit, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.geores-expanded > .geores-expand {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  opacity: 1;
+}
+
+.geores-noscroll,
+.geores-noscroll body {
+  overflow: hidden;
+}
+
+/* Geology sims in a keynote's .sim box: on the slide's background, in the palette's colours (_geology.js) */
+.reveal .sim .geores-stage.geores-geology {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}

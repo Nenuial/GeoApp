@@ -1,0 +1,14 @@
+---
+page-layout: full
+title: "Russie"
+description: "Population, territoire, régions et économie de la Russie."
+image: ../../assets/fields/russie.jpg
+order: 1
+body-classes: "app-field-page app-field-russie"
+listing:
+  contents: ["*.qmd"]
+  type: grid
+  fields: [image, title, description]
+  image-placeholder: ../../assets/fields/russie.jpg
+  sort: "title asc"
+---

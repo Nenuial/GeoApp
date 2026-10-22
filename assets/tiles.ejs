@@ -1,0 +1,26 @@
+```{=html}
+<%
+  // Tiles of the fields (DF) and chapters (OC): accent and icon from the folder name
+  const icons = {
+    demography: "people-fill", cartography: "map", geopolitics: "flag", urban: "buildings",
+    cosmology: "globe-americas", geology: "triangle", meteorology: "cloud-sun", climatology: "thermometer-sun",
+    russie: "snow", chine: "translate", "israel-palestine": "signpost-split", "geo-au-feminin": "gender-female",
+    ecocitoyennete: "tree"
+  };
+  const slugOf = p => {
+    const parts = (p || "").replace(/^(\.\.?\/)+/, "").replace(/^\//, "").split("/");
+    return parts[0] === "oc" ? parts[1] : parts[0];
+  };
+%>
+<div class="app-tiles">
+<% for (const item of items) { const slug = slugOf(item.path); %>
+  <a class="app-tile app-field-<%= slug %>" href="<%- item.path %>">
+    <% if (item.image) { %><img class="app-tile-img" src="<%- item.image %>" alt="" loading="lazy"><% } %>
+    <span class="app-tile-body">
+      <span class="app-tile-title"><i class="bi bi-<%= icons[slug] || 'grid' %>" aria-hidden="true"></i><%= item.title %></span>
+      <% if (item.description) { %><span class="app-tile-desc"><%= item.description %></span><% } %>
+    </span>
+  </a>
+<% } %>
+</div>
+```

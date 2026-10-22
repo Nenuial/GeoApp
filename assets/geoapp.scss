@@ -1,0 +1,8 @@
+/*-- scss:defaults --*/
+
+// Larger text than Quarto's default 11pt, growing with the screen: about 18 px on a 1280 px
+// projector, 20 px on 1920, 16 px on a phone
+$font-size-root: clamp(16px, 0.45vw + 12px, 20px);
+$navbar-bg: #2f466a;
+
+/*-- scss:rules --*/

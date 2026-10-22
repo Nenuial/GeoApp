@@ -1,0 +1,28 @@
+---
+title: "Climogram"
+description: "The monthly temperature and precipitation of a station, its Köppen climate, and a second station to compare."
+categories: [Climatology]
+---
+
+Choose a station: its climogram shows the mean temperature (line) and precipitation (bars) of each month, on the Walter–Lieth scale (10 °C for 20 mm), with its Köppen climate. Tick *Compare* to put a second station next to it.
+
+::: {.column-page}
+{{< geores sim="climogram" presets="station,compare" >}}
+:::
+
+## What to look for
+
+- When is the line above the bars? Those months are dry: the evaporation the warmth allows exceeds the rain.
+- Compare a station near the sea with one far inland at the same latitude: how do the yearly temperature ranges differ?
+- Find two stations of the same Köppen group on different continents: what do their climograms have in common?
+- In the southern hemisphere, which months are summer?
+
+## How it works
+
+The stations are grouped by Köppen–Geiger group (A to E), Swiss stations first. The Köppen code is computed from the twelve monthly means with the rules of Beck et al. (2018), after Peel et al. (2007). The values are the 1991–2020 normals.
+
+## Sources
+
+- MeteoSwiss climate normals 1991–2020 (open data, "Source: MeteoSwiss").
+- WMO Climatological Standard Normals 1991–2020, NCEI accession 0253808.
+- Beck, H.E. et al. (2018), Present and future Köppen-Geiger climate classification maps at 1-km resolution, *Scientific Data* 5, 180214.
