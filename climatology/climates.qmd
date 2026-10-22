@@ -1,0 +1,30 @@
+---
+image: ../assets/thumbs/climates.jpg
+title: "Climate explorer"
+description: "The climates of 4,700 weather stations of the world (normals 1991–2020): pick one on the map, read its climogram and its Köppen climate."
+categories: [Climatology, Data]
+---
+
+Each dot is a weather station, coloured by its Köppen climate. Click a dot (or search a station by name or country) to draw its climogram; *Compare* adds a second station. *Quiz* hides the names, the place and the Köppen code: guess the climate, then *Show the answer*.
+
+::: {.column-page}
+{{< app tool="climates" bundles="climate,climate-wmo" presets="s,c,quiz" >}}
+:::
+
+## What to look for
+
+- Follow the dots from the equator to the Arctic along one continent: in which order do the climate groups follow each other?
+- Pick two stations at the same latitude, one on the west coast and one on the east coast of a continent: why do their climograms differ?
+- Find a dry climate (B) close to the sea: what makes it dry?
+- Compare a station in the Alps with one on the Swiss Plateau: what does altitude change?
+- Quiz: give a classmate the address of a hidden climogram (*Link*) and ask for its climate and where it could be.
+
+## How it works
+
+The values are the climate normals: the mean temperature and the total precipitation of each month over 1991–2020, as reported by the national weather services to the World Meteorological Organization, and the normals of MeteoSwiss for the Swiss stations. The Köppen code is computed from these twelve months with the rules of Beck et al. (2018), the same as the Köppen map. Some countries have few or no stations in the WMO collection.
+
+## Sources
+
+- WMO Climatological Standard Normals 1991–2020, NCEI accession 0253808.
+- MeteoSwiss climate normals 1991–2020 (open data, "Source: MeteoSwiss").
+- Beck, H.E. et al. (2018), Present and future Köppen-Geiger climate classification maps at 1-km resolution, *Scientific Data* 5, 180214.

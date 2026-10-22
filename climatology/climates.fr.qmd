@@ -1,0 +1,30 @@
+---
+image: ../assets/thumbs/climates.jpg
+title: "Explorateur des climats"
+description: "Les climats de 4700 stations météorologiques du monde (normales 1991–2020) : choisissez-en une sur la carte, lisez son climogramme et son climat de Köppen."
+categories: [Climatologie, Données]
+---
+
+Chaque point est une station météorologique, coloré selon son climat de Köppen. Cliquez sur un point (ou cherchez une station par son nom ou son pays) pour tracer son climogramme ; *Comparer* ajoute une seconde station. *Quiz* cache les noms, le lieu et le code de Köppen : devinez le climat, puis *Voir la réponse*.
+
+::: {.column-page}
+{{< app tool="climates" bundles="climate,climate-wmo" presets="s,c,quiz" >}}
+:::
+
+## À observer
+
+- Suivez les points de l'équateur à l'Arctique sur un continent : dans quel ordre les groupes de climats se succèdent-ils ?
+- Choisissez deux stations à la même latitude, l'une sur la côte ouest et l'autre sur la côte est d'un continent : pourquoi leurs climogrammes diffèrent-ils ?
+- Trouvez un climat sec (B) près de la mer : qu'est-ce qui le rend sec ?
+- Comparez une station des Alpes et une station du Plateau suisse : que change l'altitude ?
+- Quiz : donnez à un camarade l'adresse d'un climogramme caché (*Lien*) et demandez-lui son climat et où il pourrait se trouver.
+
+## Fonctionnement
+
+Les valeurs sont les normales climatologiques : la température moyenne et le total des précipitations de chaque mois sur 1991–2020, transmis par les services météorologiques nationaux à l'Organisation météorologique mondiale, et les normales de MétéoSuisse pour les stations suisses. Le code de Köppen est calculé à partir de ces douze mois selon les règles de Beck et al. (2018), comme pour la carte de Köppen. Certains pays ont peu ou pas de stations dans la collection de l'OMM.
+
+## Sources
+
+- Normales climatologiques standard 1991–2020 de l'OMM, NCEI accession 0253808.
+- Normales climatologiques 1991–2020 de MétéoSuisse (données ouvertes, « Source : MétéoSuisse »).
+- Beck, H.E. et al. (2018), Present and future Köppen-Geiger climate classification maps at 1-km resolution, *Scientific Data* 5, 180214.

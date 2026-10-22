@@ -446,3 +446,14 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
 .app-legend i.app-inc-swatch { background: rgba(27, 158, 119, 0.3); }
 .app-legend i.app-dec-swatch { background: rgba(117, 112, 179, 0.45); }
 .app-demograph .geores-controls input[type="range"] { width: min(10rem, 40vw); }
+
+/* Climate explorer: stations on the map, the climograms of GeoResources */
+.app-map .app-land-plain { cursor: default; }
+.app-map .app-land-plain:hover { stroke: var(--bs-body-bg, #fff); stroke-width: 0.6; }
+.app-map .app-dots circle { stroke: rgba(0, 0, 0, 0.35); stroke-width: 0.3; vector-effect: non-scaling-stroke; }
+.app-map .app-dots.app-quiet circle { opacity: 0.85; }
+.app-map .app-ring { fill: none; stroke: var(--geores-fg); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.app-climates .app-map { cursor: crosshair; }
+.app-climogram { margin-top: 0.5rem; }
+.app-climogram svg { display: block; width: 100%; height: auto; }
+.app-climates .geores-controls input[type="search"] { min-width: min(18rem, 60vw); }

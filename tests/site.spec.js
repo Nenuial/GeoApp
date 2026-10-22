@@ -195,3 +195,31 @@ test.describe("demograph", () => {
     await expect(page.locator(".app-demograph input.ext")).toBeDisabled();
   });
 });
+
+test.describe("climate explorer", () => {
+  const url = "/climatology/climates.html";
+
+  test("thousands of stations; a station and a second one from the address", async ({ page }) => {
+    await page.goto(`${url}?s=ch-ber&c=wmo-00082331`);
+    expect(await page.locator(".app-dots circle").count()).toBeGreaterThan(4000);
+    await expect(page.locator(".app-climogram")).toContainText("Bern");
+    await expect(page.locator(".app-climogram")).toContainText("Manaus");
+    await expect(page.locator(".app-rings circle")).toHaveCount(2);
+  });
+
+  test("the quiz hides the name and the code, the answer shows them", async ({ page }) => {
+    await page.goto(`${url}?s=wmo-00062366&quiz=1`);
+    await expect(page.locator(".app-climogram")).not.toContainText("Cairo");
+    await expect(page.locator(".app-rings circle")).toHaveCount(0);
+    await page.locator(".app-climates button.reveal").click();
+    await expect(page.locator(".app-climogram")).toContainText("Cairo");
+  });
+
+  test("a click on the map picks the nearest station", async ({ page }) => {
+    await page.goto(url);
+    const dot = page.locator(".app-dots circle[data-id='wmo-00027612']");
+    await dot.click({ force: true });
+    await expect(page).toHaveURL(/s=wmo-00027612/);
+    await expect(page.locator(".app-climogram")).toContainText(/Mosc/);
+  });
+});
