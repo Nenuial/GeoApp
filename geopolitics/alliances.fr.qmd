@@ -21,7 +21,7 @@ Affichez ou masquez chaque groupe avec son bouton (*OTAN* et *Pacte de Varsovie*
 
 ## Fonctionnement
 
-Les membres ont été saisis pour ce cours d'après les listes des organisations elles-mêmes, avec l'année d'entrée de chaque pays et, le cas échéant, celle de sa sortie. La carte suit les frontières actuelles : l'Union soviétique y figure sous la forme de ses 15 républiques ; l'Allemagne apparaît dans l'OTAN à partir de 1990, alors que la RFA y est entrée en 1955, et la RDA ne peut pas être montrée dans le Pacte de Varsovie. L'Arménie a gelé sa participation à l'OTSC en 2024 ; la carte la montre toujours comme membre.
+Les membres ont été saisis pour ce cours d'après les listes des organisations elles-mêmes, avec l'année d'entrée de chaque pays et, le cas échéant, celle de sa sortie. La carte suit les frontières actuelles : l'Union soviétique y figure sous la forme de ses 15 républiques ; l'Allemagne apparaît dans l'OTAN à partir de 1990, alors que la RFA y est entrée en 1955, et la RDA ne peut pas être montrée dans le Pacte de Varsovie. L'Arménie a gelé sa participation à l'OTSC en 2024 : la carte la hachure à partir de cette année.
 
 ## Sources
 

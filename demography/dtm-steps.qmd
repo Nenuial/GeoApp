@@ -5,7 +5,7 @@ description: "Birth rate, death rate and population through the five stages of t
 categories: [Demography]
 ---
 
-The tool opens on the whole model. Go back with ◀ to the first step (the curves alone), then move forward with ▶: each stage appears with its column of the table and its pyramid, which grows out of the pyramid of the stage before. *Whole model* shows everything again. Under the chart, a sentence sums up the stage on screen.
+The tool opens on the whole model. Press ▶ to start again from the first step (the curves alone) and move forward: each stage appears with its column of the table and its pyramid, which grows out of the pyramid of the stage before. *Whole model* shows everything again. Under the chart, a sentence sums up the stage on screen.
 
 ::: {.column-page}
 {{< geores sim="dtm-steps" >}}

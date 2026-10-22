@@ -11,7 +11,13 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/africa-maps.js",
    "description": "the votes of 2022 and 2025 on the war in Ukraine, one or both maps; a state under the pointer: its two votes.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-vote",
+     "example": "2022",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -25,7 +31,18 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/alliances.js",
    "description": "the members of the great alliances and groups year by year since 1949: NATO, the Warsaw Pact, the CSTO (Russia's alliance), the Shanghai Cooperation Organisation, BRICS. Choose one or several (countries in two of the chosen ones are striped); play: the years go by. Today's borders: Germany is shown in NATO from 1990 (West Germany joined in 1955), East Germany cannot be shown in the Warsaw Pact; the Soviet Union is drawn as its 15 republics.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-blocs",
+     "example": "nato,warsaw",
+     "doc": null
+    },
+    {
+     "option": "data-year",
+     "example": "1985",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -48,7 +65,18 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/arctic-routes.js",
    "description": "from Rotterdam to Yokohama, through the Suez Canal or along the north of Russia (the Northern Sea Route), on a map centred on the North Pole (azimuthal equidistant: distances from the pole are true). The sea ice of September (its yearly minimum) in 1980, 2012 (the record low) and 2025; on the right, the September extent of every year since 1979. The route through the Arctic is about 40 % shorter, but open only a few months a year.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-year",
+     "example": "2025",
+     "doc": null
+    },
+    {
+     "option": "data-route",
+     "example": "both",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -75,7 +103,18 @@
    "field": "urban",
    "file": "src/sims/urban/bid-rent.js",
    "description": "why the centre is expensive (Alonso 1964, after von Thünen). Three uses bid for land: shops and offices (who need the most customers: high rent at the centre, falling fast), housing (falling more slowly), farming (low, almost flat). At each distance the highest bid wins, so the city is drawn in rings (Burgess). On the left the three straight lines of rent against distance from the centre, on the right the city seen from above. Options: the cost of transport (cheaper transport: the rings widen, the city spreads), a tram line (along it, getting to the centre costs less: housing reaches further, the rings become sectors, as in Hoyt's model), a second centre (a new business centre: several nuclei, as in Harris and Ullman's model). Rents in imaginary units.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-tram",
+     "example": "false",
+     "doc": null
+    },
+    {
+     "option": "data-second",
+     "example": "false",
+     "doc": null
+    }
+   ],
    "bundles": [],
    "images": []
   },
@@ -84,7 +123,18 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/border-walls.js",
    "description": "the walls and fences on the borders of the world, year by year since 1945. Each wall is drawn on its border in the colour of its main motive (territory, security, migration and smuggling); press play: the walls appear in the year their construction began, those of the current year are drawn as they grow; the chart below counts the walls standing each year. A region zooms in; move over a wall: who built it, against whom, when, and why.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-year",
+     "example": "1989",
+     "doc": null
+    },
+    {
+     "option": "data-region",
+     "example": "europe",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -102,7 +152,18 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/borders-pov.js",
    "description": "the world seen from different countries. The same disputed areas belong to different countries depending on who draws the map: choose a point of view (the government of one of 31 countries, as encoded by Natural Earth, or an international view) and a region (Himalaya, Black Sea, Western Sahara, East Asia, Eastern Mediterranean, Horn of Africa, Falklands). Every country and area is filled with the colour of its owner in that view, the same colour in every view; disputed areas have a dashed outline; the country whose view it is gets a gold outline (not the accent colour: a blue would look like a coast). Move over the map: the name, who administers and who claims, and the owner in this view.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-view",
+     "example": "cn",
+     "doc": null
+    },
+    {
+     "option": "data-region",
+     "example": "himalaya",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -120,7 +181,13 @@
    "field": "urban",
    "file": "src/sims/urban/built-up.js",
    "description": "how much built-up land each city dweller uses, 1975–2050 (UN DESA, World Urbanization Prospects 2025, from the Global Human Settlement Layer: the surface covered by buildings in the cities of the country, by the Degree of Urbanisation, divided by their population). The lines rise almost everywhere: cities spread faster than they grow. Projections after 2025 dashed. Click a country in the key to show or hide it.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-countries",
+     "example": "USA,CHE,FRA,CHN,IND,NGA",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "urban",
@@ -134,7 +201,13 @@
    "field": "urban",
    "file": "src/sims/urban/central-places.js",
    "description": "Christaller's central places (1933), the market principle (k = 3). On an even plain, villages sit on a triangular grid; every third place is also a town, every ninth also a city. Each level serves a hexagonal market area: bread is bought in every village, a doctor is found in the towns, a hospital or a university only in the city. Choose a service: its market areas are drawn; a level that offers it also offers everything below.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-service",
+     "example": "town",
+     "doc": null
+    }
+   ],
    "bundles": [],
    "images": []
   },
@@ -143,7 +216,18 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/chokepoints.js",
    "description": "the narrow passages of world shipping, month by month since 2019 (IMF PortWatch). On the map, the shipping lanes and the 28 chokepoints: the size of a circle is the number of ships per day in the month shown, its colour the change against 2023 (red: fewer ships, blue: more). Below, the story of the chokepoint chosen (click it): ships per day each month since 2019, and the 7-day mean since 2023 for six of them, with the events that explain the changes (the Ever Given, the Houthi attacks, the Panama drought, the Hormuz war). Play: the months go by.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-chokepoint",
+     "example": "chokepoint6",
+     "doc": null
+    },
+    {
+     "option": "data-month",
+     "example": "2026-03",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -171,6 +255,11 @@
      "option": "data-station-src",
      "example": null,
      "doc": "a JSON file with one station or a list ({ id, name, country, lat, lon, el, source, T, P }, see GeoRes.climate.addStations), shown first"
+    },
+    {
+     "option": "data-compare",
+     "example": "wmo-00027612",
+     "doc": null
     }
    ],
    "bundles": [
@@ -193,7 +282,13 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/conflicts.js",
    "description": "the armed conflicts of the world year by year since 1946 (UCDP). On the map, the countries where UCDP locates a conflict in the year shown (for a war between states: the territory of the governments involved, so the United States appear for their strikes on Yemen): orange, a conflict (25 to 999 battle deaths in the year); red, a war (1 000 or more). Below, the number of conflicts each year by type (colonial, between states, within a state, within a state with foreign troops), and the battle deaths since 1989. Play: the years go by; move over a country: its conflicts.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-year",
+     "example": "2025",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -211,7 +306,13 @@
    "field": "geology",
    "file": "src/sims/geology/continents-drift.js",
    "description": "the continents from 250 million years ago (Pangaea) to today, on an Equal Earth map: the coasts reconstructed every 10 million years (Müller et al. 2022, GPlates; dist/paleo.js), with a time slider and a play button, the geological period and what happened then. Between two maps, the sim fades from one to the next.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-age",
+     "example": null,
+     "doc": "the map shown first, in millions of years ago (0 to 250, every 10; default 250)"
+    }
+   ],
    "bundles": [
     {
      "id": "paleo",
@@ -349,7 +450,18 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/emed-sea.js",
    "description": "who owns the Eastern Mediterranean? Three steps on the real zones of Marine Regions (v12): 1 the territorial seas (12 nm; 6 nm for Greece in the Aegean), 2 the exclusive economic zones as Marine Regions draws them (treaties, else median lines where every island counts), 3 the disputed lines (Turkey–Libya 2019, Greece–Egypt 2020, Greece–Turkey). A zoom on the Aegean. Move over a zone or a line: its name, its type, the document it comes from.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-step",
+     "example": "2",
+     "doc": null
+    },
+    {
+     "option": "data-region",
+     "example": "aegean",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "sea",
@@ -408,7 +520,13 @@
    "field": "urban",
    "file": "src/sims/urban/global-cities.js",
    "description": "the world cities of GaWC 2024 (The World According to GaWC, Loughborough University): 332 cities ranked by the offices of the big firms of finance, accountancy, consulting, law and advertising that they host, from Alpha++ (London, New York) to Sufficiency. On the map, one disc per city, larger and brighter for the higher classes; on the right, the number of cities per class and the Swiss cities. Show: Alpha only, Alpha and Beta, or all. Move over a city: its class.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-show",
+     "example": "alpha",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -480,7 +598,13 @@
    "field": "climatology",
    "file": "src/sims/climatology/koppen-key.js",
    "description": "choose a station; its climogram (left, without the key numbers) and the Köppen-Geiger key step by step (right): each test with the station's numbers and the letter it gives.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-station",
+     "example": "ch-lug",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "climate",
@@ -592,7 +716,13 @@
    "field": "cartography",
    "file": "src/sims/cartography/map-scales.js",
    "description": "the same place (Neuchâtel) at four scales, to see generalisation. Four swisstopo national maps with the same centre, 1:10 000, 1:50 000, 1:200 000 and 1:1 000 000, each view 4 times wider than the one before (16 times the area). Zoom out and in (buttons, slider or the four scales above the text): the map shrinks about the centre and fades into the next one. On each view: a scale bar, the width and area of the view, the frame of the previous (more detailed) view in red, and what the map leaves out or simplifies. Follows the page's light/dark theme.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-level",
+     "example": null,
+     "doc": "0 (1:10 000, default) … 3 (1:1 000 000)"
+    }
+   ],
    "bundles": [],
    "images": [
     "nemap17.jpg",
@@ -624,7 +754,18 @@
    "field": "geology",
    "file": "src/sims/geology/plate-map.js",
    "description": "the plates of the world (PB2002) on an Equal Earth map, their boundaries coloured by type (apart, together, sliding past; the teeth of the subduction zones on the overriding plate), with layers that can be switched on: the earthquakes of magnitude 6 or more since 1975 (size: magnitude, colour: depth), the Holocene volcanoes, the age of the ocean floor. Move over the map: the plate, the boundary (and how fast the plates move there), the earthquake or the volcano under the pointer. layers=\"bounds,quakes,volcanoes,age\": the layers shown at first; lon0: the central meridian (10 or 150). Data: dist/tectonics.js (tools/geology-data.R).",
-   "options": [],
+   "options": [
+    {
+     "option": "data-layers",
+     "example": null,
+     "doc": "the layers shown at first, comma-separated among bounds (default), quakes, volcanoes, age;"
+    },
+    {
+     "option": "data-lon0",
+     "example": null,
+     "doc": "the central meridian, 10 (default) or 150"
+    }
+   ],
    "bundles": [
     {
      "id": "tectonics",
@@ -652,7 +793,18 @@
    "field": "cartography",
    "file": "src/sims/cartography/projection-explorer.js",
    "description": "the eight world projections of the DF book, one at a time, with Tissot's indicatrices (circles of the same size on the globe) to see what each projection keeps: shapes (conformal), areas (equal-area) or a bit of both (compromise). The central meridian can be moved. Follows the page's light/dark theme.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-set",
+     "example": null,
+     "doc": "rectangular (the first four) or nonrectangular (the four others), default all eight"
+    },
+    {
+     "option": "data-projection",
+     "example": null,
+     "doc": "the projection shown first (platecarree, mercator, gallpeters, hobodyer, goode, robinson, winkel, equalearth)"
+    }
+   ],
    "bundles": [],
    "images": []
   },
@@ -678,8 +830,14 @@
    "name": "rank-size",
    "field": "urban",
    "file": "src/sims/urban/rank-size.js",
-   "description": "the cities of a country ranked by population (UN DESA, World Urbanization Prospects 2025, cities by the Degree of Urbanisation: 50 000 people or more at 1 500 per km²), on logarithmic axes, against the rank-size rule (Zipf: the city of rank r has 1/r of the largest). A \"primate city\" (Paris, London, Lagos) stands far above the line; a flat hierarchy (Switzerland, Germany, Italy) has its largest city below it. On the right, the five largest.",
-   "options": [],
+   "description": "the cities of a country ranked by population (UN DESA, World Urbanization Prospects 2025, cities by the Degree of Urbanisation: 50 000 people or more at 1 500 per km²), on logarithmic axes, against the rank-size rule (Zipf: the city of rank r has 1/r of the largest). A \"primate city\" (Paris, London, Tokyo) stands far above the line; a flat hierarchy (Switzerland, Germany, Italy, India, Nigeria) has its largest city below it. On the right, the five largest.",
+   "options": [
+    {
+     "option": "data-country",
+     "example": "FRA",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "urban",
@@ -693,7 +851,13 @@
    "field": "cosmology",
    "file": "src/sims/cosmology/redshift.js",
    "description": "the Doppler effect and the redshift. A source moves with a chosen speed and emits waves; the observer it moves away from receives longer waves, the other one shorter. Sound: a siren (lower / higher pitch). Light: a galaxy, with its spectrum and the hydrogen lines shifted towards the red. Speeds are fractions of the speed of the waves (not to scale).",
-   "options": [],
+   "options": [
+    {
+     "option": "data-mode",
+     "example": null,
+     "doc": "light (default: a galaxy and its spectrum) or sound (a siren)"
+    }
+   ],
    "bundles": [],
    "images": []
   },
@@ -731,7 +895,13 @@
    "field": "geopolitics",
    "file": "src/sims/geopolitics/africa-maps.js",
    "description": "the Russian forces year by year (2017–2026, play), the French departures; a state under the pointer: its story.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-year",
+     "example": "2017",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "countries",
@@ -900,7 +1070,13 @@
    "field": "history",
    "file": "src/sims/history/russia-territory.js",
    "description": "Russia from the Rus' of Kiev (1000) to the Russian Federation (1991), date by date: a click on a date of the strip, ‹ › for the date before or after, ▶ to play them in turn. Drawn by GeoRes.history.territory (diagrams/history/russia-territory.js), on the dark stage.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-year",
+     "example": "1000",
+     "doc": null
+    }
+   ],
    "bundles": [
     {
      "id": "history",
@@ -950,7 +1126,13 @@
    "field": "cosmology",
    "file": "src/sims/cosmology/season-steps.js",
    "description": "the solstice / equinox drawing (diagram \"season-earth\"), built step by step with ◀ ▶ buttons and the instruction of each step. Follows the page's light/dark theme.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-season",
+     "example": "winter",
+     "doc": null
+    }
+   ],
    "bundles": [],
    "images": []
   },
@@ -968,7 +1150,13 @@
    "field": "geology",
    "file": "src/sims/geology/seismic-waves.js",
    "description": "how the rock moves when a seismic wave passes. One band per wave, a block of rock drawn as a grid that the wave deforms: P (push and pull), S (shake across), Love (side to side, seen from above) and Rayleigh (rolling, like ocean waves). All waves leave the earthquake together: the P wave arrives first. waves=\"PS\" shows the body waves only, with a switch to fill the block with water: the P wave crosses it (slower), the S wave does not exist in a liquid.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-waves",
+     "example": null,
+     "doc": "the waves shown, among P, S, L (Love) and R (Rayleigh), default PSLR; PS adds the water switch"
+    }
+   ],
    "bundles": [],
    "images": []
   },
@@ -986,7 +1174,13 @@
    "field": "cartography",
    "file": "src/sims/cartography/swiss-grid.js",
    "description": "reading Swiss coordinates (LV95) on a swisstopo map of Bern around the old observatory, the 0 point of the Swiss grid (E 2 600 000 / N 1 200 000). Point at the map (or tap it): a crosshair, the coordinates E / N and the distance from the origin. Two small exercises with four places of the old town: find the place at given coordinates (click it), or read the coordinates of a marked place (then \"Answer\"). The 1 km grid can be highlighted, labelled on the edges, with ticks every 100 m. The map (dist/bernmap.jpg, © swisstopo) and the conversions are in src/diagrams/cartography/swiss-grid.js (R_.swissGrid), shared with the static diagram.",
-   "options": [],
+   "options": [
+    {
+     "option": "data-mode",
+     "example": null,
+     "doc": "explore (default), find, read"
+    }
+   ],
    "bundles": [],
    "images": [
     "bernmap.jpg"
@@ -1022,6 +1216,11 @@
      "option": "data-right",
      "example": null,
      "doc": "map (default) or photo"
+    },
+    {
+     "option": "data-year",
+     "example": "1880",
+     "doc": null
     }
    ],
    "bundles": [],
@@ -1071,6 +1270,11 @@
      "option": "data-mode",
      "example": null,
      "doc": "own (default), common (cities and towns), cities (cities only)"
+    },
+    {
+     "option": "data-year",
+     "example": "2025",
+     "doc": null
     }
    ],
    "bundles": [
@@ -1134,6 +1338,11 @@
      "option": "data-region",
      "example": null,
      "doc": "boswash, tokaido, banana (the megalopolises), switzerland: a closer view, the ten largest of the region"
+    },
+    {
+     "option": "data-year",
+     "example": "2025",
+     "doc": null
     }
    ],
    "bundles": [

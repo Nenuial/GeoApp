@@ -21,7 +21,7 @@ Switch the groups on and off with their buttons (*NATO* and *Warsaw Pact* at fir
 
 ## How it works
 
-The members were encoded for this course from the organisations' own lists, with the year each country joined and, where it applies, the year it left. The map has today's borders: the Soviet Union is drawn as its 15 republics; Germany is shown in NATO from 1990, although West Germany joined in 1955, and East Germany cannot be shown in the Warsaw Pact. Armenia froze its membership of the CSTO in 2024; the map still shows it as a member.
+The members were encoded for this course from the organisations' own lists, with the year each country joined and, where it applies, the year it left. The map has today's borders: the Soviet Union is drawn as its 15 republics; Germany is shown in NATO from 1990, although West Germany joined in 1955, and East Germany cannot be shown in the Warsaw Pact. Armenia froze its membership of the CSTO in 2024: the map hatches it from that year.
 
 ## Sources
 

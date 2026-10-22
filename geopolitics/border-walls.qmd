@@ -21,7 +21,7 @@ Press *Play*: the years go by, and each wall appears, growing along its border, 
 
 ## How it works
 
-The walls come from a dataset of international border walls, which records for each wall the state that builds it, the neighbour, the dates of construction and destruction, and the motives; the sim shows the main motive only. The routes are recorded for each pair of states: every wall of a pair takes the date when the first of its sections was begun, and counts as destroyed only when all its sections are. Walls without a known route are counted in the chart but not drawn. The dataset ends with walls begun in 2020; four walls begun later were added for this course on approximate routes: Lithuania–Belarus (2021), Poland–Belarus and Poland–Russia (Kaliningrad, 2022), Finland–Russia (2023).
+The walls come from a dataset of international border walls, which records for each wall the state that builds it, the neighbour, the dates of construction and destruction, and the motives; the sim shows the main motive only. The routes are recorded for each pair of states: every wall of a pair takes the date when the first of its sections was begun, and counts as destroyed only when all its sections are. Walls without a known route are counted in the chart but not drawn. The dataset ends with walls begun in 2020; four walls begun later were added for this course on approximate routes: Lithuania–Belarus (2021), Poland–Belarus and Poland–Russia (Kaliningrad, 2022), Finland–Russia (2023). Only walls between today's states are in the data: the Berlin Wall and the Iron Curtain are not; 1989 is marked as a date.
 
 ## Sources
 

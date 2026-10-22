@@ -7629,13 +7629,13 @@
       bwdTitle: (a, b, y) => `Border walls: ${a} in 1989, ${b} in ${y}`, bwdMap: y => `The walls standing in ${y}`, bwdChart: "walls standing each year",
       bwdMotives: { territory: "territory (dispute, demarcation)", security: "security (militants, terrorism)", migration: "migration and smuggling", other: "other" },
       bwdUnmapped: n => `${n} walls without a known route are counted, not drawn`,
-      bwdSource: "Kenwick, Pauselli & Simmons (2026), CC0; walls begun after 2020 added for this course",
+      bwdSource: "Kenwick, Pauselli & Simmons (2026), CC0: walls between today's states (no Berlin Wall or Iron Curtain); walls begun after 2020 added for this course",
     },
     fr: {
       bwdTitle: (a, b, y) => `Murs frontaliers : ${a} en 1989, ${b} en ${y}`, bwdMap: y => `Les murs debout en ${y}`, bwdChart: "murs debout chaque année",
       bwdMotives: { territory: "territoire (conflit, démarcation)", security: "sécurité (militants, terrorisme)", migration: "migrations et contrebande", other: "autre" },
       bwdUnmapped: n => `${n} murs sans tracé connu sont comptés, pas dessinés`,
-      bwdSource: "Kenwick, Pauselli & Simmons (2026), CC0 ; murs commencés après 2020 ajoutés pour ce cours",
+      bwdSource: "Kenwick, Pauselli & Simmons (2026), CC0 : murs entre États actuels (ni mur de Berlin ni rideau de fer) ; murs commencés après 2020 ajoutés pour ce cours",
     },
   });
 
@@ -15003,6 +15003,9 @@
 // Tissot's indicatrices (circles of the same size on the globe) to see what each projection keeps:
 // shapes (conformal), areas (equal-area) or a bit of both (compromise). The central meridian can
 // be moved. Follows the page's light/dark theme.
+//   <div class="geores" data-sim="projection-explorer" data-set="rectangular" data-projection="mercator"></div>
+//   data-set: rectangular (the first four) or nonrectangular (the four others), default all eight; data-projection:
+//   the projection shown first (platecarree, mercator, gallpeters, hobodyer, goode, robinson, winkel, equalearth)
 (function (G) {
   const R_ = G.GeoRes, pg = R_.page, { svgDoc } = R_.lib;
 
@@ -16860,6 +16863,8 @@
 // emits waves; the observer it moves away from receives longer waves, the other one shorter.
 // Sound: a siren (lower / higher pitch). Light: a galaxy, with its spectrum and the hydrogen
 // lines shifted towards the red. Speeds are fractions of the speed of the waves (not to scale).
+//   <div class="geores" data-sim="redshift" data-mode="sound"></div>
+//   data-mode: light (default: a galaxy and its spectrum) or sound (a siren)
 (function (G) {
   const R_ = G.GeoRes, pg = R_.page;
 
@@ -17287,13 +17292,13 @@
   R_.addStrings({
     en: {
       dtmIntro: "The <b>birth rate</b> (CBR) and the <b>death rate</b> (CDR): the area between them is the <b>natural increase</b> (RNI), the blue line the <b>population</b>.",
-      dtmStageText: "<b>Stage {i}</b>: birth rate {cbr}, death rate {cdr}, population: <b>{pop}</b>.",
-      dtmStep: "Step {i} of {n}", dtmAll: "Whole model", prev: "Previous step", next: "Next step",
+      dtmStageText: "<b>Stage {i}</b>: birth rate {cbr}, death rate {cdr}, natural increase: <b>{pop}</b>.",
+      dtmStep: "Step {i} of {n}", dtmAll: "Whole model", prev: "Previous step", next: "Next step", dtmRestart: "From the first step",
     },
     fr: {
       dtmIntro: "Le <b>taux de natalité</b> et le <b>taux de mortalité</b> : la surface entre les deux est l'<b>accroissement naturel</b>, la ligne bleue la <b>population</b>.",
-      dtmStageText: "<b>Phase {i}</b> : natalité {cbr}, mortalité {cdr}, population : <b>{pop}</b>.",
-      dtmStep: "Étape {i} sur {n}", dtmAll: "Modèle complet", prev: "Étape précédente", next: "Étape suivante",
+      dtmStageText: "<b>Phase {i}</b> : natalité {cbr}, mortalité {cdr}, accroissement naturel : <b>{pop}</b>.",
+      dtmStep: "Étape {i} sur {n}", dtmAll: "Modèle complet", prev: "Étape précédente", next: "Étape suivante", dtmRestart: "Depuis la première étape",
     },
   });
 
@@ -17367,11 +17372,15 @@
       caption.innerHTML = k === 1 || !one ? tr("dtmIntro") : tr("dtmStageText").replace("{i}", k - 1)
         .replace("{cbr}", stages[k - 2][0]).replace("{cdr}", stages[k - 2][1]).replace("{pop}", stages[k - 2][2]);
       panel.querySelector(".prev").disabled = k <= 1;
-      panel.querySelector(".next").disabled = k >= n;
+      // on the whole model, ▶ starts again from the first step
+      panel.querySelector(".next").setAttribute("aria-label", tr(k >= n ? "dtmRestart" : "next"));
     }
 
     panel.querySelector(".prev").addEventListener("click", () => { k = Math.max(1, k - 1); show(true); });
-    panel.querySelector(".next").addEventListener("click", () => { k = Math.min(n, k + 1); show(true, k - 2); });
+    panel.querySelector(".next").addEventListener("click", () => {
+      if (k >= n) { k = 1; show(true); return; }
+      k += 1; show(true, k - 2);
+    });
     panel.querySelector(".all").addEventListener("click", () => { k = n; show(true); });
     draw();
     pg.onThemeChange(draw);
@@ -18424,6 +18433,8 @@
 // map: the coasts reconstructed every 10 million years (Müller et al. 2022, GPlates; dist/paleo.js), with
 // a time slider and a play button, the geological period and what happened then. Between two maps, the
 // sim fades from one to the next.
+//   <div class="geores" data-sim="continents-drift" data-age="200"></div>
+//   data-age: the map shown first, in millions of years ago (0 to 250, every 10; default 250)
 (function (G) {
   const R_ = G.GeoRes, { clamp } = R_.lib;
 
@@ -20508,6 +20519,9 @@
 // boundary (and how fast the plates move there), the earthquake or the volcano under the pointer.
 // layers="bounds,quakes,volcanoes,age": the layers shown at first; lon0: the central meridian (10 or 150).
 // Data: dist/tectonics.js (tools/geology-data.R).
+//   <div class="geores" data-sim="plate-map" data-layers="bounds,quakes" data-lon0="150"></div>
+//   data-layers: the layers shown at first, comma-separated among bounds (default), quakes, volcanoes, age;
+//   data-lon0: the central meridian, 10 (default) or 150
 (function (G) {
   const R_ = G.GeoRes, { clamp } = R_.lib;
 
@@ -21461,6 +21475,8 @@
 // seen from above) and Rayleigh (rolling, like ocean waves). All waves leave the earthquake together:
 // the P wave arrives first. waves="PS" shows the body waves only, with a switch to fill the block with
 // water: the P wave crosses it (slower), the S wave does not exist in a liquid.
+//   <div class="geores" data-sim="seismic-waves" data-waves="PS"></div>
+//   data-waves: the waves shown, among P, S, L (Love) and R (Rayleigh), default PSLR; PS adds the water switch
 (function (G) {
   const R_ = G.GeoRes, { clamp } = R_.lib;
 
@@ -22034,7 +22050,10 @@
       ctx.fillStyle = SEA; ctx.fillRect(MAP.x, MAP.y, MAP.w, MAP.h);
       countries.forEach(({ c, path }) => {
         const ks = BLOCS.filter(k => on.has(k) && member(k, c.id, year));
+        // Armenia froze its CSTO membership in 2024: hatched, as on the static map
+        const frozen = c.id === "ARM" && year >= 2024 && ks.length === 1 && ks[0] === "csto";
         if (!ks.length) ctx.fillStyle = LAND;
+        else if (frozen) ctx.fillStyle = patterns.armFrozen || (patterns.armFrozen = stripes(LAND, COL.csto));
         else if (ks.length === 1) ctx.fillStyle = COL[ks[0]];
         else { const key = ks.slice(0, 2).join(); ctx.fillStyle = patterns[key] || (patterns[key] = stripes(COL[ks[0]], COL[ks[1]])); }
         ctx.fill(path, "evenodd");
@@ -22236,7 +22255,7 @@
       bwMotive: m => `motive: ${m}`, bwAdded: "added for this course (after the dataset), approximate route",
       bwHint: "Move over a wall.", bwUnmapped: n => `${n} walls without a known route are counted, not drawn`,
       bwEvents: { 1989: "fall of the Berlin Wall", 2001: "11 September", 2015: "refugees in Europe", 2022: "war in Ukraine" },
-      bwSource: "Kenwick, Pauselli & Simmons (2026), CC0; walls begun after 2020 added",
+      bwSource: "Kenwick, Pauselli & Simmons (2026), CC0: walls between today's states (no Berlin Wall or Iron Curtain); walls begun after 2020 added",
     },
     fr: {
       bwTitle: "Les murs aux frontières du monde", bwStanding: n => `${n} murs debout`, bwPlay: "Lecture", bwPause: "Pause", bwYear: "Année", bwRegion: "Région",
@@ -22246,7 +22265,7 @@
       bwMotive: m => `motif : ${m}`, bwAdded: "ajouté pour ce cours (après les données), tracé approximatif",
       bwHint: "Passez sur un mur.", bwUnmapped: n => `${n} murs sans tracé connu sont comptés, pas dessinés`,
       bwEvents: { 1989: "chute du mur de Berlin", 2001: "11 septembre", 2015: "réfugiés en Europe", 2022: "guerre en Ukraine" },
-      bwSource: "Kenwick, Pauselli & Simmons (2026), CC0 ; murs commencés après 2020 ajoutés",
+      bwSource: "Kenwick, Pauselli & Simmons (2026), CC0 : murs entre États actuels (ni mur de Berlin ni rideau de fer) ; murs commencés après 2020 ajoutés",
     },
   });
 
@@ -24404,9 +24423,12 @@
     const GY = 520, K = 0.14, Y = h => GY - h * K;
     const START = 400, CREST = 3000, T0 = 20;
     // terrain: [x, altitude]
-    const TER = [[0, 300], [180, 350], [300, 700], [420, 1500], [520, 2400], [600, 3000], [640, 3000], [720, 2400], [830, 1500], [950, 700], [1080, 450], [1280, 420]];
-    const alt = x => { for (let i = 1; i < TER.length; i++) if (x <= TER[i][0]) { const [x0, a0] = TER[i - 1], [x1, a1] = TER[i]; return a0 + (a1 - a0) * (x - x0) / (x1 - x0); } return 420; };
+    // (the valley on the north side as low as the start, so that the air arrives at the altitude it left: without a
+    // cloud, it comes back to the temperature it started with)
+    const TER = [[0, 300], [180, 350], [300, 700], [420, 1500], [520, 2400], [600, 3000], [640, 3000], [720, 2400], [830, 1500], [950, 700], [1080, 330], [1280, 310]];
+    const alt = x => { for (let i = 1; i < TER.length; i++) if (x <= TER[i][0]) { const [x0, a0] = TER[i - 1], [x1, a1] = TER[i]; return a0 + (a1 - a0) * (x - x0) / (x1 - x0); } return 310; };
     const pathAlt = x => Math.max(alt(x) + 150, x < 160 ? START : 0);
+    const TOP = CREST + 150;   // the highest point of the way: a cloud forms if its base is lower
     let lcl = 1500, x = 60, playing = false;
     const sl = panel.querySelector("input");
     sl.addEventListener("input", () => { lcl = +sl.value; x = 60; playing = false; });
@@ -24427,8 +24449,8 @@
       ctx.clearRect(0, 0, W, H);
       X.sky(ctx, 0, 0, W, GY + 40, "#2a6fb8", "#cfeaf8");
       // cloud and rain on the windward side, above the cloud base
-      const cb = Math.min(lcl, CREST);
-      if (lcl < CREST) {
+      const cb = Math.min(lcl, CREST), cloudy = lcl < TOP;
+      if (cloudy) {
         for (let q = 280; q <= 640; q += 26) {
           const h = alt(q);
           if (h + 150 > cb) {
@@ -24448,8 +24470,10 @@
       // altitude scale
       for (let h = 0; h <= 3000; h += 1000) text(X.metres(h), W - 10, Y(h) + 5, { size: 13, color: "rgba(255,255,255,0.8)", align: "right" });
       ctx.setLineDash([6, 6]); ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(150, Y(lcl)); ctx.lineTo(620, Y(lcl)); ctx.stroke(); ctx.setLineDash([]);
-      if (lcl < CREST) text(tr("foBase").replace("{n}", X.metres(lcl)), 154, Y(lcl) - 8, { size: 15, color: "#fff", halo: "rgba(0,0,0,0.3)" });
+      // up by the wind and the key, the line and its label start right of the key (the label below the line)
+      const high = Y(lcl) < 170;
+      ctx.beginPath(); ctx.moveTo(high ? 290 : 150, Y(lcl)); ctx.lineTo(620, Y(lcl)); ctx.stroke(); ctx.setLineDash([]);
+      if (cloudy) text(tr("foBase").replace("{n}", X.metres(lcl)), high ? 300 : 154, high ? Y(lcl) + 22 : Y(lcl) - 8, { size: 15, color: "#fff", halo: "rgba(0,0,0,0.3)" });
       // the parcel
       const h = pathAlt(x), t = tempAt(x);
       // coral: rising dry (DALR), blue: rising in the cloud (SALR), red: coming down dry (DALR)
@@ -24462,8 +24486,10 @@
       text(tr("foStart").replace("{t}", degC(T0)), 60, 40, { size: 22, weight: 700, color: "#fff", halo: "rgba(0,0,0,0.3)" });
       if (x >= 1240) {
         const diff = tEnd - T0;
-        text(tr("foArrival").replace("{t}", degC(tEnd)), W - 30, 40, { size: 22, weight: 700, color: diff > 0.5 ? "#ffd2c4" : "#fff", align: "right", halo: "rgba(0,0,0,0.3)" });
-        text(diff > 0.5 ? tr("foWarmer").replace("{n}", Math.round(diff)) : tr("foNone"), W - 30, 72, { size: 20, weight: 600, color: "#fff", align: "right", halo: "rgba(0,0,0,0.3)" });
+        // a thin cloud over the crest warms the air by less than a degree: one decimal then
+        const warm = R_.num(R_.lang(opts.lang), diff, diff < 0.95 ? 1 : 0);
+        text(tr("foArrival").replace("{t}", degC(tEnd)), W - 84, 40, { size: 22, weight: 700, color: cloudy ? "#ffd2c4" : "#fff", align: "right", halo: "rgba(0,0,0,0.3)" });
+        text(cloudy ? tr("foWarmer").replace("{n}", warm) : tr("foNone"), W - 84, 72, { size: 20, weight: 600, color: "#fff", align: "right", halo: "rgba(0,0,0,0.3)" });
       }
       const dot = (x, y, c, s) => {
         ctx.fillStyle = `rgb(${c})`; ctx.beginPath(); ctx.arc(x, y - 6, 9, 0, 2 * Math.PI); ctx.fill();
@@ -27398,8 +27424,8 @@
 // ---- src/sims/urban/rank-size.js ----
 // Sim "rank-size": the cities of a country ranked by population (UN DESA, World Urbanization Prospects 2025, cities by
 // the Degree of Urbanisation: 50 000 people or more at 1 500 per km²), on logarithmic axes, against the rank-size rule
-// (Zipf: the city of rank r has 1/r of the largest). A "primate city" (Paris, London, Lagos) stands far above the line;
-// a flat hierarchy (Switzerland, Germany, Italy) has its largest city below it. On the right, the five largest.
+// (Zipf: the city of rank r has 1/r of the largest). A "primate city" (Paris, London, Tokyo) stands far above the line;
+// a flat hierarchy (Switzerland, Germany, Italy, India, Nigeria) has its largest city below it. On the right, the five largest.
 //   <div class="geores" data-sim="rank-size" data-country="FRA"></div>
 // Data: dist/urban.js (urbanNet.ranks, tools/network-data.R).
 (function (G) {
