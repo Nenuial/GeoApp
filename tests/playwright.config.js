@@ -1,16 +1,18 @@
 // Playwright: the built site (_build/site, `make render`) served at the root, checked at phone, projector
-// and full-HD sizes. `make test` from the project folder.
+// and full-HD sizes. `make test` from the project folder; GEOAPP_URL=<address> checks another server instead
+// (the Docker image, or https://app.geoviews.ch after a release).
 import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 4322;
+const URL = process.env.GEOAPP_URL;
 
 export default defineConfig({
   testDir: ".",
   outputDir: "test-results",
   fullyParallel: true,
   reporter: [["list"]],
-  use: { baseURL: `http://localhost:${PORT}` },
-  webServer: {
+  use: { baseURL: URL || `http://localhost:${PORT}` },
+  webServer: URL ? undefined : {
     command: `node ../tools/serve.mjs ${PORT}`,
     port: PORT,
     reuseExistingServer: true,

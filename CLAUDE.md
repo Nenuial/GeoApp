@@ -41,8 +41,15 @@ the other sessions and the shared folders). Plan: `~/.claude/plans/you-are-geoap
   "What to look for" (classroom prompts), "How it works", "Sources". The user reviews the texts.
 - House rules for figures (GeoResources): no native `title` tooltips on figures, controls never over chart text,
   blue only for water on maps, a selection is an outline, a non-breaking space before %, pages work on phones.
-- GeoApp's own tools (rebuilt old tools) are written in the GeoRes sim format (`GeoRes.sims["app-…"]`) and loaded by
-  GeoApp's own shortcode in `_extensions/geoapp/` (to come). Never write into `_extensions/geores/`: sync replaces it.
+- GeoApp's own tools are written in the GeoRes sim format (`GeoRes.sims["app-<tool>"]`) in
+  `_extensions/geoapp/tools/<tool>.js` (helpers: `tools/_app.js`, `GeoRes.app`), and placed with
+  `{{< app tool="<tool>" bundles="<GeoRes bundles>" presets="…" >}}` (`_extensions/geoapp/geoapp.lua`).
+  Never write into `_extensions/geores/`: sync replaces it.
+- The tools: pyramids, explorer (demography: WPP 2024), demograph (HMD), climates (GeoResources' WMO stations),
+  votes (FSO, cartogram = GeoResources' vote-map with `src`). They draw SVG at the size of their box (text in pixels,
+  legible on phones) and keep their state in the address.
+- `_extensions/geoapp/french-spaces.lua` is a copy of quarto-keynote's filter (geokey): recopy it when geokey announces
+  a change.
 - Until GeoResources ships `dist/catalog.json`, the list of sim pages is written by hand (geokey's request).
 
 ## GeoResources
@@ -51,6 +58,25 @@ the other sessions and the shared folders). Plan: `~/.claude/plans/you-are-geoap
   (never `-dirty`). `dist/svg/` (print SVGs) is gitignored and excluded from Dropbox: the website does not use it.
 - New sims, changes to sims, data in GeoResources (e.g. the WMO climate normals): ask `geokey`. The any-vote data for
   Swiss votes is GeoApp's to build (`data-raw/`, schema of GeoResources `data/cartography/votes.json`).
+
+## Data (`data-raw/`, outputs in `data/`, committed)
+
+- `Rscript data-raw/wpp.R`: UN WPP 2024 (`geodata::gdt_wpp_*`) → `data/wpp` (places, pyramids, indicators).
+  Next WPP release: every two years.
+- `Rscript data-raw/hmd.R`: `geodata::gdt_hmd_demography` (geoverse) → `data/hmd/demograph.json`.
+- `Rscript data-raw/votes.R`: **after each federal vote day** (4 times a year), then render, test, release.
+  After each 1 January, the new commune geometries first (see the script), then `Rscript data-raw/votes.R all`.
+- Climate stations: GeoResources' bundles (geokey), nothing to build here.
+
+## Release (Docker on the VPS; every release approved by the user)
+
+- Server `ubuntu@5.196.76.20`, folder `~/GeoApp`: `compose.yml` (service `geoapp`, network `npm` of Nginx Proxy
+  Manager, as GeoExam), `.env` (`GEOAPP_TAG`), `releases/<tag>/` (site + Dockerfile + Caddyfile).
+- `tools/release.sh v2.x.y`: checks (committed, rendered, no conflict copies), tags, sends, builds `geoapp:<tag>` on
+  the server, starts it. `tools/release.sh --rollback <tag>` goes back to an earlier image.
+- After a release: `cd tests && GEOAPP_URL=https://app.geoviews.ch npx playwright test`.
+- `docker/Caddyfile`: clean URLs, precompressed data, `no-cache` + ETag, `noindex`, no X-Frame-Options (Moodle).
+  Local check: `colima start`, build `docker/` with `_build/site` as `site/`, run on a free port, `GEOAPP_URL=…`.
 
 ## Commands
 

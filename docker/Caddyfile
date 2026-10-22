@@ -1,0 +1,31 @@
+# GeoApp behind Nginx Proxy Manager (TLS there): plain HTTP on port 80 inside the `npm` network.
+{
+	admin off
+	auto_https off
+}
+
+:80 {
+	root * /srv
+	encode zstd gzip
+
+	# Clean addresses: /demography/pyramids serves /demography/pyramids.html
+	try_files {path} {path}.html {path}/index.html
+
+	# Every file is checked again at each visit (a cheap 304 thanks to the ETag): file names don't change between
+	# releases, so a longer cache could mix new pages with old scripts, or keep the vote index of yesterday.
+	# Not indexed by search engines (robots.txt too). No X-Frame-Options: Moodle frames the ?embed pages.
+	header {
+		Cache-Control "no-cache"
+		X-Robots-Tag "noindex"
+		-Server
+	}
+
+	# The data files are precompressed at render (render.sh): served as .gz to the browsers that accept it
+	file_server {
+		precompressed gzip
+	}
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
+}

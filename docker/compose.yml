@@ -1,0 +1,16 @@
+# GeoApp on the server (~/GeoApp): one Caddy container serving the rendered site, reached by Nginx Proxy Manager
+# (proxy host app.geoviews.ch → http://geoapp:80) through the external `npm` network, as GeoExam.
+# The image is built on the server by tools/release.sh; GEOAPP_TAG (in .env) picks the release; rolling back is
+# setting the previous tag and `docker compose up -d`.
+networks:
+  npm:
+    external: true
+    name: npm
+
+services:
+  geoapp:
+    image: geoapp:${GEOAPP_TAG:?Set GEOAPP_TAG in .env}
+    container_name: geoapp
+    restart: unless-stopped
+    networks:
+      - npm
