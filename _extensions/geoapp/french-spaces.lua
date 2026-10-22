@@ -1,4 +1,4 @@
--- Copy of Visualization/Quarto/quarto-keynote/_extensions/keynote/french-spaces.lua (keynote 3.14.0, owner geokey):
+-- Copy of Visualization/Quarto/quarto-keynote/_extensions/keynote/french-spaces.lua (keynote 3.14.1, owner geokey):
 -- update it from there when that file changes. Used by GeoApp on every page; it only acts on French pages.
 --
 -- French typography in decks whose `lang` is French (fr, fr-CH…): the spaces that must not break become
@@ -63,9 +63,33 @@ local function french(meta)
   return l:sub(1, 2):lower() == "fr"
 end
 
+-- the space at the end of bold or italic text, with the sign right after it: **santé **; (searched inside nested
+-- containers); found by geodoc (lddr-french 1.0.1)
+local function inlines_of(el)
+  local ok, c = pcall(function() return el.content end)
+  return ok and type(c) == "table" and c or nil
+end
+local function trailing_space(el)
+  local c = inlines_of(el)
+  if not c or #c == 0 then return nil end
+  local last = c[#c]
+  if is_space(last) then return el, #c end
+  if inlines_of(last) then return trailing_space(last) end
+  return nil
+end
+local function before_mark(el)
+  if not el or el.t ~= "Str" then return false end
+  for _, p in ipairs(BEFORE) do if starts(el.text, p) then return true end end
+  return false
+end
+
 local function fix_inlines(inl)
   for i = 1, #inl do
     local el = inl[i]
+    if inlines_of(el) and before_mark(inl[i + 1]) then
+      local owner, k = trailing_space(el)
+      if owner then owner.content[k] = pandoc.Str(NB) end
+    end
     if is_space(el) and nb_space(inl[i - 1], inl[i + 1]) then
       inl[i] = pandoc.Str(NB)
     elseif el.t == "Str" then
