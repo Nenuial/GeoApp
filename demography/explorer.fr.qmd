@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/explorer.jpg
+title: "Explorateur de population"
+description: "Accroissement naturel, fécondité, espérance de vie, mortalité infantile, âge médian et migrations de tous les pays, 1950–2100."
+categories: [Démographie, Données]
+---
+
+Choisissez un indicateur et une année, ou lancez la *Lecture*. *Carte* colore les pays, *Tableau* les liste (cliquez sur une colonne pour trier, téléchargez la série complète en CSV) et *Courbes* trace l'évolution d'un lieu de 1950 à 2100. Un clic sur un pays de la carte ou sur une ligne du tableau ouvre ses courbes ; de là, un lien ouvre sa pyramide des âges.
+
+::: {.column-page}
+{{< app tool="explorer" bundles="countries" presets="ind,y,view,c" >}}
+:::
+
+## À observer
+
+- Carte de l'accroissement naturel : faites défiler de 1950 à 2100. Où est-il le plus fort en 1970, en 2020, en 2080 ? Quels pays ont déjà plus de décès que de naissances ?
+- Ouvrez les courbes d'un pays européen, puis d'un pays du Sahel : où en sont-ils de la transition démographique, et quand la natalité a-t-elle baissé (ou baissera-t-elle) ?
+- Carte de la fécondité en 2024 : quels pays sont sous 2,1 enfants par femme ? Qu'est-ce que cela signifie pour leur population à long terme ?
+- Comparez l'espérance de vie des femmes et des hommes en Russie et en Suisse. Quel est l'écart, et comment a-t-il évolué ?
+- Carte du solde migratoire : quels pays gagnent des habitants par la migration, et lesquels en perdent ?
+
+## Fonctionnement
+
+Toutes les valeurs sont les estimations des Nations unies jusqu'en 2023 et leurs projections dès 2024 (variante moyenne) : après 2023, les courbes sont des hypothèses, pas des observations. L'accroissement naturel est la natalité moins la mortalité, en % par an ; il ne tient pas compte des migrations. La carte utilise les frontières de Natural Earth : les départements d'outre-mer sont dessinés avec la France, Åland avec la Finlande et le Somaliland avec la Somalie, comme les compte l'ONU ; quelques territoires disputés ou inhabités n'ont pas de données.
+
+## Sources
+
+- Nations unies, Département des affaires économiques et sociales, Division de la population (2024), *World Population Prospects 2024*, variante moyenne (CC BY 3.0 IGO).
+- Frontières : Natural Earth 1:50m (domaine public).

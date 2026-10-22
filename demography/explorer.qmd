@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/explorer.jpg
+title: "Population explorer"
+description: "Natural increase, fertility, life expectancy, child mortality, median age and migration of every country, 1950–2100."
+categories: [Demography, Data]
+---
+
+Choose an indicator and a year, or press *Play*. *Map* colours the countries, *Table* lists them (click a column to sort, download the whole series as CSV), and *Chart* draws the curves of one place from 1950 to 2100. A click on a country of the map or a line of the table opens its curves; from there, a link opens its age pyramid.
+
+::: {.column-page}
+{{< app tool="explorer" bundles="countries" presets="ind,y,view,c" >}}
+:::
+
+## What to look for
+
+- Map of natural increase: play from 1950 to 2100. Where is it highest in 1970, in 2020, in 2080? Which countries already have more deaths than births?
+- Open the curves of a European country, then of a country of the Sahel: where are they in the demographic transition, and when did (or will) the birth rate fall?
+- Map of fertility in 2024: which countries are below 2.1 children per woman? What does that mean for their population in the long run?
+- Compare life expectancy of women and men in Russia and in Switzerland. How large is the gap, and how has it changed?
+- Map of net migration: which countries gain population through migration, and which lose it?
+
+## How it works
+
+All values are the estimates of the United Nations up to 2023 and their projections from 2024 (medium variant), so the curves after 2023 are assumptions, not observations. Natural increase is the birth rate minus the death rate, in % a year; it leaves out migration. The map uses the borders of Natural Earth: the French overseas departments are drawn with France, Åland with Finland and Somaliland with Somalia, as the UN counts them; a few disputed or uninhabited areas have no data.
+
+## Sources
+
+- United Nations, Department of Economic and Social Affairs, Population Division (2024), *World Population Prospects 2024*, medium variant (CC BY 3.0 IGO).
+- Borders: Natural Earth 1:50m (public domain).

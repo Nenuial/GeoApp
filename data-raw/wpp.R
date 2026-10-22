@@ -9,6 +9,7 @@
 #
 # Writes
 #   data/wpp/places.json         the countries and areas (ISO3) plus the World and the continents: code, en, fr, kind
+#   data/wpp/ind/<key>.json      one indicator (pop cbr cdr growth tfr q5 lex lexm lexf medage migr), every place, 1950–2100
 #   data/wpp/pyramids/<code>.json  population by single year of age (0–99, 100+) and sex, 1950–2100, whole persons:
 #                                { code, first, last, estimates, m: [[101] × years], f: [[101] × years] }
 # Checks: every place has every year × age × sex; the pyramid of each year sums to TPopulation1July.
@@ -75,6 +76,32 @@ for (cd in places$code) {
                             m = per_year("PopMale"), f = per_year("PopFemale")),
                        file.path(out, "pyramids", paste0(cd, ".json")), auto_unbox = TRUE)
 }
+# Indicators for the Population explorer: one file per indicator, every place, 1950–2100
+#   data/wpp/ind/<key>.json  { key, first, last, estimates, values: { <code>: [151 values or null] } }
+dir.create(file.path(out, "ind"), showWarnings = FALSE)
+INDICATORS <- list(
+  pop = list(col = "TPopulation1July", f = function(x) round(x * 1000)),   # persons
+  cbr = list(col = "CBR", f = function(x) round(x, 1)),                    # births per 1,000
+  cdr = list(col = "CDR", f = function(x) round(x, 1)),                    # deaths per 1,000
+  growth = list(col = "NatChangeRT", f = function(x) round(x / 10, 2)),    # natural increase, % a year
+  tfr = list(col = "TFR", f = function(x) round(x, 2)),                    # children per woman
+  q5 = list(col = "Q5", f = function(x) round(x, 1)),                      # deaths under 5 per 1,000 births
+  lex = list(col = "LEx", f = function(x) round(x, 1)),                    # life expectancy at birth, years
+  lexm = list(col = "LExMale", f = function(x) round(x, 1)),
+  lexf = list(col = "LExFemale", f = function(x) round(x, 1)),
+  medage = list(col = "MedianAgePop", f = function(x) round(x, 1)),        # years
+  migr = list(col = "CNMR", f = function(x) round(x, 1))                   # net migrants per 1,000
+)
+ind <- ind[code %in% places$code]
+setorder(ind, code, Time)
+stopifnot(ind[, .N, by = code][, all(N == length(years))])
+for (key in names(INDICATORS)) {
+  spec <- INDICATORS[[key]]
+  values <- lapply(split(ind[[spec$col]], ind$code), function(v) { v <- spec$f(v); v[is.na(v)] <- NA; v })
+  jsonlite::write_json(list(key = key, first = min(years), last = max(years), estimates = estimates, values = values),
+                       file.path(out, "ind", paste0(key, ".json")), auto_unbox = TRUE, na = "null", digits = NA)
+}
+
 jsonlite::write_json(list(source = "United Nations, World Population Prospects 2024 (CC BY 3.0 IGO)",
                           estimates = estimates, places = places[, .(code, en, fr, kind)]),
                      file.path(out, "places.json"), auto_unbox = TRUE)

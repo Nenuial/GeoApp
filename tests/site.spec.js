@@ -75,6 +75,15 @@ test.describe("tool page", () => {
     await expect(page.locator("html")).not.toHaveClass(/app-present/);
   });
 
+  test("full screen stays on top of the page when the sim redraws (map-scales zoom)", async ({ page }) => {
+    await page.goto("/cartography/map-scales.html");
+    await page.locator(".app-toolbar button").first().click();
+    await page.locator(".geores-controls button.scx-out").click();
+    await page.waitForTimeout(500);
+    const top = await page.evaluate(() => document.elementFromPoint(innerWidth / 2, 20).closest(".geores-expanded") !== null);
+    expect(top, "the enlarged sim covers the navbar").toBe(true);
+  });
+
   test("key P toggles present mode", async ({ page }) => {
     await page.goto(url);
     await page.locator("h1").click();
@@ -138,5 +147,31 @@ test.describe("pyramids", () => {
     await page.goto(`/fr${url}?c=CHE`);
     await expect(page.locator(".app-svg .app-title")).toContainText("Suisse");
     await expect(page.locator(".app-pyramids .geores-controls")).toContainText("Lieu");
+  });
+});
+
+test.describe("population explorer", () => {
+  const url = "/demography/explorer.html";
+
+  test("the map colours the countries by class", async ({ page }) => {
+    await page.goto(`${url}?ind=tfr&y=2024`);
+    await expect(page.locator(".app-map path.app-land").first()).toBeVisible();
+    const colours = await page.locator(".app-map path.app-land").evaluateAll(ps => new Set(ps.map(p => p.style.fill).filter(Boolean)).size);
+    expect(colours).toBeGreaterThan(4);
+  });
+
+  test("a country on the map opens its curves, and the curves link to its pyramid", async ({ page }) => {
+    await page.goto(`${url}?ind=growth`);
+    await page.locator(".app-map path.app-land").nth(30).click();
+    await expect(page).toHaveURL(/view=chart&c=[A-Z]{3}/);
+    await expect(page.locator(".app-chart path.app-line")).toHaveCount(3);
+    await expect(page.locator(".app-foot a[href*='pyramids.html?c=']")).toHaveCount(1);
+  });
+
+  test("the table sorts and filters", async ({ page }) => {
+    await page.goto(`${url}?ind=lex&view=table`);
+    await page.locator(".app-search").fill("Switz");
+    await expect(page.locator(".app-table tbody tr")).toHaveCount(1);
+    await expect(page.locator(".app-table tbody tr")).toContainText("Switzerland");
   });
 });

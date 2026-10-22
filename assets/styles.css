@@ -193,6 +193,19 @@ main .geores:not(.geores-expanded) > .geores-expand {
 
 /* ---------- Present mode (?present or key P): the tool fills the projector ---------- */
 
+/* Quarto's .column-page has z-index 998 and opacity 0.999: a stacking context that keeps the enlarged sim
+   (position fixed, z-index 2000) under the navbar (1030), and in which Chrome may paint a large canvas black
+   when it redraws. While a sim is enlarged, the column is an ordinary block. */
+.column-page:has(> .geores-expanded),
+.column-page:has(.geores-expanded) {
+  z-index: auto;
+  opacity: 1;
+}
+html.app-present #quarto-header,
+html.geores-noscroll #quarto-header {
+  visibility: hidden;
+}
+
 html.app-present .geores-expanded .geores-controls {
   font-size: 1.3rem;
 }
@@ -288,3 +301,140 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
 .app-pyramids .geores-controls input[type="range"] {
   width: min(14rem, 50vw);
 }
+
+/* Population explorer: map, table, chart */
+.app-head {
+  margin-bottom: 0.4rem;
+  font-size: 1.05rem;
+  color: var(--geores-fg);
+}
+.app-head .app-muted,
+.app-note {
+  color: var(--geores-muted);
+}
+.app-badge {
+  color: #f39c12;
+  font-size: 0.8em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.app-foot {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--geores-fg);
+}
+.app-note {
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+}
+.app-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+}
+.app-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+.app-legend i {
+  display: inline-block;
+  width: 1.1em;
+  height: 0.8em;
+  border: 1px solid var(--geores-line);
+}
+.app-legend i.app-line-swatch {
+  height: 0;
+  border: 0;
+  border-top: 3px solid;
+}
+.app-legend i.app-line-swatch.app-dashed {
+  border-top-style: dashed;
+}
+.app-nodata-swatch,
+.app-map .app-nodata {
+  background: repeating-linear-gradient(45deg, var(--geores-line) 0 2px, transparent 2px 5px);
+}
+.app-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.app-map .app-sea { fill: #e3eef6; }
+.geores-dark .app-map .app-sea { fill: #1a2735; }
+.app-map .app-land {
+  fill: #d9d9d9;
+  stroke: var(--bs-body-bg, #fff);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+.geores-dark .app-map .app-land { fill: #4a4f58; }
+.app-map .app-land.app-nodata { fill: #bdbdbd; fill-opacity: 0.45; cursor: default; }
+.app-map .app-land:hover { stroke: var(--geores-fg); stroke-width: 1.2; }
+.app-map .app-selected {
+  fill: none;
+  stroke: var(--geores-fg);
+  stroke-width: 2.2;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.app-tabs {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+.app-table-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.app-table-tools input,
+.app-table-tools button {
+  font: inherit;
+  font-size: 0.9rem;
+  min-height: 2.2rem;
+  padding: 0.2rem 0.6rem;
+  color: var(--geores-fg);
+  background: var(--geores-btn);
+  border: 1px solid var(--geores-line);
+  border-radius: 6px;
+}
+.app-table-wrap {
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid var(--geores-line);
+  border-radius: 6px;
+}
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  color: var(--geores-fg);
+}
+.app-table th {
+  position: sticky;
+  top: 0;
+  background: var(--geores-menu);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.app-table th,
+.app-table td {
+  padding: 0.3rem 0.6rem;
+  border-bottom: 1px solid var(--geores-line);
+}
+.app-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.app-table .app-current { font-weight: 500; }
+.app-table tbody tr { cursor: pointer; }
+.app-table tbody tr:hover { background: color-mix(in srgb, var(--geores-fg) 8%, transparent); }
+.app-table tr.app-region td { font-weight: 500; }
+.app-chart .app-proj { fill: var(--geores-fg); fill-opacity: 0.05; }
+.app-chart .app-axis { stroke: var(--geores-muted); stroke-width: 1; }
+.app-chart .app-marker { stroke: #f39c12; stroke-width: 1.5; stroke-dasharray: 3 3; }
+.app-chart .app-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; }
+.app-chart .app-dashed { stroke-dasharray: 6 4; stroke-width: 2; }
+.app-explorer .geores-controls input[type="range"] { width: min(14rem, 50vw); }
