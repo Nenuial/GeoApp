@@ -1,0 +1,1172 @@
+{
+ "built": "2026-10-22",
+ "base": [
+  "world.js",
+  "geores.js",
+  "geores.css"
+ ],
+ "sims": [
+  {
+   "name": "africa-un-votes",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/africa-maps.js",
+   "description": "the votes of 2022 and 2025 on the war in Ukraine, one or both maps; a state under the pointer: its two votes.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "alliances",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/alliances.js",
+   "description": "the members of the great alliances and groups year by year since 1949: NATO, the Warsaw Pact, the CSTO (Russia's alliance), the Shanghai Cooperation Organisation, BRICS. Choose one or several (countries in two of the chosen ones are striped); play: the years go by. Today's borders: Germany is shown in NATO from 1990 (West Germany joined in 1955), East Germany cannot be shown in the Warsaw Pact; the Soviet Union is drawn as its 15 republics.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "alps-collision",
+   "field": "geology",
+   "file": "src/sims/geology/alps-collision.js",
+   "description": "how the Alps were made, in a cross-section from the north (Bresse, Jura) to the south (Po plain), from 200 million years ago to today. Five moments, each after a published section: today   the section of J. Ragusa (2023, CC BY 4.0, after Thornton et al. 2018): its units and lines, read from the SVG (_alps-section.js), at its own scale; 35 Ma   after Steck et al. (2015, Fig. 23, ~34 Ma): under the Southern Alps and Sesia, the Penninic wedge dips south, from the top Tsaté, Zermatt-Saas, Monte Rosa, Antrona; Siviez-Mischabel north of it and under it, below the Dent Blanche lid; Europe dives; the Prealps in front; the molasse sea; 65 Ma   after Schmid et al. (1996, Fig. 5a) and Steck et al. (2015, Fig. 23, ~50 Ma): the Piemont ocean dives under the Dent Blanche-Sesia margin of Adria; the Valais basin open; 150 Ma  after Steck et al. (2015, Fig. 12): Europe, (Valais not yet open), Briançonnais, Monte Rosa, the Piemont ocean, Dent Blanche-Sesia, Adria; 200 Ma  the continent thins and breaks where the Piemont ocean will open. The older moments are stacks: in every column, the units from the top down, always in the same order (STACK). From one stack to the next, every boundary moves up or down in its column: no gaps, no overlaps. From 35 Ma to today the units change their outlines (their two sides, matched point by point); the gaps that open meanwhile show the two moments cross-fading. The moments in between are an illustration, not a reconstruction. Markers stay on their rock.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "arctic-routes",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/arctic-routes.js",
+   "description": "from Rotterdam to Yokohama, through the Suez Canal or along the north of Russia (the Northern Sea Route), on a map centred on the North Pole (azimuthal equidistant: distances from the pole are true). The sea ice of September (its yearly minimum) in 1980, 2012 (the record low) and 2025; on the right, the September extent of every year since 1979. The route through the Arctic is about 40 % shorter, but open only a few months a year.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "geopolitics",
+     "script": "geopolitics.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "atmosphere-profile",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/atmosphere-profile.js",
+   "description": "the layers-of-the-atmosphere figure (diagram \"atmosphere-layers\") with an altitude cursor. Move over the figure, or use the slider, to read the temperature, the pressure, the layer and the share of the atmosphere's mass below that altitude. Follows the page's light/dark theme.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "bid-rent",
+   "field": "urban",
+   "file": "src/sims/urban/bid-rent.js",
+   "description": "why the centre is expensive (Alonso 1964, after von Thünen). Three uses bid for land: shops and offices (who need the most customers: high rent at the centre, falling fast), housing (falling more slowly), farming (low, almost flat). At each distance the highest bid wins, so the city is drawn in rings (Burgess). On the left the three straight lines of rent against distance from the centre, on the right the city seen from above. Options: the cost of transport (cheaper transport: the rings widen, the city spreads), a tram line (along it, getting to the centre costs less: housing reaches further, the rings become sectors, as in Hoyt's model), a second centre (a new business centre: several nuclei, as in Harris and Ullman's model). Rents in imaginary units.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "border-walls",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/border-walls.js",
+   "description": "the walls and fences on the borders of the world, year by year since 1945. Each wall is drawn on its border in the colour of its main motive (territory, security, migration and smuggling); press play: the walls appear in the year their construction began, those of the current year are drawn as they grow; the chart below counts the walls standing each year. A region zooms in; move over a wall: who built it, against whom, when, and why.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "geopolitics",
+     "script": "geopolitics.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "borders-pov",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/borders-pov.js",
+   "description": "the world seen from different countries. The same disputed areas belong to different countries depending on who draws the map: choose a point of view (the government of one of 31 countries, as encoded by Natural Earth, or an international view) and a region (Himalaya, Black Sea, Western Sahara, East Asia, Eastern Mediterranean, Horn of Africa, Falklands). Every country and area is filled with the colour of its owner in that view, the same colour in every view; disputed areas have a dashed outline; the country whose view it is gets a gold outline (not the accent colour: a blue would look like a coast). Move over the map: the name, who administers and who claims, and the owner in this view.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "geopolitics",
+     "script": "geopolitics.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "built-up",
+   "field": "urban",
+   "file": "src/sims/urban/built-up.js",
+   "description": "how much built-up land each city dweller uses, 1975–2050 (UN DESA, World Urbanization Prospects 2025, from the Global Human Settlement Layer: the surface covered by buildings in the cities of the country, by the Degree of Urbanisation, divided by their population). The lines rise almost everywhere: cities spread faster than they grow. Projections after 2025 dashed. Click a country in the key to show or hide it.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "urban",
+     "script": "urban.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "central-places",
+   "field": "urban",
+   "file": "src/sims/urban/central-places.js",
+   "description": "Christaller's central places (1933), the market principle (k = 3). On an even plain, villages sit on a triangular grid; every third place is also a town, every ninth also a city. Each level serves a hexagonal market area: bread is bought in every village, a doctor is found in the towns, a hospital or a university only in the city. Choose a service: its market areas are drawn; a level that offers it also offers everything below.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "chokepoints",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/chokepoints.js",
+   "description": "the narrow passages of world shipping, month by month since 2019 (IMF PortWatch). On the map, the shipping lanes and the 28 chokepoints: the size of a circle is the number of ships per day in the month shown, its colour the change against 2023 (red: fewer ships, blue: more). Below, the story of the chokepoint chosen (click it): ships per day each month since 2019, and the 7-day mean since 2023 for six of them, with the events that explain the changes (the Ever Given, the Houthi attacks, the Panama drought, the Hormuz war). Play: the months go by.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "geopolitics",
+     "script": "geopolitics.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "climogram",
+   "field": "climatology",
+   "file": "src/sims/climatology/climogram.js",
+   "description": "choose a station (grouped by Köppen-Geiger group, Swiss stations first) and see its climogram, Köppen code and key numbers; \"Compare\" shows a second station next to it. Drawn in SVG by GeoRes.climate.draw (diagrams/climatology/climogram.js), on the dark stage.",
+   "options": [
+    {
+     "option": "data-station",
+     "example": null,
+     "doc": ", data-compare: a station of dist/climate.js, of the WMO normals (with dist/climate-wmo.js: {{< geores sim=\"climogram\" stations=\"wmo\" station=\"wmo-00060560\" >}}) or one added by the page;"
+    },
+    {
+     "option": "data-station-src",
+     "example": null,
+     "doc": "a JSON file with one station or a list ({ id, name, country, lat, lon, el, source, T, P }, see GeoRes.climate.addStations), shown first"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "climate",
+     "script": "climate.js"
+    },
+    {
+     "id": "climate-wmo",
+     "script": "climate-wmo.js",
+     "when": {
+      "stations": "wmo"
+     }
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "conflicts",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/conflicts.js",
+   "description": "the armed conflicts of the world year by year since 1946 (UCDP). On the map, the countries where UCDP locates a conflict in the year shown (for a war between states: the territory of the governments involved, so the United States appear for their strikes on Yemen): orange, a conflict (25 to 999 battle deaths in the year); red, a war (1 000 or more). Below, the number of conflicts each year by type (colonial, between states, within a state, within a state with foreign troops), and the battle deaths since 1989. Play: the years go by; move over a country: its conflicts.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "geopolitics",
+     "script": "geopolitics.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "continents-drift",
+   "field": "geology",
+   "file": "src/sims/geology/continents-drift.js",
+   "description": "the continents from 250 million years ago (Pangaea) to today, on an Equal Earth map: the coasts reconstructed every 10 million years (Müller et al. 2022, GPlates; dist/paleo.js), with a time slider and a play button, the geological period and what happened then. Between two maps, the sim fades from one to the next.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "paleo",
+     "script": "paleo.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "contour-lines",
+   "field": "cartography",
+   "file": "src/sims/cartography/contour-lines.js",
+   "description": "from relief to contour lines. A synthetic landscape inspired by the Creux du Van (Jura, Neuchâtel), 4 km × 3 km: a valley with its river, a forested flank (steep in the east), a plateau that rises gently to a summit (1 463 m), a cirque cut into it and closed by a cliff of about 160 m, V-shaped valleys. Left, the landscape in relief (an oblique view, heights exaggerated); right, the map seen from above with the contour lines every 20 m (every 100 m bolder and labelled) and spot heights. The slider raises the water: a horizontal plane at that height cuts the relief, its shoreline (red) is the contour line of that height, highlighted on the map: the classic \"flooding\" explanation. Drag a line on the map (or choose a preset): below the map, the profile along it, with the slope at its steepest point. Hover the map: the height there. Follows the page's light/dark theme.",
+   "options": [
+    {
+     "option": "data-level",
+     "example": null,
+     "doc": "the starting height of the water (m, a multiple of 20; default 1200)"
+    },
+    {
+     "option": "data-profile",
+     "example": null,
+     "doc": "cliff (default), steep, gentle"
+    },
+    {
+     "option": "data-title",
+     "example": "false",
+     "doc": "no title (on a slide, which has its own)"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "coriolis",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/coriolis.js",
+   "description": "the Coriolis effect on a merry-go-round. A ball thrown from the centre towards a friend on the rim goes straight seen from space, but curves for the riders: to the right when the merry-go-round turns anticlockwise (northern hemisphere), to the left the other way.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "country-globe",
+   "field": "cartography",
+   "file": "src/sims/cartography/country-globe.js",
+   "description": "a globe that turns slowly, with one or more countries highlighted. Drag it to turn it; hover a country for its name. Countries of Natural Earth 1:50m (dist/countries.js, see tools/countries-data.R), loaded by the shortcode with this sim. Follows the page's light/dark theme.",
+   "options": [
+    {
+     "option": "data-country",
+     "example": null,
+     "doc": "ADM0_A3 codes (RUS, CHE, FRA…), ISO codes or names (en/fr), comma-separated"
+    },
+    {
+     "option": "data-lon",
+     "example": null,
+     "doc": ", data-lat   centre of the first view (default: the centre of the first country)"
+    },
+    {
+     "option": "data-spin",
+     "example": null,
+     "doc": "degrees per second (default 6; 0: still)"
+    },
+    {
+     "option": "data-color",
+     "example": null,
+     "doc": "colour of the highlighted countries (default: a warm red)"
+    },
+    {
+     "option": "data-label",
+     "example": null,
+     "doc": "\"true\": the name of the (first) highlighted country on the globe"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "cyclone-life",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/cyclone-life.js",
+   "description": "the life of a mid-latitude depression (the Norwegian cyclone model), on a map of the Northern Hemisphere, over six days: the polar front between cold and warm air, a wave, the open wave with its warm front, cold front and warm sector, the occlusion, and the end of the low. Isobars (every 4 hPa), winds at the ground (turning anticlockwise around the low, a little inwards; particles with trails as in earth.nullschool.net), clouds and rain. A schematic model: the shapes and the pressures are typical, the map has no geography.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "dtm-steps",
+   "field": "demography",
+   "file": "src/sims/demography/dtm-steps.js",
+   "description": "the demographic transition model (diagram \"demographic-transition\"), stage by stage. The current stage is highlighted and its pyramid grows out of the previous one, as in the GeoKey keynote (DF-Demography/1-Statistics, js/dtm.js). Follows the page's light/dark theme.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "earth-calendar",
+   "field": "geology",
+   "file": "src/sims/geology/earth-calendar.js",
+   "description": "the history of the Earth squeezed into one year. The Earth forms on 1 January at midnight, today is 31 December at midnight: one day is 12.6 million years, one second about 146 years. A strip of the year with its events; the play button zooms in step by step (the year, December, 31 December, the last hour, the last minute), since almost everything we know happens at the very end.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "earth-dive",
+   "field": "geology",
+   "file": "src/sims/geology/earth-dive.js",
+   "description": "dig from the surface to the centre of the Earth. A globe cut open shows the layers at their true scale, a column enlarges the first 700 km (crust, lithosphere, asthenosphere), and the readout gives the layer, its state, the temperature, the pressure and the density at that depth, with a few landmarks (the Kola borehole, the Moho, the diamonds, the core). Model: _geology.js.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "earth-year",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/earth-year.js",
+   "description": "Earth around the Sun with its fixed axis, and the same moment seen \"from the side\" (the solstice drawing). Ported from GeoKey DF-Cosmology/3-Earth (sims.js, year()). Needs GeoRes.textures.earth (dist/textures.js) for the textured globe; plain blue without it.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "textures",
+     "script": "textures.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "emed-sea",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/emed-sea.js",
+   "description": "who owns the Eastern Mediterranean? Three steps on the real zones of Marine Regions (v12): 1 the territorial seas (12 nm; 6 nm for Greece in the Aegean), 2 the exclusive economic zones as Marine Regions draws them (treaties, else median lines where every island counts), 3 the disputed lines (Turkey–Libya 2019, Greece–Egypt 2020, Greece–Turkey). A zoom on the Aegean. Move over a zone or a line: its name, its type, the document it comes from.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "sea",
+     "script": "sea.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "enso",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/enso.js",
+   "description": "El Niño and La Niña. A west-east section along the equator across the Pacific, from Indonesia to Peru: the Walker circulation in the air (rising air and rain over the warmest water, sinking dry air elsewhere, the trade winds at the surface), and the ocean with its warm surface layer, the thermocline and the cold upwelling off South America. Normal, El Niño, La Niña. The air is drawn as particles with trails (_wind-flow.js). A schematic model: the temperatures are typical, the depths and heights are not to scale.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "fault-blocks",
+   "field": "geology",
+   "file": "src/sims/geology/fault-blocks.js",
+   "description": "the three kinds of faults, as 3D blocks of layered rock (_block.js). Normal (pulled apart: the block above the fault slides down), reverse (pushed together: it is pushed up), strike-slip (the blocks slide side by side). Each \"Earthquake!\" makes the fault jump: the block shakes, the waves leave the focus, the epicentre lights up above it, the scarp grows; a road shows the offset. type=\"normal|reverse|strike\".",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "foehn",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/foehn.js",
+   "description": "moist air blown over the Alps, from Ticino to Uri. It cools at the dry rate up to the cloud base, then at the saturated rate in the cloud (rain on the windward side), and warms at the dry rate on the way down: it arrives warmer and dry. Bubble: coral rising dry, blue in the cloud, red coming down dry.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "front-passage",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/front-passage.js",
+   "description": "a warm front and a cold front pass over a town. Above, a west-east cross-section of the frontal system (heights exaggerated about 50 times): cold air, the warm front with its sequence of clouds (cirrus, cirrostratus, altostratus, nimbostratus), the warm sector, the cold front with its cumulonimbus. The system moves east, so the town slides under it from the right. Below, the town's meteogram: temperature, pressure and rain, as the hours go by. A simple model: the values are typical of a winter or spring depression over western Europe, not a forecast.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "geostrophic-wind",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/geostrophic-wind.js",
+   "description": "a parcel of air released between isobars. The pressure gradient pushes it towards the low, the Coriolis effect turns it (to the right in the north) until it blows along the isobars aloft; near the ground, friction slows it and it crosses them towards the low.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "global-cities",
+   "field": "urban",
+   "file": "src/sims/urban/global-cities.js",
+   "description": "the world cities of GaWC 2024 (The World According to GaWC, Loughborough University): 332 cities ranked by the offices of the big firms of finance, accountancy, consulting, law and advertising that they host, from Alpha++ (London, New York) to Sufficiency. On the map, one disc per city, larger and brighter for the higher classes; on the right, the number of cities per class and the Swiss cities. Show: Alpha only, Alpha and Beta, or all. Move over a city: its class.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "urban",
+     "script": "urban.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "greenhouse",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/greenhouse.js",
+   "description": "the one-layer greenhouse model. Sunlight in, reflected (albedo), infrared from the ground, absorbed by the layer of greenhouse gases and sent half back down; the surface warms until it sends back to space what it absorbs. Arrows proportional to the fluxes (W/m²).",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "highs-lows",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/highs-lows.js",
+   "description": "the winds around a high (anticyclone) and a low (depression), in both hemispheres, at the ground (spiralling out of the high and into the low) and aloft (along the isobars). The winds are drawn as particles with trails (_wind-flow.js).",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "hotspot",
+   "field": "geology",
+   "file": "src/sims/geology/hotspot.js",
+   "description": "a plate moves over a fixed plume of hot mantle (_block.js). Above the plume, a volcano grows out of the sea; the plate carries it away, it dies, is eroded and sinks: an atoll, then a seamount, while a new volcano grows over the plume. The chain of islands gets older away from the hotspot: Hawaii.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "humidity",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/humidity.js",
+   "description": "a mass of air on the saturation curve chart. Its temperature and its water vapour give its relative humidity and its dew point. Cool it: at the dew point it is saturated, below it the extra vapour condenses (dew, fog, cloud); warm it again: the droplets evaporate. \"A summer day\": the vapour stays the same while the temperature goes up and down, the relative humidity swings and dew forms at dawn.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "hurricane",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/hurricane.js",
+   "description": "feed a tropical cyclone. Seen from above, a storm over the ocean whose wind grows towards a maximum set by the temperature of the sea (no storm below 26.5 °C), and weakens fast over land, cut off from its fuel. It turns anticlockwise in the Northern Hemisphere, clockwise in the Southern. The Saffir-Simpson scale gives its category. A simple model: the maximum wind is only a function of the sea temperature here.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "jet-stream",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/jet-stream.js",
+   "description": "the polar front jet stream seen from above the North Pole. A river of fast west wind, about 10 km up, between the cold polar air and the warm air of the south; it meanders in a few large waves (Rossby waves) that drift slowly east. Lows form downstream of the troughs, highs downstream of the ridges. The wavier the jet, the slower its waves move: weather that stays for days (blocking). What Switzerland gets depends on where the jet passes. The winds are drawn as in earth.nullschool.net (_wind-flow.js): the speed in colour, particles with trails. A schematic model.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "koppen-key",
+   "field": "climatology",
+   "file": "src/sims/climatology/koppen-key.js",
+   "description": "choose a station; its climogram (left, without the key numbers) and the Köppen-Geiger key step by step (right): each test with the station's numbers and the letter it gives.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "climate",
+     "script": "climate.js"
+    },
+    {
+     "id": "climate-wmo",
+     "script": "climate-wmo.js",
+     "when": {
+      "stations": "wmo"
+     }
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "koppen-map",
+   "field": "climatology",
+   "file": "src/sims/climatology/koppen-map.js",
+   "description": "the Köppen-Geiger climates of the world on an Equal Earth map, from the 1° grid of Beck et al. (2023) classified with GeoRes.koppen (dist/climate.js): 1901-1930, 1991-2020, and 2041-2070 / 2071-2099 for three emission scenarios. Hover a place: its climate, and for 1991-2020 its climogram. Click a group of the legend to show only that group. \"Changes\": only the cells whose climate differs from 1991-2020.",
+   "options": [
+    {
+     "option": "data-period",
+     "example": null,
+     "doc": "1901-1930, 1961-1990, 1991-2020, 2041-2070-ssp245, 2071-2099-ssp126|ssp245|ssp585 (2041-2070 exists only for SSP2-4.5: the sim shows it whatever the scenario chosen, and greys out the others)"
+    },
+    {
+     "option": "data-region",
+     "example": null,
+     "doc": "world (default) or europe: with dist/climate-europe.js (loaded by the shortcode), the 0.1° maps of Beck et al. (2023) themselves, drawn pixel by pixel, and climograms from their 0.5° grid; or russia: the same with dist/climate-russia.js, Russia only (the other land in grey), on an Albers conic centred on 100° E like the maps of Russia, with the border of Russia"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "climate",
+     "script": "climate.js"
+    },
+    {
+     "id": "climate-europe",
+     "script": "climate-europe.js",
+     "when": {
+      "region": "europe"
+     }
+    },
+    {
+     "id": "climate-russia",
+     "script": "climate-russia.js",
+     "when": {
+      "region": "russia"
+     }
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "locate-epicentre",
+   "field": "geology",
+   "file": "src/sims/geology/locate-epicentre.js",
+   "description": "find an earthquake with three seismographs. Three seismograms (the P wave first, then the S wave); the delay between them gives the distance (P at 6 km/s, S at 3.5 km/s: distance ≈ 8 km per second of delay). On the map of Switzerland: click to guess, draw a circle around each station, the earthquake is where they cross. The events: Visp 1855, Basel 1356, Unterwalden 1601, and random ones.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "magma-eruption",
+   "field": "geology",
+   "file": "src/sims/geology/magma-eruption.js",
+   "description": "why some volcanoes pour out lava and others explode. A volcano cut open (its layers of lava, or of lava and ash), its magma chamber and conduit; two sliders: the silica of the magma (basalt to rhyolite: hotter and runny to cooler and sticky) and its gas (water). Bubbles rise through the magma: in a runny magma they escape: fountains and glowing lava flows (Hawaiian, Strombolian); in a sticky one they stay trapped, the pressure builds until the plug breaks: a billowing ash column with lightning and, if it collapses, pyroclastic flows (Vulcanian, Plinian). The volcano follows: a flat shield, a steep, snowy cone. silica, gas: 0..1.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "mantle-convection",
+   "field": "geology",
+   "file": "src/sims/geology/mantle-convection.js",
+   "description": "convection in the mantle, computed. A slice through the Earth: the mantle is a ring between the core and the surface, coloured by its temperature (blue: cold, yellow: hot). The rock is heated from below by the core (and from inside by radioactivity), cooled from above: hot plumes rise, cold slabs sink, and they come and go. On the rim, the plates move with the flow; ridges where it pulls apart, trenches where it sinks. steps=\"true\" follows the four steps (heated, rises, spreads, sinks) on the strongest plume and slab.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "map-classes",
+   "field": "cartography",
+   "file": "src/sims/cartography/map-classes.js",
+   "description": "the same data, different maps. The share of yes to the CO2 law (13 June 2021) in each of the 2 105 communes, classified in four ways: equal intervals (0–20, 20–40 … %), quantiles (five classes of the same number of communes), classes around 50 % (red for no, blue for yes) and yes or no (two classes). For each: its legend (with the number of communes in each class), the histogram of the communes' shares with the class breaks, and what the map suggests. Hover or tap a commune: its name, its share of yes and its place in the histogram; hover a class of the legend: its communes. Follows the page's light/dark theme.",
+   "options": [
+    {
+     "option": "data-method",
+     "example": null,
+     "doc": "equal (default), quantiles, diverging, binary"
+    },
+    {
+     "option": "data-title",
+     "example": "false",
+     "doc": "no title (on a slide, which has its own)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "votes",
+     "script": "votes.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "map-scales",
+   "field": "cartography",
+   "file": "src/sims/cartography/map-scales.js",
+   "description": "the same place (Neuchâtel) at four scales, to see generalisation. Four swisstopo national maps with the same centre, 1:10 000, 1:50 000, 1:200 000 and 1:1 000 000, each view 4 times wider than the one before (16 times the area). Zoom out and in (buttons, slider or the four scales above the text): the map shrinks about the centre and fades into the next one. On each view: a scale bar, the width and area of the view, the frame of the previous (more detailed) view in red, and what the map leaves out or simplifies. Follows the page's light/dark theme.",
+   "options": [],
+   "bundles": [],
+   "images": [
+    "nemap17.jpg",
+    "nemap15.jpg",
+    "nemap13.jpg",
+    "nemap11.jpg"
+   ]
+  },
+  {
+   "name": "parcel",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/parcel.js",
+   "description": "lift a parcel of air with a helicopter, then let it go. It cools at the dry rate (−10 °C/km) up to the condensation level, then at the saturated rate (−6 °C/km) in the cloud; warmer than the air around (environmental lapse rate, ELR), it rises on its own (unstable), colder, it sinks back (stable). The level of free convection (LFC) is where the lifted parcel becomes warmer than the air around: above it, it rises on its own. Bubble: coral on the dry rate, blue in the cloud.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "plate-boundary",
+   "field": "geology",
+   "file": "src/sims/geology/plate-boundary.js",
+   "description": "what happens where two plates meet, as 3D block diagrams (_block.js): the front face a cross-section, the top the landscape in relief. Five cases: apart       a continent splits and an ocean is born, in four stages (a slider and a play button): uplift, rift valley, narrow sea, ocean with a mid-ocean ridge (stage=\"0\"..\"3\") arc         an ocean plate under an ocean plate: trench, island arc andes       an ocean plate under a continent: trench, mountains, volcanoes collision   two continents collide: high mountains with a deep root transform   two plates slide past each other: a locked fault, a fence that bends and breaks The plates move (marks), magma rises, earthquakes flash at their depth (colours as on the plate map), volcanoes smoke. case=\"apart|arc|andes|collision|transform\" (also \"rift\" and \"ridge\": apart at a stage).",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "plate-map",
+   "field": "geology",
+   "file": "src/sims/geology/plate-map.js",
+   "description": "the plates of the world (PB2002) on an Equal Earth map, their boundaries coloured by type (apart, together, sliding past; the teeth of the subduction zones on the overriding plate), with layers that can be switched on: the earthquakes of magnitude 6 or more since 1975 (size: magnitude, colour: depth), the Holocene volcanoes, the age of the ocean floor. Move over the map: the plate, the boundary (and how fast the plates move there), the earthquake or the volcano under the pointer. layers=\"bounds,quakes,volcanoes,age\": the layers shown at first; lon0: the central meridian (10 or 150). Data: dist/tectonics.js (tools/geology-data.R).",
+   "options": [],
+   "bundles": [
+    {
+     "id": "tectonics",
+     "script": "tectonics.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "precipitation-map",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/precipitation-map.js",
+   "description": "where it rains, month by month. The monthly precipitation of 1991-2020 (GPCP v2.3, 2.5° grid, GeoRes.data.precip from dist/precip.js) on an Equal Earth map, for one month, a season or the whole year. Optional lines: the rain belt (the latitude of the heaviest rain between 30° S and 30° N, the ITCZ) and the latitude where the Sun is overhead at noon. Move over the map to read the rain at a place.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "precip",
+     "script": "precip.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "projection-explorer",
+   "field": "cartography",
+   "file": "src/sims/cartography/projection-explorer.js",
+   "description": "the eight world projections of the DF book, one at a time, with Tissot's indicatrices (circles of the same size on the globe) to see what each projection keeps: shapes (conformal), areas (equal-area) or a bit of both (compromise). The central meridian can be moved. Follows the page's light/dark theme.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "projection-types",
+   "field": "cartography",
+   "file": "src/sims/cartography/projection-types.js",
+   "description": "the globe with the surface it is projected on (plane, cone or cylinder) and the map that comes out of it. The globe turns (or is dragged) and the map follows: the contact line in red is where the map is true to the globe. Follows the page's light/dark theme.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "raindrops",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/raindrops.js",
+   "description": "how cloud droplets become rain. Left, a warm cloud: a slightly larger drop falls faster than the droplets, collides with them and grows (collision and coalescence). Right, a cold cloud: ice crystals grow at the expense of the supercooled droplets, which evaporate (the air is saturated for ice before it is for water: the Bergeron process); the snowflakes fall and melt into raindrops below the 0 °C level. Not to scale: a raindrop holds about a million droplets.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "rank-size",
+   "field": "urban",
+   "file": "src/sims/urban/rank-size.js",
+   "description": "the cities of a country ranked by population (UN DESA, World Urbanization Prospects 2025, cities by the Degree of Urbanisation: 50 000 people or more at 1 500 per km²), on logarithmic axes, against the rank-size rule (Zipf: the city of rank r has 1/r of the largest). A \"primate city\" (Paris, London, Lagos) stands far above the line; a flat hierarchy (Switzerland, Germany, Italy) has its largest city below it. On the right, the five largest.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "urban",
+     "script": "urban.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "redshift",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/redshift.js",
+   "description": "the Doppler effect and the redshift. A source moves with a chosen speed and emits waves; the observer it moves away from receives longer waves, the other one shorter. Sound: a siren (lower / higher pitch). Light: a galaxy, with its spectrum and the hydrogen lines shifted towards the red. Speeds are fractions of the speed of the waves (not to scale).",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "rock-cycle",
+   "field": "geology",
+   "file": "src/sims/geology/rock-cycle.js",
+   "description": "the rock cycle in a block of landscape cut open. On top, a mountain range with snow, a river that runs down a valley and across a plain to the sea; in front, the section: the granite of a pluton under the mountains, the layers of sediment under the plain and the sea, which dip under the mountains, fold and turn into gneiss; deeper, the rock melts and the magma rises to the pluton. \"Follow a grain\" travels the whole cycle, step by step; the three families of rocks are drawn as samples with a Swiss example.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "russia-abortions",
+   "field": "russia",
+   "file": "src/sims/russia/russia-abortions.js",
+   "description": "births and abortions in Russia since 1957 (diagram \"russia-abortions\"), the notes on demand. Move over the chart: the year, the births, the abortions and the abortions for 100 births.",
+   "options": [
+    {
+     "option": "data-notes",
+     "example": "true",
+     "doc": "the notes shown from the start"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "russia",
+     "script": "russia.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "russia-africa",
+   "field": "geopolitics",
+   "file": "src/sims/geopolitics/africa-maps.js",
+   "description": "the Russian forces year by year (2017–2026, play), the French departures; a state under the pointer: its story.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "russia-cross",
+   "field": "russia",
+   "file": "src/sims/russia/russia-cross.js",
+   "description": "the diagram \"russia-cross\" (births and deaths in Russia since 1946) played year by year, the totals of 1976–1991 and 1992–2007 on demand. Move over the chart: the births, deaths and their balance that year.",
+   "options": [
+    {
+     "option": "data-year",
+     "example": null,
+     "doc": "the year shown first (default 2024: the whole chart; ▶ plays it from 1946)"
+    },
+    {
+     "option": "data-totals",
+     "example": "true",
+     "doc": "the totals shown from the start"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "russia",
+     "script": "russia.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "russia-gas",
+   "field": "russia",
+   "file": "src/sims/russia/russia-gas.js",
+   "description": "the export pipelines of Russian gas year by year, 2010–2026 (diagram \"russia-gas\"), played; a pipeline under the pointer: its name, its years, its capacity, its state that year and its story.",
+   "options": [
+    {
+     "option": "data-year",
+     "example": null,
+     "doc": "the year shown first (default 2026)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "russia-lifeexp",
+   "field": "russia",
+   "file": "src/sims/russia/russia-lifeexp.js",
+   "description": "life expectancy of Russian men and women since 1959 (diagram \"russia-lifeexp\"), Switzerland and the notes on demand. Move over the chart: the year, the life expectancy of men and women, the gap, and Switzerland when it is shown.",
+   "options": [
+    {
+     "option": "data-compare",
+     "example": "true",
+     "doc": "Switzerland shown from the start"
+    },
+    {
+     "option": "data-notes",
+     "example": "true",
+     "doc": "the notes shown from the start"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "russia",
+     "script": "russia.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "russia-peoples",
+   "field": "history",
+   "file": "src/sims/history/russia-peoples.js",
+   "description": "the peoples of Russia at the census of 2021, as a treemap (one rectangle per people, its area proportional to its population): first with the Russians, then without them, where the diversity shows. Hover a rectangle: the people, its population and its share. Data: Rosstat, all-Russian census of 2021 (VPN-2020), via the R package geodata (oc_russie_2020_population_composition), the French names corrected (machine translations in geodata: \"Poteaux\" for the Poles, \"Saumon kéta\" for the Kets…). 130.6 million people gave their nationality, 16.6 million did not.",
+   "options": [
+    {
+     "option": "data-mode",
+     "example": null,
+     "doc": "\"all\" (default) or \"minorities\""
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "russia-pyramid",
+   "field": "russia",
+   "file": "src/sims/russia/russia-pyramid.js",
+   "description": "the age pyramid of Russia from 1950 to 2050 (diagram \"russia-pyramid\"), played year by year: the hollows of the war and of the 1990s climb with their generation. Move over a bar: the age, the year of birth, men and women; click a bar to follow that generation (click again to stop). Switzerland at the same total on demand.",
+   "options": [
+    {
+     "option": "data-year",
+     "example": null,
+     "doc": "first year shown (default 2024)"
+    },
+    {
+     "option": "data-compare",
+     "example": "CHE",
+     "doc": "the Swiss outline from the start;"
+    },
+    {
+     "option": "data-cohort",
+     "example": null,
+     "doc": "a year of birth followed from the start"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "russia",
+     "script": "russia.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "russia-regions",
+   "field": "russia",
+   "file": "src/sims/russia/russia-regions.js",
+   "description": "the map of the regions of Russia (diagram \"russia-regions\") with its indicator (fertility, natural increase, life expectancy, population change since 1990, gross regional product per inhabitant) and its years, played. Move over a region: its name, its kind (republic, oblast…), the value this year and at the first and last year.",
+   "options": [
+    {
+     "option": "data-indicator",
+     "example": null,
+     "doc": "tfr (default), rni, lex, pop, grp"
+    },
+    {
+     "option": "data-year",
+     "example": null,
+     "doc": "the year shown first (default the last)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "russia",
+     "script": "russia.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "russia-rent",
+   "field": "russia",
+   "file": "src/sims/russia/russia-rent.js",
+   "description": "the rent economy of Russia (diagram \"russia-rent\") in its two views, growth and the price of oil since 1992, or the share of oil and gas in the federal budget since 2006. The year under the pointer: growth, Brent and the share of oil and gas.",
+   "options": [
+    {
+     "option": "data-view",
+     "example": null,
+     "doc": "growth (default), budget"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "russia-territory",
+   "field": "history",
+   "file": "src/sims/history/russia-territory.js",
+   "description": "Russia from the Rus' of Kiev (1000) to the Russian Federation (1991), date by date: a click on a date of the strip, ‹ › for the date before or after, ▶ to play them in turn. Drawn by GeoRes.history.territory (diagrams/history/russia-territory.js), on the dark stage.",
+   "options": [],
+   "bundles": [
+    {
+     "id": "history",
+     "script": "history.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "saturation",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/saturation.js",
+   "description": "water and air in a closed jar. Molecules leave the water (evaporation, faster when warm) and come back when they hit it (condensation, more often when there are more of them): the vapour builds up until both rates are equal, the air is saturated. Cooled, the jar holds less vapour: the extra condenses into droplets (fog). The equilibrium follows the saturation vapour pressure (GeoRes.humidity).",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "sea-breeze",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/sea-breeze.js",
+   "description": "the thermal circulation at the coast. By day, a shallow and strong sea breeze at the ground, rising along the sea-breeze front a little inland (line of cumulus), and a deeper, weaker return flow aloft; at night, a weaker land breeze the other way. The air is drawn as particles with trails (_wind-flow.js).",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "sea-of-fog",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/sea-of-fog.js",
+   "description": "a night and a morning on the Swiss Plateau, between the Jura and the Alps, under a high-pressure system. On a clear night the ground cools and cools the air above it; the cold air pools on the Plateau and reaches its dew point: radiation fog, trapped under the warmer, drier air above (inversion). In autumn the Sun dissolves it in the morning; in winter it stays all day, a \"sea of fog\" seen from the sunny summits. A cloudy night: no fog. Right: the temperature profile, the dew point and the fog layer. A simple model: free air at −6.5 °C/km with a subsidence inversion above the boundary layer, night cooling at the ground spread over a cold layer that deepens through the night.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "seafloor-spreading",
+   "field": "geology",
+   "file": "src/sims/geology/seafloor-spreading.js",
+   "description": "the proof of plate tectonics. At a mid-ocean ridge, new ocean floor forms and moves away on both sides; its rock records the direction of the Earth's magnetic field as it cools. The field reverses now and then (the polarity time scale of the last 8 million years), so the floor carries stripes, the same on both sides of the ridge. From above: the stripes (dark: normal, like today; light: reversed); a ship's magnetometer: the profile; below: the plates moving apart over the magma. Slow (Atlantic) or fast (Pacific) spreading: same stripes, wider where the floor spreads faster.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "season-steps",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/season-steps.js",
+   "description": "the solstice / equinox drawing (diagram \"season-earth\"), built step by step with ◀ ▶ buttons and the instruction of each step. Follows the page's light/dark theme.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "seismic-rays",
+   "field": "geology",
+   "file": "src/sims/geology/seismic-rays.js",
+   "description": "an earthquake at the top of the Earth sends P and S waves through the interior. The rays bend with the speed of the waves (Snell's law in a sphere, the model of _geology.js); the S waves stop at the liquid outer core, the core bends the P waves. Seismographs around the Earth read the arrival times: no S wave beyond about 103°, no P wave between about 103° and 142° (the shadow zones). Untick \"liquid outer core\" to see what the seismographs would read if the core were solid.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "seismic-waves",
+   "field": "geology",
+   "file": "src/sims/geology/seismic-waves.js",
+   "description": "how the rock moves when a seismic wave passes. One band per wave, a block of rock drawn as a grid that the wave deforms: P (push and pull), S (shake across), Love (side to side, seen from above) and Rayleigh (rolling, like ocean waves). All waves leave the earthquake together: the P wave arrives first. waves=\"PS\" shows the body waves only, with a switch to fill the block with water: the P wave crosses it (slower), the S wave does not exist in a liquid.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "sun-angle",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/sun-angle.js",
+   "description": "height of the noon Sun, spread of its light on the ground and length of the day, for any date and latitude. Ported from GeoKey DF-Cosmology/3-Earth (sims.js, sunangle()). Uses GeoRes.earth from earth-year.js.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "swiss-grid",
+   "field": "cartography",
+   "file": "src/sims/cartography/swiss-grid.js",
+   "description": "reading Swiss coordinates (LV95) on a swisstopo map of Bern around the old observatory, the 0 point of the Swiss grid (E 2 600 000 / N 1 200 000). Point at the map (or tap it): a crosshair, the coordinates E / N and the distance from the origin. Two small exercises with four places of the old town: find the place at given coordinates (click it), or read the coordinates of a marked place (then \"Answer\"). The 1 km grid can be highlighted, labelled on the edges, with ticks every 100 m. The map (dist/bernmap.jpg, © swisstopo) and the conversions are in src/diagrams/cartography/swiss-grid.js (R_.swissGrid), shared with the static diagram.",
+   "options": [],
+   "bundles": [],
+   "images": [
+    "bernmap.jpg"
+   ]
+  },
+  {
+   "name": "tfr-generations",
+   "field": "demography",
+   "file": "src/sims/demography/tfr-generations.js",
+   "description": "what a total fertility rate (TFR) means over two generations. 100 adults today, their children 30 years later, their grandchildren 60 years later, with the same TFR in every generation: next generation = 100 × TFR ÷ 2.1 (2.1 children per woman = replacement level, which makes up for the children who die before having children of their own and for the slightly larger number of boys born). Below replacement, the missing people are drawn as empty dots. Presets: TFR 2024 (World Bank, SP.DYN.TFRT.IN).",
+   "options": [
+    {
+     "option": "data-tfr",
+     "example": null,
+     "doc": "the starting TFR (default 1.29, Switzerland)"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "time-travel",
+   "field": "urban",
+   "file": "src/sims/urban/time-travel.js",
+   "description": "a Swiss town then and now, with swisstopo's maps (journey through time, ch.swisstopo.zeitreihen: the national maps of every year since 1844) on the left of a swipe line, and today's map or aerial photo on the right. Drag the line to compare, drag the map to move, + and − to zoom; choose the year and the place. The tiles come from wmts.geo.admin.ch when the page is open (© swisstopo, free use with the source mentioned; needs the internet).",
+   "options": [
+    {
+     "option": "data-place",
+     "example": null,
+     "doc": "neuchatel (default), chauxdefonds, valderuz (the villages that grew with commuting)"
+    },
+    {
+     "option": "data-right",
+     "example": null,
+     "doc": "map (default) or photo"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "true-size",
+   "field": "cartography",
+   "file": "src/sims/cartography/true-size.js",
+   "description": "as on thetruesize.com, countries on a Mercator world map can be dragged to another latitude. A dragged country is moved on the globe (a rotation of the sphere: same shape, same size, kept upright) and drawn again with Mercator: Greenland dragged to the equator shrinks to its true size next to Africa, Brazil or Africa dragged north grow. The original stays at its place, faded. Readout: the area of the country and how much bigger its picture is on this map than at the equator (the area of its picture, over that of its picture centred on the equator). Hover or tap a country: its name. Another country can be added from the list. Follows the page's light/dark theme.",
+   "options": [
+    {
+     "option": "data-countries",
+     "example": null,
+     "doc": "ADM0_A3 codes of Natural Earth (AFR: Africa as a whole), comma-separated"
+    },
+    {
+     "option": "data-title",
+     "example": "false",
+     "doc": "no title (on a slide, which has its own)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "tsunami",
+   "field": "geology",
+   "file": "src/sims/geology/tsunami.js",
+   "description": "a cross-section of an ocean, from a coast near a subduction zone to a coast on the other side. An earthquake lifts the sea floor at the trench: the water above is lifted, a wave leaves in both directions. Its speed depends on the depth of the water (c = √(g·h)): as fast as a jet plane in the deep ocean, slow on the shelf, where it piles up into a wall of water that runs over the land. The clock gives the arrival times: minutes on the near coast, hours on the far one.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "urban-count",
+   "field": "urban",
+   "file": "src/sims/urban/urban-count.js",
+   "description": "how urban is each country? Two ways to count (UN DESA, World Urbanization Prospects 2025): each country's own definition of \"urban\", or the same rule for every country (the Degree of Urbanisation: a city is at least 50 000 people living at 1 500 per km² or more, a town at least 5 000 at 300 per km² or more). The map shows the share of the population that is urban (own definition), in cities and towns, or in cities only, from 1950 to 2050; below, the world. Move over a country: both counts.",
+   "options": [
+    {
+     "option": "data-mode",
+     "example": null,
+     "doc": "own (default), common (cities and towns), cities (cities only)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "urban",
+     "script": "urban.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "vote-map",
+   "field": "cartography",
+   "file": "src/sims/cartography/vote-map.js",
+   "description": "area isn't people. The CO2 law of 13 June 2021 by commune: rejected by 51.6 %, but only 342 of 2 105 communes said yes, so that on a map by area Switzerland looks almost all \"no\". Two views, with an animated transition: \"by area\" (each commune with its real surface, coloured by its majority, canton borders and lakes) and \"by people\" (a Dorling cartogram: each commune a circle whose area is proportional to its valid votes, pushed apart so that they don't overlap). The yes communes are the big cities: small on the map, big in the cartogram. Readout: the national result, the communes and the share of the map's area (or of the circles' area) that is \"no\", as bars. Hover or tap a commune: its name, its result, its votes. Follows the page's light/dark theme.",
+   "options": [
+    {
+     "option": "data-view",
+     "example": "people",
+     "doc": "start with the cartogram"
+    },
+    {
+     "option": "data-title",
+     "example": "false",
+     "doc": "no title (on a slide, which has its own)"
+    },
+    {
+     "option": "data-src",
+     "example": "vote.json",
+     "doc": "another federal vote, a JSON file in the format of data/cartography/votes.json (see tools/vote-data.R: vote { date, en, fr, yes, no }, communes with their shapes, cantons, lakes); its title and result come from the file, its \"source\" (a text or { en, fr }) is written at the bottom"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "votes",
+     "script": "votes.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "weather-map",
+   "field": "meteorology",
+   "file": "src/sims/meteorology/weather-map.js",
+   "description": "the weather situations of Switzerland. A map of Europe with a high and a low that can be dragged; the isobars and the winds at the ground follow (along the isobars, turned towards the low). The wind over Switzerland names the situation: west wind, Bise, Föhn, north wind, east wind, or a high. Buttons place the high and the low for the classic situations. The winds are drawn as in earth.nullschool.net (_wind-flow.js): the speed in colour, particles with trails. A schematic model: two pressure systems, no mountains in the winds.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "world-cities",
+   "field": "urban",
+   "file": "src/sims/urban/world-cities.js",
+   "description": "the cities of the world from 1975 to 2050 (UN DESA, World Urbanization Prospects 2025, cities by the Degree of Urbanisation: at least 50 000 people living at 1 500 per km² or more). Each city of 300 000 people or more (in 2025 or 2050) is a disc whose area grows with its population; megacities (10 million or more) in the accent colour. On the right, the ten largest cities of the year. Play: the years go by (between the 5-year values of the UN, the populations are interpolated); move over a city: its population.",
+   "options": [
+    {
+     "option": "data-region",
+     "example": null,
+     "doc": "boswash, tokaido, banana (the megalopolises), switzerland: a closer view, the ten largest of the region"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "countries",
+     "script": "countries.js"
+    },
+    {
+     "id": "urban",
+     "script": "urban.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "ww2-deaths",
+   "field": "history",
+   "file": "src/sims/history/ww2-deaths.js",
+   "description": "the dead of the Second World War (military and civilian) by country, as a number or as a share of the population of 1939: the Soviet Union loses the most people, Poland the largest share. Bars at the middle of the estimates, with their range; the Soviet Union highlighted (data-highlight). Figures: Wikipedia, \"World War II casualties\", table \"Total deaths by country\" (revision 1379703619, October 2026), which gives the sources of each country; the USSR within its 1946–1991 borders, Poland within its 1939 borders, China 1937–1945.",
+   "options": [
+    {
+     "option": "data-mode",
+     "example": null,
+     "doc": "\"count\" (default) or \"share\""
+    },
+    {
+     "option": "data-highlight",
+     "example": null,
+     "doc": "a key of the list (default \"ussr\")"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  }
+ ]
+}

@@ -2717,6 +2717,10 @@
 // a band across the month (like the Highcharts climograms of GeoApp); also in the sims that use draw.
 //
 // GeoRes.climate: the stations and the drawing, for the sims (climogram, koppen-key, koppen-map).
+// Beyond the stations of dist/climate.js, a data-station can name any station of the WMO normals 1991–2020
+// ("wmo-<WMO id>", with dist/climate-wmo.js: {{< geores … stations="wmo" >}}) or one that the page adds:
+//   GeoRes.climate.addStations([{ id, name, country, lat, lon, el, source, T: [12 °C], P: [12 mm] }])
+//   (name and country: a text, or { en, fr }); the sim climogram also reads them from data-station-src (a JSON file).
 (function (G) {
   const R_ = G.GeoRes, { r1, svgDoc, text, esc } = R_.lib;
 
@@ -2740,7 +2744,35 @@
     light: { temp: "#d63a2b", prec: "#3a8ee0", precHi: "#1f5fa8", dry: "rgba(240, 170, 40, 0.4)", dryLine: "#c98a00", frame: "#9aa3b2", zero: "#5d6575", band: "rgba(204,214,235,0.45)" },
   };
   const stations = () => (R_.data && R_.data.climate && R_.data.climate.stations) || [];
-  const station = id => stations().find(s => s.id === id) || null;
+  // every WMO station (dist/climate-wmo.js), unpacked once, without those of dist/climate.js (their names are better)
+  let wmo = null;
+  function wmoStations() {
+    const W = R_.data && R_.data.climateWmo;
+    if (!W) return [];
+    if (wmo) return wmo;
+    const own = new Set(stations().map(s => s.id));
+    wmo = W.stations.filter(r => !own.has("wmo-" + r[0])).map(r => {
+      const c = W.countries[r[2]] || [r[2], r[2]];
+      return { id: "wmo-" + r[0], name: { en: r[1], fr: r[1] }, country: { en: c[0], fr: c[1] }, lat: r[3], lon: r[4], el: r[5],
+        source: "WMO", T: r.slice(6, 18), P: r.slice(18, 30) };
+    });
+    return wmo;
+  }
+  // the stations a page adds (addStations, data-station-src)
+  const added = [];
+  function addStations(list) {
+    for (const s of [].concat(list || [])) {
+      if (!s || !s.id || !Array.isArray(s.T) || !Array.isArray(s.P) || s.T.length !== 12 || s.P.length !== 12) {
+        console.warn("GeoRes.climate.addStations: a station needs an id and 12 values of T and P", s);
+        continue;
+      }
+      const t = Object.assign({ source: "" }, s, { T: s.T.map(Number), P: s.P.map(Number) }), i = added.findIndex(x => x.id === s.id);
+      if (i >= 0) added[i] = t; else added.push(t);
+    }
+    return added.length;
+  }
+  const all = () => stations().concat(added, wmoStations());
+  const station = id => stations().find(s => s.id === id) || added.find(s => s.id === id) || wmoStations().find(s => s.id === id) || null;
   const nameOf = (s, L) => (s.name && (s.name[L] || s.name.en)) || s.name || "";
   const countryOf = (s, L) => (s.country && (s.country[L] || s.country.en)) || s.country || "";
   const fmt = (L, x, d = 1) => R_.num(L, x, d);
@@ -2909,7 +2941,7 @@
     return svgDoc(`0 0 ${W} ${H}`, body, th, { title: `${tr("cgTitle")}: ${list.map(s => s.name).join(", ")}` });
   };
 
-  R_.climate = { stations, station, nameOf, countryOf, input, draw, pUnits };
+  R_.climate = { stations, all, station, addStations, nameOf, countryOf, input, draw, pUnits };
 })(globalThis);
 
 // ---- src/diagrams/climatology/co2-curve.js ----
@@ -9346,10 +9378,10 @@
   const R_ = G.GeoRes, { svgDoc, text, r1 } = R_.lib, M = R_.meteo;
 
   R_.addStrings({
-    en: { cgTitle: "The Coriolis effect", cgWithout: "without the Coriolis effect", cgWith: "with the Coriolis effect",
+    en: { crgTitle: "The Coriolis effect", cgWithout: "without the Coriolis effect", cgWith: "with the Coriolis effect",
       cgNorth: "Northern hemisphere|deflected to the RIGHT", cgSouth: "Southern hemisphere|deflected to the LEFT",
       cgRotation: "rotation of the Earth: west → east", cgEquator: "equator" },
-    fr: { cgTitle: "L'effet de Coriolis", cgWithout: "sans l'effet de Coriolis", cgWith: "avec l'effet de Coriolis",
+    fr: { crgTitle: "L'effet de Coriolis", cgWithout: "sans l'effet de Coriolis", cgWith: "avec l'effet de Coriolis",
       cgNorth: "Hémisphère nord|dévié vers la DROITE", cgSouth: "Hémisphère sud|dévié vers la GAUCHE",
       cgRotation: "rotation de la Terre : ouest → est", cgEquator: "équateur" },
   });
@@ -9387,7 +9419,7 @@
     // rotation of the Earth, under the globe
     out += `<line x1="${CX - 130}" y1="${CY + R + 36}" x2="${CX + 130}" y2="${CY + R + 36}" stroke="${C.muted}" stroke-width="3" marker-end="url(#${id}-m)"/>`;
     out += text(CX, CY + R + 66, tr("cgRotation"), { "text-anchor": "middle", "font-size": 19, fill: C.muted });
-    return svgDoc("0 0 1000 640", out, th, { title: tr("cgTitle"), cls: "geores-coriolis", width: opts.width });
+    return svgDoc("0 0 1000 640", out, th, { title: tr("crgTitle"), cls: "geores-coriolis", width: opts.width });
   };
 })(globalThis);
 
@@ -15686,13 +15718,17 @@
 // Hover or tap a commune: its name, its result, its votes. Follows the page's light/dark theme.
 //   <div class="geores" data-sim="vote-map"></div>
 //   data-view="people": start with the cartogram; data-title="false": no title (on a slide, which has its own)
+//   data-src="vote.json": another federal vote, a JSON file in the format of data/cartography/votes.json (see
+//   tools/vote-data.R: vote { date, en, fr, yes, no }, communes with their shapes, cantons, lakes); its title and
+//   result come from the file, its "source" (a text or { en, fr }) is written at the bottom
 // Geometry and cartogram: R_.voteMap (src/diagrams/cartography/vote-map.js). Data: dist/votes.js.
 (function (G) {
   const R_ = G.GeoRes, pg = R_.page;
 
   R_.addStrings({
     en: {
-      voxTitle: "The CO₂ law, 13 June 2021", voxSub: "Rejected by the people, 51.6 % no",
+      voxTitle: "The CO₂ law, 13 June 2021", voxSub: "Rejected by the people, 51.6\u00a0% no",
+      voxAccepted: p => `Accepted by the people, ${p} yes`, voxRejected: p => `Rejected by the people, ${p} no`,
       voxArea: "By area", voxPeople: "By people",
       voxAreaText: "Each commune with its real surface, coloured by its majority.",
       voxPeopleText: "Each commune is a circle, its area proportional to its valid votes.",
@@ -15710,6 +15746,7 @@
     },
     fr: {
       voxTitle: "La loi sur le CO₂, 13 juin 2021", voxSub: "Refusée par le peuple, 51,6 % de non",
+      voxAccepted: p => `Acceptée par le peuple, ${p} de oui`, voxRejected: p => `Refusée par le peuple, ${p} de non`,
       voxArea: "Par surface", voxPeople: "Par personnes",
       voxAreaText: "Chaque commune avec sa vraie surface, colorée selon sa majorité.",
       voxPeopleText: "Chaque commune est un cercle, sa surface proportionnelle à ses votes valables.",
@@ -15736,8 +15773,15 @@
   const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const smooth = (a, b, t) => { const u = Math.max(0, Math.min(1, (t - a) / (b - a))); return u * u * (3 - 2 * u); };
 
+  // data-src: another vote, read from its file before the sim starts
   R_.sims["vote-map"] = function (container, opts = {}) {
-    const L = R_.lang(opts.lang), tr = k => R_.t(L, k), VM = R_.voteMap, D = R_.data && R_.data.votes;
+    if (!opts.src) return voteMapSim(container, opts, R_.data && R_.data.votes);
+    fetch(opts.src).then(r => r.json()).then(D => voteMapSim(container, opts, D))
+      .catch(e => { console.warn("vote-map: data-src", e); voteMapSim(container, opts, null); });
+  };
+
+  function voteMapSim(container, opts, D) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k), VM = R_.voteMap;
     const titled = opts.title !== "false" && opts.title !== false;
     const ctx = pg.makeCanvas(container, W, H), canvas = ctx.canvas;
     const host = container.closest(".reveal .sim");
@@ -15771,6 +15815,14 @@
     if (!D || !VM) { text(tr("voxMissing"), 20, 40); return; }
 
     const MV = VM(D), circles = MV.dorling(), C = MV.communes, V = D.vote, big = VM.big, pct = VM.pct;
+    // the title: the strings of the vote of dist/votes.js, else the vote of the file (its name, date and result)
+    const heading = D === (R_.data && R_.data.votes) ? { title: tr("voxTitle"), sub: tr("voxSub"), source: tr("voxSource") } : (() => {
+      const date = V.date ? new Date(V.date + "T12:00:00").toLocaleDateString(L === "fr" ? "fr-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+      const y = V.yes / (V.yes + V.no);
+      return { title: [V[L] || V.en || "", date].filter(Boolean).join(", "),
+        sub: y >= 0.5 ? tr("voxAccepted")(pct(L, y)) : tr("voxRejected")(pct(L, 1 - y)),
+        source: (D.source && (D.source[L] || D.source.en || D.source)) || tr("voxSource") };   // the file's own source, a text or { en, fr }
+    })();
     const n = MV.count, all = n.yes + n.no + n.tied, yesV = V.yes / (V.yes + V.no);
 
     // the map on the left (both views at the same scale), the readout on the right
@@ -15934,8 +15986,9 @@
     function readout() {
       let y = 30;
       if (titled) {
-        text(tr("voxTitle"), PX, y, { size: 24, weight: 700, color: th.accent }); y += 24;
-        text(tr("voxSub"), PX, y, { size: 15, color: th.muted }); y += 38;
+        // a long title on two lines, clear of the enlarge button in the corner
+        y = wrap(heading.title, PX, y, PW - 44, 26, { size: 24, weight: 700, color: th.accent }) - 2;
+        text(heading.sub, PX, y, { size: 15, color: th.muted }); y += 38;
       } else y = 26;
       const people = target === 1;
       text(tr(people ? "voxPeople" : "voxArea"), PX, y, { size: 22, weight: 700 }); y += 24;
@@ -15963,7 +16016,7 @@
       });
       y += 28;
       text(tr("voxHint"), PX, y, { size: 13, color: th.muted });
-      text(tr("voxSource"), W - 8, H - 10, { size: 12, align: "right", color: th.muted });
+      text(heading.source, W - 8, H - 10, { size: 12, align: "right", color: th.muted });
     }
 
     function draw() {
@@ -16045,7 +16098,7 @@
     drawLayers(); draw();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
     pg.onThemeChange(() => { theme(); drawLayers(); draw(); });
-  };
+  }
 })(globalThis);
 
 // ---- src/sims/climatology/climogram.js ----
@@ -16054,12 +16107,17 @@
 // Drawn in SVG by GeoRes.climate.draw (diagrams/climatology/climogram.js), on the dark stage.
 //
 //   <div class="geores" data-sim="climogram" data-station="ch-ber" data-compare="wmo-00027612"></div>
+//   data-station, data-compare: a station of dist/climate.js, of the WMO normals (with dist/climate-wmo.js:
+//   {{< geores sim="climogram" stations="wmo" station="wmo-00060560" >}}) or one added by the page;
+//   data-station-src: a JSON file with one station or a list ({ id, name, country, lat, lon, el, source, T, P },
+//   see GeoRes.climate.addStations), shown first
+// The menus list the stations of dist/climate.js, and the stations shown that are not among them.
 (function (G) {
   const R_ = G.GeoRes, pg = R_.page, { svgDoc, esc } = R_.lib;
 
   R_.addStrings({
-    en: { cmStation: "Station", cmCompare: "Compare", cmSwiss: "Switzerland", cmNoData: "dist/climate.js missing" },
-    fr: { cmStation: "Station", cmCompare: "Comparer", cmSwiss: "Suisse", cmNoData: "dist/climate.js manquant" },
+    en: { cmStation: "Station", cmCompare: "Compare", cmSwiss: "Switzerland", cmOther: "Other stations", cmNoData: "dist/climate.js missing" },
+    fr: { cmStation: "Station", cmCompare: "Comparer", cmSwiss: "Suisse", cmOther: "Autres stations", cmNoData: "dist/climate.js manquant" },
   });
 
   R_.sims["climogram"] = function (container, opts = {}) {
@@ -16075,17 +16133,25 @@
     const groups = [[tr("cmSwiss"), all.filter(s => s.source === "MeteoSwiss")]];
     "ABCDE".split("").forEach(g => groups.push([`${g} · ${R_.t(L, "kgGroups")[g]}`,
       all.filter(s => s.source !== "MeteoSwiss" && code(s)[0] === g)]));
-    const options = groups.filter(([, list]) => list.length).map(([label, list]) => `<optgroup label="${esc(label)}">` +
-      list.slice().sort((a, b) => CL.nameOf(a, L).localeCompare(CL.nameOf(b, L), L))
-        .map(s => `<option value="${s.id}">${esc(CL.nameOf(s, L))} (${code(s)})</option>`).join("") + "</optgroup>").join("");
+    const option = s => `<option value="${esc(s.id)}">${esc(CL.nameOf(s, L))} (${code(s)})</option>`;
+    const curated = groups.filter(([, list]) => list.length).map(([label, list]) => `<optgroup label="${esc(label)}">` +
+      list.slice().sort((a, b) => CL.nameOf(a, L).localeCompare(CL.nameOf(b, L), L)).map(option).join("") + "</optgroup>").join("");
+    // the stations shown that are not in dist/climate.js (WMO normals, added by the page): a group of their own
+    const own = new Set(all.map(s => s.id)), others = [];
+    const options = () => (others.length ? `<optgroup label="${esc(tr("cmOther"))}">${others.map(option).join("")}</optgroup>` : "") + curated;
     const panel = pg.controls(container, `
-      <label>${tr("cmStation")} <select class="a">${options}</select></label>
+      <label>${tr("cmStation")} <select class="a"></select></label>
       <label><input type="checkbox" class="cmp"> ${tr("cmCompare")}</label>
-      <select class="b" disabled>${options}</select>`);
+      <select class="b" disabled></select>`);
     if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
     const a = panel.querySelector(".a"), b = panel.querySelector(".b"), cmp = panel.querySelector(".cmp");
-    a.value = CL.station(opts.station) ? opts.station : "ch-ber";
-    b.value = CL.station(opts.compare) ? opts.compare : (all.find(s => s.id !== a.value) || all[0]).id;
+    function choose(ida, idb) {
+      for (const id of [ida, idb]) { const s = id && !own.has(id) && CL.station(id); if (s && !others.includes(s)) others.push(s); }
+      a.innerHTML = b.innerHTML = options();
+      a.value = CL.station(ida) ? ida : "ch-ber";
+      b.value = CL.station(idb) ? idb : (all.find(s => s.id !== a.value) || all[0]).id;
+    }
+    choose(opts.station, opts.compare);
     cmp.checked = !!opts.compare;
     b.disabled = !cmp.checked;
 
@@ -16099,6 +16165,14 @@
     // in a keynote, selects keep no focus (the arrow keys move the slides)
     if (container.closest(".reveal")) [a, b].forEach(el => el.addEventListener("change", () => setTimeout(() => el.blur(), 0)));
     render();
+    // stations from a file: added, the first one shown
+    if (opts.stationSrc || opts["station-src"]) {
+      fetch(opts.stationSrc || opts["station-src"]).then(r => r.json()).then(j => {
+        const list = [].concat(j);
+        CL.addStations(list);
+        if (list[0] && CL.station(list[0].id)) { choose(list[0].id, b.value); render(); }
+      }).catch(e => console.warn("climogram: data-station-src", e));
+    }
   };
 })(globalThis);
 
