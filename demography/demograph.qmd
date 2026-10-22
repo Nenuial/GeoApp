@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/demograph.jpg
+title: "Demograph"
+description: "Birth rate, death rate and population of a country over two centuries or more (Human Mortality Database)."
+categories: [Demography, Data]
+---
+
+Choose a population and narrow the years with *From* and *to*. The green area is the natural increase (more births than deaths), the purple one a natural decrease. For a whole country, *Continue with the UN* adds the UN estimates and projections after the last year of the database, up to 2100 (dotted).
+
+::: {.column-page}
+{{< app tool="demograph" presets="p,from,to,ext" >}}
+:::
+
+## What to look for
+
+- Sweden from 1751: find the stages of the demographic transition. When does the death rate start to fall, and how long after does the birth rate follow?
+- Look for the sharp spikes and dips (wars, epidemics, famines) in France, Finland or Russia: which years are they, and which rate do they hit?
+- Compare East and West Germany around 1990. What happens to the birth rate in the East after reunification?
+- In which countries does the death rate rise again after 1990, and why may that be (an ageing population, a crisis)?
+- Continue Switzerland or Japan with the UN to 2100: when do deaths exceed births, and does the population fall?
+
+## How it works
+
+The rates are births and deaths of the year per 1,000 inhabitants on 1 January, computed from the Human Mortality Database; the UN rates (dotted) use the mid-year population, so the two series can differ slightly where they meet. The database covers fewer countries than the UN, but much further back: it starts with the first reliable registers of each country. Some populations are parts of a country (East and West Germany, the nations of the United Kingdom, Māori and non-Māori New Zealand): they cannot be continued with the UN.
+
+## Sources
+
+- Human Mortality Database, Max Planck Institute for Demographic Research, University of California, Berkeley, and INED, www.mortality.org (CC BY 4.0).
+- United Nations, *World Population Prospects 2024*, medium variant (CC BY 3.0 IGO), for the continuation to 2100.

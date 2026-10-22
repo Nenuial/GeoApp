@@ -1,0 +1,29 @@
+---
+image: ../assets/thumbs/demograph.jpg
+title: "Démographe"
+description: "Natalité, mortalité et population d'un pays sur deux siècles ou plus (Human Mortality Database)."
+categories: [Démographie, Données]
+---
+
+Choisissez une population et resserrez les années avec *De* et *à*. La surface verte est l'accroissement naturel (plus de naissances que de décès), la violette une décroissance naturelle. Pour un pays entier, *Prolonger avec l'ONU* ajoute les estimations et projections des Nations unies après la dernière année de la base, jusqu'en 2100 (en pointillé).
+
+::: {.column-page}
+{{< app tool="demograph" presets="p,from,to,ext" >}}
+:::
+
+## À observer
+
+- La Suède depuis 1751 : repérez les étapes de la transition démographique. Quand la mortalité commence-t-elle à baisser, et combien de temps après la natalité suit-elle ?
+- Cherchez les pics et les creux brusques (guerres, épidémies, famines) en France, en Finlande ou en Russie : de quelles années s'agit-il, et quel taux touchent-ils ?
+- Comparez l'Allemagne de l'Est et de l'Ouest autour de 1990. Que devient la natalité à l'Est après la réunification ?
+- Dans quels pays la mortalité remonte-t-elle après 1990, et pourquoi (vieillissement de la population, crise) ?
+- Prolongez la Suisse ou le Japon avec l'ONU jusqu'en 2100 : quand les décès dépassent-ils les naissances, et la population baisse-t-elle ?
+
+## Fonctionnement
+
+Les taux sont les naissances et les décès de l'année pour 1000 habitants au 1^er^ janvier, calculés à partir de la Human Mortality Database ; les taux de l'ONU (en pointillé) utilisent la population au milieu de l'année, si bien que les deux séries peuvent légèrement différer à leur jonction. La base couvre moins de pays que l'ONU, mais remonte bien plus loin : elle commence avec les premiers registres fiables de chaque pays. Certaines populations sont des parties de pays (Allemagne de l'Est et de l'Ouest, nations du Royaume-Uni, Nouvelle-Zélande maorie et non maorie) : elles ne peuvent pas être prolongées avec l'ONU.
+
+## Sources
+
+- Human Mortality Database, Max Planck Institute for Demographic Research, University of California, Berkeley, et INED, www.mortality.org (CC BY 4.0).
+- Nations unies, *World Population Prospects 2024*, variante moyenne (CC BY 3.0 IGO), pour le prolongement jusqu'en 2100.

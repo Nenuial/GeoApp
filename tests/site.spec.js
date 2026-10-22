@@ -175,3 +175,23 @@ test.describe("population explorer", () => {
     await expect(page.locator(".app-table tbody tr")).toContainText("Switzerland");
   });
 });
+
+test.describe("demograph", () => {
+  const url = "/demography/demograph.html";
+
+  test("a population from the address, with its rates and the gap shaded", async ({ page }) => {
+    await page.goto(`${url}?p=SWE`);
+    await expect(page.locator(".app-demograph select.pop")).toHaveValue("SWE");
+    await expect(page.locator(".app-head")).toContainText("1751");
+    await expect(page.locator(".app-chart path.app-line")).toHaveCount(3);
+    expect(await page.locator(".app-chart path.app-inc").count()).toBeGreaterThan(0);
+  });
+
+  test("a whole country continues with the UN to 2100; a part of a country cannot", async ({ page }) => {
+    await page.goto(`${url}?p=CHE&ext=1`);
+    await expect(page.locator(".app-head")).toContainText("2100");
+    expect(await page.locator(".app-chart path.app-un").count()).toBe(3);
+    await page.locator(".app-demograph select.pop").selectOption("DEUTE");
+    await expect(page.locator(".app-demograph input.ext")).toBeDisabled();
+  });
+});

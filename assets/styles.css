@@ -438,3 +438,11 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
 .app-chart .app-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; }
 .app-chart .app-dashed { stroke-dasharray: 6 4; stroke-width: 2; }
 .app-explorer .geores-controls input[type="range"] { width: min(14rem, 50vw); }
+
+/* Demograph: the gap between the birth and death rates */
+.app-chart .app-inc { fill: #1b9e77; fill-opacity: 0.18; stroke: none; }
+.app-chart .app-dec { fill: #7570b3; fill-opacity: 0.3; stroke: none; }
+.app-chart .app-un { stroke-dasharray: 2 4; stroke-width: 2.5; stroke-linecap: round; }
+.app-legend i.app-inc-swatch { background: rgba(27, 158, 119, 0.3); }
+.app-legend i.app-dec-swatch { background: rgba(117, 112, 179, 0.45); }
+.app-demograph .geores-controls input[type="range"] { width: min(10rem, 40vw); }
