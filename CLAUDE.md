@@ -73,8 +73,8 @@ the other sessions and the shared folders). Plan: `~/.claude/plans/you-are-geoap
 
 ## Release (Docker on the VPS; every release approved by the user)
 
-- Server `ubuntu@5.196.76.20`, folder `~/GeoApp`: `compose.yml` (service `geoapp`, network `npm` of Nginx Proxy
-  Manager, as GeoExam), `.env` (`GEOAPP_TAG`), `releases/<tag>/` (site + Dockerfile + Caddyfile).
+- Server `ubuntu@5.196.76.20`, folder `~/GeoApp`: `compose.yml` (service and container `geoapp`, port 3000, network `npm`
+  of Nginx Proxy Manager, as GeoExam; the proxy host app.geoviews.ch forwards to `http://geoapp:3000`), `.env` (`GEOAPP_TAG`), `releases/<tag>/` (site + Dockerfile + Caddyfile).
 - `tools/release.sh v2.x.y`: checks (committed, rendered, no conflict copies), tags, sends, builds `geoapp:<tag>` on
   the server, starts it. `tools/release.sh --rollback <tag>` goes back to an earlier image.
 - After a release: `cd tests && GEOAPP_URL=https://app.geoviews.ch npx playwright test`.

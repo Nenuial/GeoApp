@@ -1,10 +1,11 @@
-# GeoApp behind Nginx Proxy Manager (TLS there): plain HTTP on port 80 inside the `npm` network.
+# GeoApp behind Nginx Proxy Manager (TLS there): plain HTTP on port 3000 inside the `npm` network. The proxy host
+# app.geoviews.ch forwards to http://geoapp:3000 (the address the old Shiny app had: nothing to change there).
 {
 	admin off
 	auto_https off
 }
 
-:80 {
+:3000 {
 	root * /srv
 	encode zstd gzip
 
