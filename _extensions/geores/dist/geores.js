@@ -214,6 +214,10 @@
     const nb = typeof s === "string" ? s.replace(/(\d) (?=[%‰])/g, "$1\u00a0").replace(/ (?=[;:!?»])/g, "\u00a0").replace(/« /g, "«\u00a0") : s;
     return `<text x="${r1(x)}" y="${r1(y)}"${a}>${nb}</text>`;
   }
+  // A colour that follows the page where it has one: cssVar(opts, "--accent", "#c03728") is var(--accent, #c03728) on a
+  // page (a keynote's CSS variables) and #c03728 in a static SVG (opts.print, set by the build: Typst and other tools
+  // ignore CSS variables). Use it in style="fill: …", which takes both.
+  const cssVar = (opts, name, fallback) => (opts && opts.print ? fallback : `var(${name}, ${fallback})`);
   // An image: href from opts.images[name] (data URI or URL), or nothing
   function image(images, name, attrs) {
     const href = images && images[name];
@@ -469,7 +473,7 @@
 
   Object.assign(GeoRes, {
     THEMES, theme, t, addStrings, typo, num, dateText, hm, lang,
-    lib: { rad, deg, r1, clamp, P, pts, esc, mix, svgDoc, text, image },
+    lib: { rad, deg, r1, clamp, P, pts, esc, mix, svgDoc, text, image, cssVar },
     page: { pageTheme, markTheme, pageLang, onThemeChange, makeCanvas, controls, loop, logValue, logPos, ctxText, arrow, glowSun },
     mount,
   });
@@ -3692,6 +3696,44 @@
   };
 })(globalThis);
 
+// ---- src/diagrams/cosmology/balloon-expansion.js ----
+// Dots on an inflating balloon, the picture of expanding space: the balloon grows and shrinks again (SVG animation),
+// the distances between the dots grow with it while each dot keeps its size. The orange dot is "us". A still picture
+// where SVG animation is not played (print). From GeoKey DF-Cosmology/1-Universe (universe.html).
+// In a keynote, the balloon takes the slide's --accent.
+//   <div class="geores" data-diagram="balloon-expansion"></div>
+(function (G) {
+  const R_ = G.GeoRes, { r1, svgDoc, cssVar } = R_.lib;
+
+  R_.addStrings({
+    en: { bexTitle: "Dots on an inflating balloon: the distances grow, the dots keep their size" },
+    fr: { bexTitle: "Des points sur un ballon qu'on gonfle : les distances grandissent, les points gardent leur taille" },
+  });
+
+  const DOTS = [[0, 0], [0.45, -0.3], [-0.5, -0.4], [0.2, 0.55], [-0.35, 0.3], [0.7, 0.2],
+    [-0.75, 0.05], [0.05, -0.75], [0.5, 0.6], [-0.2, -0.15], [0.3, 0.05], [-0.55, 0.6],
+    [0.65, -0.55], [-0.1, 0.85], [0.85, -0.15], [-0.8, -0.45]];
+  const ME = 9;
+
+  R_.diagrams["balloon-expansion"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
+    const accent = cssVar(opts, "--accent", th.name === "dark" ? "#67c5d9" : "#2f8fa6");
+    const W = 360, H = 300, cx = W / 2, cy = H / 2, S0 = 0.55, S1 = 1.05;
+    // still: size 1; animated: from S0 to S1 and back in 12 s
+    const anim = (attr, f) => `<animate attributeName="${attr}" values="${r1(f(S0))};${r1(f(S1))};${r1(f(S0))}" dur="12s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1"/>`;
+    const R = s => 140 * s;
+    let out = `<defs><radialGradient id="bex-fill" cx="35%" cy="30%" r="70%">
+        <stop offset="0" style="stop-color: ${accent}" stop-opacity="0.45"/><stop offset="1" style="stop-color: ${accent}" stop-opacity="0.12"/></radialGradient></defs>`;
+    out += `<circle cx="${cx}" cy="${cy}" r="${R(1)}" fill="url(#bex-fill)" style="stroke: ${accent}" stroke-opacity="0.6" stroke-width="2">${anim("r", R)}</circle>`;
+    DOTS.forEach(([dx, dy], i) => {
+      const x = s => cx + dx * 130 * s, y = s => cy + dy * 130 * s, me = i === ME;
+      out += `<circle cx="${r1(x(1))}" cy="${r1(y(1))}" r="5" ${me ? `style="fill: ${accent}" stroke="#fff" stroke-width="3"` : `fill="${th.name === "dark" ? "#fff6d8" : "#5a4a1e"}"`}>` +
+        anim("cx", x) + anim("cy", y) + `</circle>`;
+    });
+    return svgDoc(`0 0 ${W} ${H}`, out, th, { title: tr("bexTitle"), cls: "geores-bex" });
+  };
+})(globalThis);
+
 // ---- src/diagrams/cosmology/redshift.js ----
 // The Doppler effect and the redshift, static and qualitative (the sim "redshift" animates it).
 // Top: a source moving to the right; its wavefronts are squeezed in front and stretched behind.
@@ -4057,6 +4099,63 @@
   };
 
   R_.addStrings({ en: { seasonsTitle: "The seasons" }, fr: { seasonsTitle: "Les saisons" } });
+})(globalThis);
+
+// ---- src/diagrams/cosmology/universe-composition.js ----
+// What the Universe is made of: a waffle of 100 squares (1 % each) and its key, after Planck (2018): ordinary matter
+// 5 % (4.9), dark matter 27 % (26.8), dark energy 68 % (68.3). From GeoKey DF-Cosmology/1-Universe (universe.html).
+// In a keynote, the colours follow the deck (--atoms, --dark-matter, --dark-energy) when it has some.
+//   <div class="geores" data-diagram="universe-composition" data-fragments="true"></div>
+//   data-fragments="true": in a keynote, each part (its squares and its line of the key) appears in turn
+(function (G) {
+  const R_ = G.GeoRes, { r1, svgDoc, text, esc, cssVar } = R_.lib;
+
+  R_.addStrings({
+    en: {
+      ucoTitle: "What the Universe is made of",
+      ucoNames: ["ordinary matter", "dark matter", "dark energy"],
+      ucoWhat: ["stars, planets, gas, dust… and you", "invisible, but its gravity holds galaxies together", "makes the expansion speed up"],
+      ucoSource: "Planck satellite (2018) · one square: 1 %",
+    },
+    fr: {
+      ucoTitle: "De quoi est fait l'Univers",
+      ucoNames: ["matière ordinaire", "matière noire", "énergie noire"],
+      ucoWhat: ["étoiles, planètes, gaz, poussière… et vous", "invisible, mais sa gravité retient les galaxies", "accélère l'expansion"],
+      ucoSource: "Satellite Planck (2018) · un carré : 1 %",
+    },
+  });
+
+  const PARTS = [5, 27, 68];
+  const VARS = ["--atoms", "--dark-matter", "--dark-energy"];
+  const COLORS = { dark: ["#f2c46d", "#6f8ff0", "#c77dd3"], light: ["#d99a1e", "#4a6fd6", "#a557b5"] };
+
+  R_.diagrams["universe-composition"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
+    const frag = opts.fragments === true || opts.fragments === "true";
+    const step = (i, s) => (frag ? `<g class="fragment" data-fragment-index="${i}">${s}</g>` : `<g>${s}</g>`);
+    const col = i => cssVar(opts, VARS[i], COLORS[th.name === "dark" ? "dark" : "light"][i]);
+    const S = 40, GAP = 5, X0 = 10, Y0 = 10;
+    const cell = (n, attrs) => {
+      const x = X0 + (n % 10) * (S + GAP), y = Y0 + Math.floor(n / 10) * (S + GAP);
+      return `<rect x="${x}" y="${y}" width="${S}" height="${S}" rx="6"${attrs}/>`;
+    };
+    // the empty grid, then each part coloured
+    let out = Array.from({ length: 100 }, (_, n) => cell(n, ` fill="none" stroke="${th.muted}" stroke-opacity="0.45"`)).join("");
+    let n0 = 0;
+    PARTS.forEach((p, i) => {
+      let squares = "";
+      for (let n = n0; n < n0 + p; n++) squares += cell(n, ` style="fill: ${col(i)}; stroke: ${col(i)}"`);
+      n0 += p;
+      const y = 70 + i * 140, x = 520;
+      // the number and its name in one line of text: the name follows the number whatever its width
+      const key = `<text x="${x}" y="${y}" font-weight="700"><tspan font-size="60" style="fill: ${col(i)}">${p}</tspan>` +
+        `<tspan font-size="26" font-weight="600" fill="${th.text}" dx="10">${esc(R_.typo(L, `% ${tr("ucoNames")[i]}`))}</tspan></text>` +
+        text(x, y + 36, esc(tr("ucoWhat")[i]), { "font-size": 20, fill: th.muted });
+      out += step(i, squares + key);
+    });
+    out += text(X0, 490, esc(tr("ucoSource")), { "font-size": 15, fill: th.muted });
+    return svgDoc("0 0 1100 500", out, th, { title: tr("ucoTitle"), cls: "geores-uco" });
+  };
 })(globalThis);
 
 // ---- src/diagrams/demography/demographic-transition.js ----
@@ -10056,7 +10155,7 @@
 //   <div class="geores" data-diagram="heat-wind-cycle" data-fragments="true"></div>
 //   data-fragments="true": in a keynote, the arrows (and the next stage) appear one by one
 (function (G) {
-  const R_ = G.GeoRes, { r1, svgDoc, text, esc } = R_.lib;
+  const R_ = G.GeoRes, { r1, svgDoc, text, esc, cssVar } = R_.lib;
 
   R_.addStrings({
     en: {
@@ -10080,8 +10179,9 @@
     const frag = opts.fragments === true || opts.fragments === "true";
     const step = (i, s) => (frag ? `<g class="fragment" data-fragment-index="${i}">${s}</g>` : `<g>${s}</g>`);
     // the deck's colours where there are some (CSS variables), else the theme's
-    const main = `var(--r-main-color, ${th.text})`, panel = `var(--panel, ${th.panel})`, accent = `var(--accent, ${th.equator})`;
-    const muted = `var(--muted, ${th.muted})`, sun = th.name === "dark" ? "#ffd84a" : "#c98a00";
+    const v = (name, fallback) => cssVar(opts, name, fallback);
+    const main = v("--r-main-color", th.text), panel = v("--panel", th.panel), accent = v("--accent", th.equator);
+    const muted = v("--muted", th.muted), sun = th.name === "dark" ? "#ffd84a" : "#c98a00";
     const C = [640, 300], RX = 330, RY = 200;
     const at = (a, sx = RX, sy = RY) => [C[0] + sx * Math.cos(rad(a)), C[1] - sy * Math.sin(rad(a))];
     const ANG = [90, 0, 270, 180];

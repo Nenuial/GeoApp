@@ -127,6 +127,11 @@
 .geores:not(.reveal .geores) .geores-controls input[type="range"] {
   width: clamp(4rem, 11cqw, 9rem);
 }
+/* sun-future on a page: its sentence ("In 0.2 billion years · age of the Sun: …") changes length as it plays: a row of
+   its own, so that the buttons never move (in a keynote's .sim box it sits on the row of the buttons, see below) */
+.geores[data-sim="sun-future"]:not(.reveal .geores) .geores-controls .date {
+  flex-basis: 100%;
+}
 /* sun-angle: two sliders, two readouts and four buttons on one row, also with a 20 px root font in a 990 px box */
 .geores[data-sim="sun-angle"]:not(.reveal .geores) .geores-controls input[type="range"] {
   width: clamp(3.5rem, 7.5cqw, 9rem);
