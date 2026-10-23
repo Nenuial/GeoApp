@@ -8,6 +8,7 @@ project:
     - assets/geoapp.js
     - assets/fields/
     - assets/thumbs/
+    - assets/badges/
     - data/
 
 lang: en-US

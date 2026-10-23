@@ -1,0 +1,8 @@
+# Footer icons
+
+Copied from quarto-lddr `lddr-badges` 1.0.3 (`icons/`, owner geodoc), as GeoDoc shows them.
+
+- `cc-by-nc-sa.svg`: official Creative Commons button, https://mirrors.creativecommons.org/presskit/buttons/
+  (CC trademark policy: https://creativecommons.org/policies/#trademark).
+- `mmm-cyborg.svg`: Me & My Machine label "made together with GenAI", Fontys University of Applied Sciences,
+  https://mmmlabel.tech/ ("completely free to use in any context").

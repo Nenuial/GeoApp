@@ -1,0 +1,45 @@
+---
+title: "Licence et usage de l'IA"
+description: "Ce que signifient les icônes au bas des pages"
+---
+
+## Licence {#licence}
+
+[]{.app-badge .app-badge-cc role="img" aria-label="CC BY-NC-SA 4.0"}
+
+Les outils et les textes de GeoApp sont publiés sous la licence
+[Creative Commons Attribution – Pas d'utilisation commerciale – Partage dans les mêmes conditions 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr)
+(CC BY-NC-SA 4.0).
+
+Vous pouvez :
+
+- les **partager** : les copier et les redistribuer sur tout support et sous tout format, les montrer en classe, les
+  intégrer dans une page de cours ;
+- les **adapter** : les remixer, les transformer et créer à partir d'eux.
+
+Aux conditions suivantes :
+
+- **Attribution (BY)** : citez l'auteur (Pascal Burkhard, GeoApp), indiquez un lien vers la licence et signalez les
+  modifications éventuelles ;
+- **Pas d'utilisation commerciale (NC)** ;
+- **Partage dans les mêmes conditions (SA)** : si vous adaptez un outil ou un texte, diffusez votre version sous la
+  même licence.
+
+La licence ne couvre **pas** les données que montrent les outils (estimations de population de l'ONU, Human Mortality
+Database, normales climatiques, résultats des votations, cartes…) : elles gardent la licence de leur source, indiquée
+sous « Sources » sur chaque page.
+
+[Résumé de la licence](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr) ·
+[Texte juridique](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.fr)
+
+## Usage de l'IA générative {#ia}
+
+[]{.app-badge .app-badge-ai role="img" aria-label="Réalisé avec l'IA générative"}
+
+GeoApp porte l'étiquette **Réalisé avec l'IA générative** du système [Me & My Machine](https://mmmlabel.tech/)
+(Fontys University of Applied Sciences) : les gouttes représentent le travail humain, les circuits l'IA.
+
+Tout le site a été réalisé en collaboration étroite avec l'IA générative : l'IA a produit des parties importantes des
+outils et des textes, que j'ai relues, réécrites et complétées. J'assume la responsabilité de leur contenu.
+
+Les autres niveaux de l'étiquette sont expliqués sur la [page de GeoDoc](https://df.geoviews.ch/fr/licence.html#ia).

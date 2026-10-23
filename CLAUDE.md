@@ -24,6 +24,9 @@ the other sessions and the shared folders). Plan: `~/.claude/plans/you-are-geoap
 - OC by chapter, French only: `oc/<chapter>/index.fr.qmd` and `oc/<chapter>/<slug>.fr.qmd`. A new chapter:
   `make new-oc-chapter NAME=chine TITLE="Chine"`, then its cover, accent (`assets/styles.css`) and icon
   (`assets/tiles.ejs`). It appears on the OC page and the French home page by itself (listing of `oc/*/index.qmd`).
+- Footer (same on every Geo site): "LDDR · Geography" left; right, the licence (CC BY-NC-SA 4.0) and AI label
+  (Me & My Machine "cyborg") of the whole site, icons of GeoDoc's lddr-badges in `assets/badges/`, explained on
+  `licence.qmd` (+ `.fr.qmd`).
 - A tool lives once; other listings reach it through categories (no duplicate pages).
 - **Stable URLs** (other projects link to them): `/<field>/<slug>`, `/fr/<field>/<slug>`, `/fr/oc/<chapter>/<slug>`.
   The slug of a GeoResources sim is its name. Never rename a published page.

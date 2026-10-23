@@ -1,0 +1,42 @@
+---
+title: "Licence and use of AI"
+description: "What the icons at the bottom of the pages mean"
+---
+
+## Licence {#licence}
+
+[]{.app-badge .app-badge-cc role="img" aria-label="CC BY-NC-SA 4.0"}
+
+The tools and texts of GeoApp are published under the
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)
+licence (CC BY-NC-SA 4.0).
+
+You may:
+
+- **share** them: copy and redistribute them in any medium or format, show them in class, embed them in a course page;
+- **adapt** them: remix, transform them and build upon them.
+
+On the following conditions:
+
+- **Attribution (BY)**: credit the author (Pascal Burkhard, GeoApp), link to the licence and indicate if you made
+  changes;
+- **NonCommercial (NC)**: no commercial use;
+- **ShareAlike (SA)**: if you adapt a tool or a text, share your version under the same licence.
+
+The licence does **not** cover the data the tools show (UN population estimates, Human Mortality Database, climate
+normals, Swiss vote results, maps…): they keep the licence of their source, given under "Sources" on each page.
+
+[Licence summary](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) ·
+[Legal code](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.en)
+
+## Use of generative AI {#ia}
+
+[]{.app-badge .app-badge-ai role="img" aria-label="Made together with generative AI"}
+
+GeoApp carries the label **Made together with generative AI** of the [Me & My Machine](https://mmmlabel.tech/)
+system (Fontys University of Applied Sciences): the drops stand for human work, the circuits for AI.
+
+The whole site was made in close collaboration with generative AI: AI produced substantial parts of the tools and
+texts, which I reviewed, rewrote and completed. I am responsible for their content.
+
+The other levels of the label are explained on the [GeoDoc page](https://df.geoviews.ch/licence.html#ia).

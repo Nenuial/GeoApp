@@ -4,6 +4,12 @@ website:
   # The same footer on every Geo site (GeoApp, GeoDoc, GeoBook)
   page-footer:
     left: "LDDR · Géographie"
+    # Licence and AI label of the whole site (icons as GeoDoc's lddr-badges), explained on licence.qmd
+    right:
+      - href: licence.qmd#licence
+        text: '<span class="app-badge app-badge-cc" role="img" aria-label="Licence CC BY-NC-SA 4.0"></span>'
+      - href: licence.qmd#ia
+        text: '<span class="app-badge app-badge-ai" role="img" aria-label="Réalisé avec l''IA générative"></span>'
   navbar:
     left:
       - text: "Géographie humaine"

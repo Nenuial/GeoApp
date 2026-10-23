@@ -515,3 +515,11 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
 @media (max-width: 900px) {
   .geores[data-sim="sun-angle"] .geores-controls { flex-wrap: wrap; }
 }
+
+/* Licence and AI label (footer, right; licence page): GeoDoc's lddr-badges icons, CC button 88×31 */
+.app-badge { display: inline-block; vertical-align: middle; height: 31px; background: center / contain no-repeat; }
+.app-badge-cc { width: 88px; background-image: url("badges/cc-by-nc-sa.svg"); }
+.app-badge-ai { width: 31px; background-image: url("badges/mmm-cyborg.svg"); }
+.nav-footer-right .nav-link:has(.app-badge) { padding: 0.25rem 0.3rem; }
+.nav-footer-right .nav-link p { margin: 0; }
+main .app-badge { margin-bottom: 0.75rem; }
