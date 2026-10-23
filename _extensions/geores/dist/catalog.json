@@ -525,6 +525,26 @@
    "images": []
   },
   {
+   "name": "expansion",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/expansion.js",
+   "description": "galaxies drifting apart as space stretches, with the Hubble–Lemaître diagram building up beside them. Every distance grows by the same factor, so from any galaxy the speed away is proportional to the distance (v = H × d): click another galaxy to live there, the diagram stays the same straight line. Galaxies keep their size.",
+   "options": [
+    {
+     "option": "data-grid",
+     "example": null,
+     "doc": "false to hide the grid that stretches with space"
+    },
+    {
+     "option": "data-arrows",
+     "example": null,
+     "doc": "false to hide the speed arrows"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
    "name": "fault-blocks",
    "field": "geology",
    "file": "src/sims/geology/fault-blocks.js",

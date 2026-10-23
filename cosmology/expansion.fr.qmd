@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/expansion.jpg
+title: "L'espace s'étire"
+description: "Les galaxies s'éloignent les unes des autres quand l'espace s'étire, et le diagramme de Hubble-Lemaître se construit : deux fois plus loin, deux fois plus vite."
+categories: [Cosmologie]
+---
+
+L'espace s'étire et emporte les galaxies loin les unes des autres, tandis que le diagramme de droite place chaque galaxie selon sa distance à vous et sa vitesse d'éloignement. ❚❚ met en pause, *Recommencer* repart du début, *Vitesses* montre les flèches des vitesses et *Grille* la grille qui s'étire avec l'espace. Cliquez sur une galaxie pour y habiter : le diagramme est redessiné depuis votre nouvelle maison.
+
+::: {.column-page}
+{{< geores sim="expansion" presets="grid,arrows" >}}
+:::
+
+## À observer
+
+- Sur le diagramme, comment la vitesse d'une galaxie dépend-elle de sa distance ? Quelle forme dessinent les points ?
+- Cliquez sur une galaxie loin de la Voie lactée et habitez-y : la Voie lactée est-elle maintenant au centre de l'expansion ? À quoi ressemble le diagramme depuis votre nouvelle maison ?
+- Regardez une seule galaxie : grandit-elle quand l'espace s'étire ? Et les distances entre les galaxies ?
+- Si toutes les distances doublent dans le même temps, pourquoi une galaxie deux fois plus loin s'éloigne-t-elle deux fois plus vite ?
+
+## Fonctionnement
+
+Toutes les distances entre les galaxies augmentent du même facteur dans le même temps : depuis n'importe quelle galaxie, la vitesse d'éloignement est donc proportionnelle à la distance, v = H × d, la loi de Hubble-Lemaître, où H est la constante de Hubble. Il n'y a pas de centre : chaque observateur voit les autres s'éloigner. Les galaxies gardent leur taille, car la gravité les tient ensemble. Distances et vitesses sont schématiques.
+
+## Sources
+
+Modèle schématique, sans données.

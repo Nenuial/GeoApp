@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/expansion.jpg
+title: "Space is stretching"
+description: "Galaxies drift apart as space stretches, and the Hubble–Lemaître diagram builds up: twice as far, twice as fast."
+categories: [Cosmology]
+---
+
+Space stretches and carries the galaxies apart, while the diagram on the right plots each galaxy's distance from you against its speed away from you. ❚❚ pauses, *Restart* starts again from the beginning, *Speeds* shows the arrows of the speeds and *Grid* the grid that stretches with space. Click any galaxy to live there: the diagram is drawn again from your new home.
+
+::: {.column-page}
+{{< geores sim="expansion" presets="grid,arrows" >}}
+:::
+
+## What to look for
+
+- On the diagram, how does the speed of a galaxy depend on its distance? What shape do the points make?
+- Click a galaxy far from the Milky Way and live there: is the Milky Way now at the centre of the expansion? What does the diagram look like from your new home?
+- Look at a single galaxy: does it grow as space stretches? And the distances between galaxies?
+- If every distance doubles in the same time, why does a galaxy twice as far move away twice as fast?
+
+## How it works
+
+All the distances between galaxies grow by the same factor in the same time, so from any galaxy the speed away is proportional to the distance: v = H × d, the Hubble–Lemaître law, where H is the Hubble constant. There is no centre: every observer sees the others move away. Galaxies keep their size, as gravity holds them together. Distances and speeds are schematic.
+
+## Sources
+
+Schematic model, no data.

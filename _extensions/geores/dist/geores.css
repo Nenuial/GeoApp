@@ -417,6 +417,13 @@
 /* latlong-globe in a keynote's .sim box: 700 px wide, at the right of the slide (the text on the left) */
 .reveal .sim:has(> [data-sim="latlong-globe"]) { left: auto; right: 0; width: 700px; }
 .reveal .sim [data-sim="latlong-globe"] .sim-controls { left: auto; right: 0; }
+/* latlong-globe on a page (700 × 610, nearly square): no taller than the window, centred, so that the globe, its
+   labels and the controls fit on a beamer; a page can set --geores-globe-height (default: the window less 14rem) */
+.geores[data-sim="latlong-globe"] > canvas.geores-canvas {
+  margin: 0 auto;
+  max-width: min(100%, calc(var(--geores-globe-height, calc(100vh - 14rem)) * 700 / 610));
+}
+.reveal .geores[data-sim="latlong-globe"] > canvas.geores-canvas { max-width: none; margin: 0; }
 /* the chapter-slide globe (latlong-globe data-badge) in a .part-img: on the slide's background */
 .reveal .part-img .geores-stage.geores-space { background: transparent; padding: 0; margin: 0; border-radius: 0; }
 /* sun-angle in a keynote's .sim box: 740 px wide, at the left of the slide (text on the right), as in the decks;

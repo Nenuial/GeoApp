@@ -17255,7 +17255,283 @@
       side(t, decl);
       const north = ["summer", "autumn", "winter", "spring"][Math.floor((((deg(t) % 360) + 360) % 360) / 90)];
       const south = { summer: "winter", autumn: "spring", winter: "summer", spring: "autumn" }[north];
-      readout.innerHTML = `<b>${R_.dateText(L, day)}</b> · ${tr("north")}: ${tr(north)}, ${tr("south")}: ${tr(south)} · ${tr("notToScale")}`;
+      readout.innerHTML = R_.typo(L, `<b>${R_.dateText(L, day)}</b> · ${tr("north")}: ${tr(north)}, ${tr("south")}: ${tr(south)} · ${tr("notToScale")}`);
+    }
+    pg.loop(container, step);
+  };
+})(globalThis);
+
+// ---- src/sims/cosmology/expansion.js ----
+// Sim "expansion": galaxies drifting apart as space stretches, with the Hubble–Lemaître diagram building up beside
+// them. Every distance grows by the same factor, so from any galaxy the speed away is proportional to the distance
+// (v = H × d): click another galaxy to live there, the diagram stays the same straight line. Galaxies keep their size.
+//   <div class="geores" data-sim="expansion"></div>
+//   data-grid: false to hide the grid that stretches with space
+//   data-arrows: false to hide the speed arrows
+// Ported from GeoKey DF-Cosmology/1-Universe (sims.js, expansion()).
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  R_.addStrings({
+    en: {
+      expPlay: "Play", expPause: "Pause", expRestart: "Restart", expSpeeds: "Speeds", expGrid: "Grid",
+      expHint: "Click any galaxy to live there.", expDistance: "Distance from you →", expSpeed: "Speed away from you →",
+      expTitle: "Hubble–Lemaître diagram", expLaw: "Twice as far → twice as fast",
+      expHome: "Milky Way (you)", expMoved: "You live here now", expMilkyWay: "Milky Way",
+      expInfo: k => `Every distance <b>× ${k}</b> · galaxies themselves keep their size`,
+    },
+    fr: {
+      expPlay: "Lecture", expPause: "Pause", expRestart: "Recommencer", expSpeeds: "Vitesses", expGrid: "Grille",
+      expHint: "Cliquez sur une galaxie pour y habiter.", expDistance: "Distance depuis vous →", expSpeed: "Vitesse d'éloignement →",
+      expTitle: "Diagramme de Hubble-Lemaître", expLaw: "Deux fois plus loin → deux fois plus vite",
+      expHome: "Voie lactée (vous)", expMoved: "Vous habitez ici maintenant", expMilkyWay: "Voie lactée",
+      expInfo: k => `Chaque distance <b>× ${k}</b> · les galaxies gardent leur taille`,
+    },
+  });
+
+  const COLORS = ["#fff4e0", "#ffe2b8", "#dfe7ff", "#c9d6ff", "#ffd6e8", "#f2c46d"];
+  const ACCENT = "#67c5d9";   // the deck's colour for expansion
+
+  // Seeded random numbers, so the galaxies are the same each time
+  function random(seed) {
+    return () => {
+      seed = (seed * 16807) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+  }
+
+  R_.sims["expansion"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    // space: a dark stage in both page themes, as the other cosmology sims
+    const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    container.classList.add("geores-stage", "geores-space");
+    const W = 1280, H = 610;
+    const ctx = pg.makeCanvas(container, W, H);
+    const rnd = random(7);
+
+    // Field of galaxies on the left, diagram on the right
+    const FX = 400, FY = 250, FW = 800, FH = 500;
+    const S = 150;          // pixels per unit of "comoving" distance when a = 1
+    const RATE = 0.16;      // growth rate of distances (per second)
+    const AMAX = 2.2;
+    const PX = 840;                                     // diagram panel: from PX to the right edge, as tall as the field
+    const DX0 = 900, DX1 = 1240, DY0 = 430, DY1 = 70;   // diagram axes
+    const DMAX = 520, VMAX = DMAX * RATE;                // axes ranges
+
+    const galaxies = [];
+    for (let i = 0; i < 420; i++) {
+      galaxies.push({
+        x: (rnd() * 2 - 1) * 4,
+        y: (rnd() * 2 - 1) * 3,
+        r: 3 + rnd() * 4,
+        flat: 0.35 + rnd() * 0.65,
+        angle: rnd() * Math.PI,
+        color: COLORS[Math.floor(rnd() * COLORS.length)],
+      });
+    }
+    // Home: the galaxy closest to the middle
+    let home = galaxies.reduce((best, g) => (g.x * g.x + g.y * g.y < best.x * best.x + best.y * best.y ? g : best));
+    home.r = 7;
+    home.flat = 0.45;
+    const milkyWay = home;
+    let movedHome = false;
+    let cx = home.x, cy = home.y;   // view centre, eases towards home
+
+    let a = 1, playing = true, wait = 0, fade = 1, arrows = opts.arrows !== "false", grid = opts.grid !== "false";
+
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("expPause")}" data-alt="▶">❚❚</button>
+      <button class="restart">${tr("expRestart")}</button>
+      <label><input type="checkbox" class="exp-arrows"${arrows ? " checked" : ""}> ${tr("expSpeeds")}</label>
+      <label><input type="checkbox" class="exp-grid"${grid ? " checked" : ""}> ${tr("expGrid")}</label>
+      <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const play = panel.querySelector(".play"), info = panel.querySelector(".date");
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "expPause" : "expPlay"));
+    };
+    play.addEventListener("click", () => setPlaying(!playing));
+    panel.querySelector(".restart").addEventListener("click", () => { a = 1; wait = 0; fade = 1; setPlaying(true); });
+    panel.querySelector(".exp-arrows").addEventListener("change", e => { arrows = e.target.checked; });
+    panel.querySelector(".exp-grid").addEventListener("change", e => { grid = e.target.checked; });
+    // Respect "reduce motion": start paused
+    if (G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+
+    const screen = g => [FX + (g.x - cx) * S * a, FY + (g.y - cy) * S * a];
+    const inField = ([x, y]) => x > 8 && x < FW - 8 && y > 8 && y < FH - 8;
+
+    ctx.canvas.addEventListener("click", e => {
+      const rect = ctx.canvas.getBoundingClientRect();
+      const k = rect.width / W;
+      const px = (e.clientX - rect.left) / k, py = (e.clientY - rect.top) / k;
+      let best = null, bestD = 22;
+      for (const g of galaxies) {
+        const [x, y] = screen(g);
+        const d = Math.hypot(x - px, y - py);
+        if (d < bestD && inField([x, y])) { best = g; bestD = d; }
+      }
+      if (best && best !== home) { home = best; movedHome = true; }
+    });
+
+    function drawGalaxy(g, x, y) {
+      const r = g.r;
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, r * 2.4);
+      glow.addColorStop(0, g.color);
+      glow.addColorStop(0.35, g.color + "aa");
+      glow.addColorStop(1, g.color + "00");
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(g.angle);
+      ctx.scale(1, g.flat);
+      ctx.translate(-x, -y);
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(x, y, r * 2.4, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function arrow(x0, y0, x1, y1, color) {
+      const ang = Math.atan2(y1 - y0, x1 - x0);
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x1 + 7 * Math.cos(ang), y1 + 7 * Math.sin(ang));
+      ctx.lineTo(x1 + 7 * Math.cos(ang + 2.4), y1 + 7 * Math.sin(ang + 2.4));
+      ctx.lineTo(x1 + 7 * Math.cos(ang - 2.4), y1 + 7 * Math.sin(ang - 2.4));
+      ctx.fill();
+    }
+
+    function drawDiagram(points) {
+      ctx.save();
+      ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+      ctx.fillRect(PX, 0, W - PX, FH);
+      ctx.strokeStyle = "rgba(237, 218, 235, 0.25)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(PX + 0.5, 0.5, W - PX - 1, FH - 1);
+      ctx.strokeStyle = "rgba(237, 218, 235, 0.6)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(DX0, DY1 - 10);
+      ctx.lineTo(DX0, DY0);
+      ctx.lineTo(DX1 + 10, DY0);
+      ctx.stroke();
+      const axis = "rgba(237, 218, 235, 0.75)";
+      text(tr("expDistance"), DX1 + 10, DY0 + 30, { size: 16, color: axis, align: "right" });
+      ctx.save();
+      ctx.translate(DX0 - 18, DY1 - 6);
+      ctx.rotate(-Math.PI / 2);
+      text(tr("expSpeed"), 0, 0, { size: 16, color: axis, align: "right" });
+      ctx.restore();
+      text(tr("expTitle"), PX + 20, 34, { size: 18, weight: 600, color: ACCENT });
+
+      // The law: speed = H × distance
+      ctx.strokeStyle = ACCENT + "88";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.moveTo(DX0, DY0);
+      ctx.lineTo(DX1, DY0 - (DY0 - DY1) * (DMAX * RATE / VMAX));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      for (const p of points) {
+        const x = DX0 + (DX1 - DX0) * Math.min(p.d / DMAX, 1);
+        const y = DY0 - (DY0 - DY1) * Math.min(p.v / VMAX, 1);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      text(tr("expLaw"), DX0 + 70, DY0 - 40, { size: 16, color: "rgba(237, 218, 235, 0.85)" });
+      ctx.restore();
+    }
+
+    let shown = "";
+    function step(dt) {
+      if (playing) {
+        if (a < AMAX) {
+          a = Math.min(AMAX, a * Math.exp(RATE * dt));
+        } else {
+          wait += dt;
+          if (wait > 1.6) fade = Math.max(0, fade - dt * 2);
+          if (fade === 0) { a = 1; wait = 0; }
+        }
+        if (a < AMAX && fade < 1) fade = Math.min(1, fade + dt * 2);
+      }
+      // Ease the view to the new home
+      cx += (home.x - cx) * Math.min(1, dt * 4);
+      cy += (home.y - cy) * Math.min(1, dt * 4);
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, FW, FH);
+      ctx.clip();
+      ctx.globalAlpha = fade;
+
+      // Comoving grid: its squares stretch with space
+      if (grid) {
+        ctx.strokeStyle = "rgba(103, 197, 217, 0.16)";
+        ctx.lineWidth = 1;
+        const st = 0.5 * S * a;
+        const ox = FX - cx * S * a, oy = FY - cy * S * a;
+        ctx.beginPath();
+        for (let x = ((ox % st) + st) % st; x < FW; x += st) { ctx.moveTo(x, 0); ctx.lineTo(x, FH); }
+        for (let y = ((oy % st) + st) % st; y < FH; y += st) { ctx.moveTo(0, y); ctx.lineTo(FW, y); }
+        ctx.stroke();
+      }
+
+      const [hx, hy] = screen(home);
+      const points = [];
+      for (const g of galaxies) {
+        const pos = screen(g);
+        if (!inField(pos)) continue;
+        const [x, y] = pos;
+        const d = Math.hypot(x - hx, y - hy);
+        if (g !== home) points.push({ d, v: d * RATE, color: g.color });
+        if (arrows && g !== home && d > 1) {
+          const len = d * RATE * 0.55;
+          arrow(x + (x - hx) / d * 9, y + (y - hy) / d * 9,
+            x + (x - hx) / d * (9 + len), y + (y - hy) / d * (9 + len), ACCENT + "bb");
+        }
+      }
+      for (const g of galaxies) {
+        const pos = screen(g);
+        if (!inField(pos) && g !== home) continue;
+        drawGalaxy(g, pos[0], pos[1]);
+      }
+
+      // Home ring and label
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(hx, hy, 18, 0, 2 * Math.PI);
+      ctx.stroke();
+      text(tr(movedHome ? "expMoved" : "expHome"), hx, hy - 28, { size: 18, weight: 600, color: "#fff", align: "center" });
+      if (home !== milkyWay) {
+        const [mx, my] = screen(milkyWay);
+        if (inField([mx, my])) text(tr("expMilkyWay"), mx, my - 16, { size: 15, color: "rgba(255, 255, 255, 0.75)", align: "center" });
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = "rgba(237, 218, 235, 0.25)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(0.5, 0.5, FW - 1, FH - 1);
+
+      drawDiagram(points);
+      text(tr("expHint"), W - 10, FH + 40, { size: 18, color: th.muted, align: "right" });
+
+      const s = tr("expInfo")(R_.num(L, a, 2));
+      if (s !== shown) info.innerHTML = shown = s;
     }
     pg.loop(container, step);
   };
@@ -19164,7 +19440,8 @@
     fr: {
       date: "Date", latitude: "Latitude", litArea: "surface éclairée × {n}", shadow: "ombre",
       noRise: "Le Soleil ne se lève pas aujourd'hui", polarNight: "nuit polaire", noonSunShort: "Soleil à midi",
-      high: "{n}° de hauteur", belowHorizon: "sous l'horizon", lightPerM2: "Lumière par m²", daylight: "Durée du jour",      neuchatel: "Neuchâtel",
+      high: "{n}° de hauteur", belowHorizon: "sous l'horizon", lightPerM2: "Lumière par m²", daylight: "Durée du jour",
+      neuchatel: "Neuchâtel",
     },
   });
 
@@ -19180,7 +19457,7 @@
       <label>${tr("date")} <input type="range" class="day" min="0" max="364" step="1"></label>
       <span class="rate day-out" style="min-width: 6.5em"></span>
       <label>${tr("latitude")} <input type="range" class="lat" min="-80" max="80" step="1"></label>
-      <span class="rate lat-out" style="min-width: 8.3em"></span>
+      <span class="rate lat-out" style="min-width: 3.4em"></span>
       <button data-day="171">${tr("jun21")}</button><button data-day="78">${tr("mar20")}</button><button data-day="354">${tr("dec21")}</button>
       <button data-lat="47">${tr("neuchatel")}</button>`);
     // in a keynote's .sim box, the controls take the theme's overlay
@@ -19190,7 +19467,7 @@
     const sync = () => {
       sDay.value = day; sLat.value = lat;
       oDay.textContent = R_.dateText(L, day);
-      oLat.textContent = `${Math.abs(lat)}° ${lat > 0 ? "N" : lat < 0 ? "S" : ""}${lat === 47 ? ` (${tr("neuchatel")})` : ""}`;
+      oLat.textContent = `${Math.abs(lat)}° ${lat > 0 ? "N" : lat < 0 ? "S" : ""}`;   // Neuchâtel: the button beside it
       draw();
     };
     sDay.addEventListener("input", () => { day = +sDay.value; sync(); });
