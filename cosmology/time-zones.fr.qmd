@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/time-zones.jpg
+title: "Les fuseaux horaires aujourd'hui"
+description: "Les fuseaux horaires du monde en ce moment même, avec la nuit, midi et minuit, et les fuseaux théoriques de 15°."
+categories: [Cosmologie]
+---
+
+La carte montre les fuseaux horaires en ce moment, colorés selon leur décalage avec le temps universel (UTC), heure d'été comprise ; les fuseaux qui ne sont pas à un nombre entier d'heures d'UTC sont hachurés. Pointez un fuseau pour son heure, sa date et quelques-unes de ses villes : tous les fuseaux à la même heure sont entourés. *Dates* colore les fuseaux par jour de la semaine, *Nuit* montre ou cache la nuit, et *Fuseaux de 15°* trace les fuseaux théoriques. Le curseur *Vitesse* fait avancer le temps, et *Maintenant* revient au présent.
+
+::: {.column-page}
+{{< geores sim="time-zones" presets="mode,lines,night" >}}
+:::
+
+## À observer
+
+- Comparez les vrais fuseaux aux fuseaux théoriques de 15° : où suivent-ils les méridiens, et où les frontières l'emportent-elles ?
+- La Chine s'étend sur environ 60° de longitude : combien de fuseaux horaires utilise-t-elle ? Qu'est-ce que cela signifie pour le lever du Soleil dans l'ouest du pays ?
+- Passez à *Dates* : où un jour se termine-t-il et où le suivant commence-t-il ? Suivez la ligne de changement de date à travers le Pacifique.
+- Trouvez les fuseaux hachurés : quels pays utilisent un décalage d'une demi-heure ou d'un quart d'heure ?
+
+## Fonctionnement
+
+Chaque fuseau est une région qui garde la même heure légale ; son décalage avec UTC, heure d'été comprise, vient des règles de fuseaux horaires du navigateur pour la date affichée. Les fuseaux théoriques ont 15° de large, centrés sur les méridiens tous les 15° depuis Greenwich. La nuit est dessinée selon la position du Soleil à l'heure affichée.
+
+## Sources
+
+- Limites des fuseaux horaires : timezone-boundary-builder 2026d (ODbL).
+- Terres et frontières : Natural Earth (domaine public).

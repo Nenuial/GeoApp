@@ -46,6 +46,7 @@ for (const qmd of pages) {
     const sim = page.locator("main .geores[data-sim]").first();
     if (!(await sim.count())) { console.warn(`no sim: ${url}`); found = false; break; }
     await page.waitForTimeout(1500);   // let animations settle on a representative frame
+    await page.addStyleTag({ content: "#quarto-header { display: none !important; }" });   // over a tall sim
     await sim.screenshot({ path: join(out, `${slug}${suffix}.jpg`), type: "jpeg", quality: 78 });
   }
   if (!found) continue;

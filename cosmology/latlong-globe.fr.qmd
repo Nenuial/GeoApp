@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/latlong-globe.jpg
+title: "Latitude et longitude"
+description: "Un globe à tourner et à cliquer : la latitude et la longitude de n'importe quel lieu, dessinées comme des angles au centre de la Terre."
+categories: [Cosmologie]
+---
+
+Faites tourner le globe en le glissant, et cliquez pour placer un repère : sa latitude φ est tracée le long de son méridien depuis l'équateur, sa longitude λ le long de l'équateur depuis le méridien d'origine (Greenwich), toutes deux comme des angles au centre de la Terre. Les coordonnées du repère sont écrites sous les commandes. *Neuchâtel* ramène le repère à la maison, et *Grille* montre ou cache les parallèles et les méridiens, tous les 15°.
+
+::: {.column-page}
+{{< geores sim="latlong-globe" presets="grid" >}}
+:::
+
+## À observer
+
+- Placez le repère sur l'équateur, puis sur un pôle : quelles sont leurs latitudes ? Pourquoi une latitude ne peut-elle pas dépasser 90° ?
+- Déplacez le repère le long d'un parallèle : quelle coordonnée change, laquelle reste la même ?
+- Trouvez le lieu à l'opposé de Neuchâtel sur le globe (son antipode) : quelles sont ses coordonnées ?
+- Pourquoi la longitude se mesure-t-elle depuis Greenwich ? Aurait-on pu choisir un autre méridien ?
+
+## Fonctionnement
+
+La latitude est l'angle entre l'équateur et le lieu, mesuré au centre de la Terre, vers le nord ou le sud (de 0° à 90°). La longitude est l'angle entre le méridien d'origine et le méridien du lieu, vers l'est ou l'ouest (de 0° à 180°). La Terre est dessinée comme une sphère parfaite.
+
+## Sources
+
+Texture de la Terre : Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

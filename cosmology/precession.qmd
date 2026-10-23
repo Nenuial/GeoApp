@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/precession.jpg
+title: "Axial precession"
+description: "Earth's axis traces a cone in about 26,000 years: Thuban, then Polaris, then Vega as the North Star."
+categories: [Cosmology]
+---
+
+On the left, Earth's axis slowly turns around the perpendicular to its orbit, like a spinning top. On the right, the sky around the pole: the circle shows where the axis points over one turn, and the North Star of the moment is named under the controls. The *Speed* slider sets how many years pass in one second, ❚❚ pauses, and the buttons jump to the time of the *Pyramids*, *Today* and *AD 14 000*.
+
+::: {.column-page}
+{{< geores sim="precession" presets="year,speed" >}}
+:::
+
+## What to look for
+
+- How long does the axis take to go once round its cone? Does its tilt change meanwhile?
+- Which star was the North Star when the pyramids were built? Which one will it be around AD 14 000?
+- Are there times when no bright star lies near the pole? What would that change for travellers who steered by the stars?
+- Today the North Pole leans towards the Sun in June. In 13,000 years, the axis points the other way: in which month will the northern summer then be?
+
+## How it works
+
+The Sun and the Moon pull on Earth's bulge at the equator, so the spinning Earth wobbles like a top: its axis keeps its tilt of 23.44° but turns once in about 26,000 years. The stars are placed at their positions of the year 2000, without their own motions, and the tilt is kept constant (in reality it varies between about 22° and 24.5° over 41,000 years).
+
+## Sources
+
+- Star positions: ecliptic coordinates of the year 2000 (J2000).
+- Earth texture: Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

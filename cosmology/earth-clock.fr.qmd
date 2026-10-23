@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/earth-clock.jpg
+title: "15° par heure"
+description: "La Terre vue d'au-dessus du pôle Nord, qui tourne sous le Soleil : pourquoi midi se déplace de 15° vers l'ouest chaque heure."
+categories: [Cosmologie]
+---
+
+La Terre tourne dans le sens inverse des aiguilles d'une montre sous le Soleil, vue d'au-dessus du pôle Nord. L'anneau extérieur des heures solaires reste immobile, midi face au Soleil ; les 24 fuseaux de 15° tournent avec la Terre, et six villes portent l'heure de leur fuseau. À droite, une horloge par ville. Le curseur *Vitesse* règle combien d'heures passent en une seconde, ❚❚ met en pause et *Maintenant* revient à l'heure actuelle.
+
+::: {.column-page}
+{{< geores sim="earth-clock" presets="utc,speed" >}}
+:::
+
+## À observer
+
+- De combien de degrés la Terre tourne-t-elle en une heure ? En quatre minutes ?
+- Quand il est midi à Londres, quelle heure est-il à Neuchâtel, à New York et à Tokyo ? Pourquoi ?
+- Quelle ville voit le Soleil se lever en premier, New York ou Mumbai ?
+- L'horloge de Mumbai n'est pas sur une heure ronde : pourquoi un pays choisirait-il un fuseau d'une demi-heure ?
+
+## Fonctionnement
+
+La Terre tourne de 360° en 24 heures, soit 15° par heure : tous les 15° vers l'est, midi arrive une heure plus tôt. Les 24 fuseaux théoriques ont 15° de large ; les villes montrent l'heure normale de leur vrai fuseau, sans l'heure d'été. Le jour et la nuit sont dessinés comme à un équinoxe.
+
+## Sources
+
+- Modèle schématique ; fuseaux horaires des six villes, heure normale.
+- Texture de la Terre : Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

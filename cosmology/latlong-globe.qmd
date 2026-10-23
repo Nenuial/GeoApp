@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/latlong-globe.jpg
+title: "Latitude and longitude"
+description: "A globe to turn and click: the latitude and the longitude of any place, drawn as angles at the centre of Earth."
+categories: [Cosmology]
+---
+
+Drag the globe to turn it, and click to place a pin: its latitude φ is drawn along its meridian from the equator, its longitude λ along the equator from the prime meridian (Greenwich), both as angles at the centre of Earth. The coordinates of the pin are written under the controls. *Neuchâtel* brings the pin back home, and *Grid* shows or hides the parallels and meridians, every 15°.
+
+::: {.column-page}
+{{< geores sim="latlong-globe" presets="grid" >}}
+:::
+
+## What to look for
+
+- Place the pin on the equator, then on a pole: what are their latitudes? Why can't a latitude be more than 90°?
+- Move the pin along a parallel: which coordinate changes, which one stays the same?
+- Find the place on the other side of the globe from Neuchâtel (its antipode): what are its coordinates?
+- Why is the longitude measured from Greenwich? Could another meridian have been chosen?
+
+## How it works
+
+Latitude is the angle between the equator and the place, measured at the centre of Earth, north or south (0° to 90°). Longitude is the angle between the prime meridian and the meridian of the place, east or west (0° to 180°). Earth is drawn as a perfect sphere.
+
+## Sources
+
+Earth texture: Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

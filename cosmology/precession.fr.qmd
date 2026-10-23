@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/precession.jpg
+title: "La précession de l'axe"
+description: "L'axe de la Terre décrit un cône en 26 000 ans environ : Thuban, puis Polaris, puis Véga comme étoile polaire."
+categories: [Cosmologie]
+---
+
+À gauche, l'axe de la Terre tourne lentement autour de la perpendiculaire à son orbite, comme une toupie. À droite, le ciel autour du pôle : le cercle montre où pointe l'axe en un tour, et l'étoile polaire du moment est nommée sous les commandes. Le curseur *Vitesse* règle combien d'années passent en une seconde, ❚❚ met en pause, et les boutons sautent à l'époque des *Pyramides*, à *Aujourd'hui* et à l'*An 14 000*.
+
+::: {.column-page}
+{{< geores sim="precession" presets="year,speed" >}}
+:::
+
+## À observer
+
+- Combien de temps l'axe met-il pour faire un tour de son cône ? Son inclinaison change-t-elle pendant ce temps ?
+- Quelle était l'étoile polaire quand les pyramides ont été construites ? Laquelle le sera vers l'an 14 000 ?
+- Y a-t-il des époques sans étoile brillante près du pôle ? Qu'est-ce que cela change pour les voyageurs qui se guident aux étoiles ?
+- Aujourd'hui, le pôle Nord penche vers le Soleil en juin. Dans 13 000 ans, l'axe pointera de l'autre côté : en quel mois l'été boréal aura-t-il lieu alors ?
+
+## Fonctionnement
+
+Le Soleil et la Lune tirent sur le renflement de la Terre à l'équateur : la Terre, qui tourne sur elle-même, oscille comme une toupie. Son axe garde son inclinaison de 23,44° mais fait un tour en 26 000 ans environ. Les étoiles sont placées à leur position de l'an 2000, sans leurs mouvements propres, et l'inclinaison est gardée constante (en réalité, elle varie entre 22° et 24,5° environ en 41 000 ans).
+
+## Sources
+
+- Positions des étoiles : coordonnées écliptiques de l'an 2000 (J2000).
+- Texture de la Terre : Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

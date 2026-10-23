@@ -280,7 +280,9 @@
     // A button whose label changes (▶ Play / ❚❚ Pause) gives its other label in data-alt: it is as wide as the wider
     // of the two from the start, so that nothing after it moves (measured with the button's font, in em, so that it
     // also works on a slide that is hidden while the sim starts)
-    panel.querySelectorAll("button[data-alt]").forEach(b => {
+    // (measured once the sim has set up its controls: a sim in a keynote's .sim box adds .sim-controls right after
+    // this function returns, which changes the font and padding)
+    const fit = () => panel.querySelectorAll("button[data-alt]").forEach(b => {
       const cs = G.getComputedStyle(b), size = parseFloat(cs.fontSize) || 16;
       const ctx = document.createElement("canvas").getContext("2d");
       ctx.font = `${cs.fontWeight} ${size}px ${cs.fontFamily}`;
@@ -288,6 +290,7 @@
       const pad = ["paddingLeft", "paddingRight", "borderLeftWidth", "borderRightWidth"].reduce((a, k) => a + (parseFloat(cs[k]) || 0), 0);
       b.style.minWidth = `${((w + pad) / size + 0.1).toFixed(2)}em`;
     });
+    if (typeof queueMicrotask === "function") queueMicrotask(fit); else fit();
     // In a keynote, buttons keep no focus so that the space bar still drives the slides
     if (container.closest(".reveal")) {
       panel.querySelectorAll("button, input[type=checkbox]").forEach(b =>
@@ -16740,6 +16743,201 @@
   };
 })(globalThis);
 
+// ---- src/sims/cosmology/earth-clock.js ----
+// Sim "earth-clock": 15° per hour. Earth seen from above the North Pole, turning anticlockwise under the Sun (on the
+// left), with a fixed ring of solar hours (noon facing the Sun), the 24 nominal time zones of 15° turning with it and
+// six cities with the time of their time zone; on the right, 360° ÷ 24 h = 15° per hour and a clock per city.
+// On the dark stage in both page themes.
+//   <div class="geores" data-sim="earth-clock" data-utc="11" data-speed="0.5"></div>
+//   data-utc: UTC time at the start, in hours (0 to 24, default 11)
+//   data-speed: hours per second at the start (0.05 to 4, default 0.5)
+// Ported from GeoKey DF-Cosmology/3-Earth (sims.js, clock()). Uses GeoRes.earth from earth-year.js and
+// GeoRes.textures.earth (dist/textures.js) for the textured globe; a plain blue globe without it.
+// Standard times (no daylight saving time); day and night as at an equinox.
+(function (G) {
+  const R_ = G.GeoRes, { rad, clamp } = R_.lib, pg = R_.page;
+  const LON = "#ff7a6b";   // the Greenwich meridian, in the colour of the longitudes (latlong-globe)
+
+  R_.addStrings({
+    en: {
+      eckSpeed: "Speed", eckNow: "Now", eckPlay: "Play", eckPause: "Pause",
+      eckMin: "1 s = {n} min", eckHours: "1 s = {n} h", eckNoon: "noon", eckMidnight: "midnight",
+      eckRule: "360° ÷ 24 h = 15° per hour", eckRuleSub: "Every 15° to the east, noon comes 1 hour earlier.",
+      eckReadout: "seen from above the North Pole · time of each city's time zone",
+      eckLosAngeles: "Los Angeles", eckNewYork: "New York", eckLondon: "London", eckNeuchatel: "Neuchâtel",
+      eckMumbai: "Mumbai", eckTokyo: "Tokyo",
+    },
+    fr: {
+      eckSpeed: "Vitesse", eckNow: "Maintenant", eckPlay: "Lecture", eckPause: "Pause",
+      eckMin: "1 s = {n} min", eckHours: "1 s = {n} h", eckNoon: "midi", eckMidnight: "minuit",
+      eckRule: "360° ÷ 24 h = 15° par heure", eckRuleSub: "Tous les 15° vers l'est, midi arrive 1 heure plus tôt.",
+      eckReadout: "vue d'au-dessus du pôle Nord · heure du fuseau horaire de chaque ville",
+      eckLosAngeles: "Los Angeles", eckNewYork: "New York", eckLondon: "Londres", eckNeuchatel: "Neuchâtel",
+      eckMumbai: "Bombay", eckTokyo: "Tokyo",
+    },
+  });
+
+  // name key, latitude, longitude, time zone (hours from UTC, standard time)
+  const CITIES = [
+    ["eckLosAngeles", 34.05, -118.24, -8],
+    ["eckNewYork", 40.71, -74.01, -5],
+    ["eckLondon", 51.51, -0.13, 0],
+    ["eckNeuchatel", 46.99, 6.93, 1],
+    ["eckMumbai", 19.08, 72.88, 5.5],
+    ["eckTokyo", 35.68, 139.69, 9],
+  ];
+  const HOME = "eckNeuchatel";
+
+  R_.sims["earth-clock"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    const { earthTexture, makeSphere } = R_.earth;
+    // a space scene: on the dark stage in both page themes, as the other canvas sims of cosmology
+    container.classList.add("geores-stage", "geores-space");
+    const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    const W = 1280, H = 610;
+    const ctx = pg.makeCanvas(container, W, H);
+    const GC = [430, 300], R = 205;
+    const sphere = makeSphere(R, 1.25);
+    let tex = null;
+    earthTexture().then(t => { tex = t; });
+
+    const lo = -1.3, hi = 0.6;   // 3 minutes to 4 hours per second
+    let utc = Number.isFinite(+opts.utc) && opts.utc !== "" ? ((+opts.utc % 24) + 24) % 24 : 11;
+    let speed = clamp(+opts.speed || 0.5, Math.pow(10, lo), Math.pow(10, hi));
+    let playing = true;
+
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("eckPause")}" data-alt="▶">❚❚</button>
+      <label>${tr("eckSpeed")} <input type="range" min="0" max="1000"></label>
+      <span class="rate" style="min-width: 5.8em"></span>
+      <button class="now">${tr("eckNow")}</button>
+      <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");   // (pg.controls sizes the data-alt buttons after this)
+    const slider = panel.querySelector("input[type=range]");
+    slider.value = pg.logPos(speed, lo, hi);
+    const rate = panel.querySelector(".rate"), readout = panel.querySelector(".date");
+    const showRate = () => {
+      rate.textContent = R_.typo(L, speed < 1 ? tr("eckMin").replace("{n}", Math.round(speed * 60))
+        : tr("eckHours").replace("{n}", R_.num(L, speed, 1)));
+    };
+    showRate();
+    slider.addEventListener("input", () => { speed = pg.logValue(slider.value, lo, hi); showRate(); });
+    const play = panel.querySelector(".play");
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "eckPause" : "eckPlay"));
+    };
+    play.addEventListener("click", () => setPlaying(!playing));
+    panel.querySelector(".now").addEventListener("click", () => {
+      const d = new Date();
+      utc = d.getUTCHours() + d.getUTCMinutes() / 60;
+      setPlaying(false);
+    });
+    // Respect "reduce motion": start paused
+    if (G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+
+    const clockText = h => {
+      const m = Math.floor((((h % 24) + 24) % 24) * 60);
+      return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+    };
+    // screen point at angle a (degrees, anticlockwise) and radius r around the pole
+    const at = (a, r) => [GC[0] + r * Math.cos(rad(a)), GC[1] - r * Math.sin(rad(a))];
+
+    function step(dt) {
+      if (playing) utc = (utc + speed * dt) % 24;
+      // Greenwich faces the Sun (on the left) at 12:00 UTC; Earth turns anticlockwise
+      const rho = 180 + (utc - 12) * 15;
+      ctx.clearRect(0, 0, W, H);
+
+      // the Sun and its light
+      pg.glowSun(ctx, -70, GC[1], 60);
+      ctx.fillStyle = "rgba(255, 210, 122, 0.08)";
+      ctx.fillRect(0, GC[1] - R - 50, GC[0], 2 * R + 100);
+
+      // hour ring, fixed with respect to the Sun: noon facing it, midnight opposite
+      ctx.lineWidth = 26;
+      ctx.strokeStyle = "rgba(255, 210, 122, 0.22)";
+      ctx.beginPath(); ctx.arc(...GC, R + 34, Math.PI / 2, 3 * Math.PI / 2); ctx.stroke();
+      ctx.strokeStyle = "rgba(20, 30, 60, 0.8)";
+      ctx.beginPath(); ctx.arc(...GC, R + 34, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+      for (let h = 0; h < 24; h++) {
+        const a = 180 + (h - 12) * 15;
+        const [x0, y0] = at(a, R + 22), [x1, y1] = at(a, R + (h % 3 ? 32 : 46));
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.7)"; ctx.lineWidth = h % 3 ? 1.5 : 3;
+        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+        if (h % 3 === 0) {
+          const [x, y] = at(a, R + 72);
+          text(`${String(h).padStart(2, "0")}:00`, x, y, { size: 18, weight: h % 12 ? 400 : 600, color: h === 12 ? th.ray : th.text, align: "center", base: "middle" });
+        }
+      }
+      text(tr("eckNoon"), ...at(180, R + 72).map((v, i) => v + (i ? 24 : 0)), { size: 15, color: th.ray, align: "center", italic: true });
+      text(tr("eckMidnight"), ...at(0, R + 72).map((v, i) => v + (i ? 24 : 0)), { size: 15, color: th.muted, align: "center", italic: true });
+
+      // Earth from above the North Pole
+      const e1 = [Math.cos(rad(rho)), Math.sin(rad(rho)), 0], e2 = [-Math.sin(rad(rho)), Math.cos(rad(rho)), 0];
+      if (tex) {
+        sphere.render(tex, e1, e2, [0, 0, 1], [-1, 0, 0], 0.18);
+        sphere.draw(ctx, ...GC);
+      } else {
+        // no texture: a plain blue globe, its night half (away from the Sun) dark
+        ctx.fillStyle = "#3d7fc1";
+        ctx.beginPath(); ctx.arc(...GC, R, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = "#0e1d33";
+        ctx.beginPath(); ctx.arc(...GC, R, -Math.PI / 2, Math.PI / 2); ctx.fill();
+      }
+      // time zones: 24 slices of 15°, turning with Earth
+      ctx.save();
+      ctx.beginPath(); ctx.arc(...GC, R, 0, 2 * Math.PI); ctx.clip();
+      for (let k = 0; k < 24; k++) {
+        const a0 = rho + k * 15 - 7.5;
+        ctx.fillStyle = k % 2 ? "rgba(255, 255, 255, 0.07)" : "rgba(0, 0, 0, 0.07)";
+        ctx.beginPath(); ctx.moveTo(...GC); ctx.arc(...GC, R, -rad(a0 + 15), -rad(a0)); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.25)"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(...GC); ctx.lineTo(...at(a0, R)); ctx.stroke();
+      }
+      ctx.restore();
+      // Greenwich meridian
+      ctx.strokeStyle = LON; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(...GC); ctx.lineTo(...at(rho, R)); ctx.stroke();
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(...GC, R, 0, 2 * Math.PI); ctx.stroke();
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(...GC, 4, 0, 2 * Math.PI); ctx.fill();
+
+      // cities
+      CITIES.forEach(([key, lat, lon, off]) => {
+        const [x, y] = at(rho + lon, R * Math.cos(rad(lat))), home = key === HOME;
+        ctx.fillStyle = home ? th.accent : "#fff";
+        ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI); ctx.fill();
+        ctx.font = `600 16px ${th.font}`;
+        const label = `${tr(key)} ${clockText(utc + off)}`, w = ctx.measureText(label).width + 12;
+        ctx.fillStyle = "rgba(10, 14, 26, 0.75)"; ctx.beginPath(); ctx.roundRect(x + 9, y - 12, w, 24, 5); ctx.fill();
+        text(label, x + 15, y + 1, { size: 16, weight: 600, color: home ? th.accent : "#fff", base: "middle" });
+      });
+
+      // right panel: the rule and the clocks
+      const px = 830;
+      text(tr("eckRule"), px, 70, { size: 30, weight: 600, color: th.accent });
+      text(tr("eckRuleSub"), px, 104, { size: 18, color: th.muted });
+      [...CITIES].reverse().forEach(([key, , , off], i) => {
+        const y = 162 + i * 46, local = utc + off, h = ((local % 24) + 24) % 24, home = key === HOME;
+        ctx.fillStyle = home ? th.accent : "#fff";
+        ctx.globalAlpha = home ? 0.14 : 0.05;
+        ctx.beginPath(); ctx.roundRect(px, y - 28, 400, 40, 6); ctx.fill();
+        ctx.globalAlpha = 1;
+        text(h >= 6 && h < 18 ? "☀️" : "🌙", px + 14, y, { size: 20 });
+        text(tr(key), px + 50, y, { size: 21, weight: 600, color: home ? th.accent : th.text });
+        const sign = off >= 0 ? "+" : "−", a = Math.abs(off);
+        text(`UTC ${sign} ${Math.floor(a)}${a % 1 ? ":30" : ""}`, px + 250, y, { size: 16, color: th.muted, align: "right" });
+        text(clockText(local), px + 388, y, { size: 26, weight: 600, color: th.text, align: "right" });
+      });
+      readout.innerHTML = `<b>UTC ${clockText(utc)}</b> · ${tr("eckReadout")}`;
+    }
+    pg.loop(container, step);
+  };
+})(globalThis);
+
 // ---- src/sims/cosmology/earth-year.js ----
 // Sim "earth-year": Earth around the Sun with its fixed axis, and the same moment seen
 // "from the side" (the solstice drawing). Ported from GeoKey DF-Cosmology/3-Earth (sims.js, year()).
@@ -16757,13 +16955,13 @@
     en: {
       speed: "Speed", perSecond: "1 s = {n} days", fromSide: "Seen from the side",
       fromSideSub: "the drawing of the solstices and equinoxes", noonSun: "Sun overhead at noon",
-      neuchatel: "Neuchâtel", ofDay: "of daylight", north: "north", south: "south",
+      dayNeuchatel: "Daylight in Neuchâtel", north: "north", south: "south",
       notToScale: "spin of Earth slowed down, not to scale", play: "Play", pause: "Pause",
     },
     fr: {
       speed: "Vitesse", perSecond: "1 s = {n} jours", fromSide: "Vue de côté",
       fromSideSub: "le dessin des solstices et des équinoxes", noonSun: "Soleil au zénith à midi",
-      neuchatel: "Neuchâtel", ofDay: "de jour", north: "nord", south: "sud",
+      dayNeuchatel: "Jour à Neuchâtel", north: "nord", south: "sud",
       notToScale: "rotation de la Terre ralentie, pas à l'échelle", play: "Lecture", pause: "Pause",
     },
   });
@@ -16876,7 +17074,7 @@
   R_.sims["earth-year"] = function (container, opts = {}) {
     const L = opts.lang, tr = k => R_.t(L, k);
     const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
-    container.classList.add("geores-stage");
+    container.classList.add("geores-stage", "geores-space");
     const W = 1280, H = 610;
     const ctx = pg.makeCanvas(container, W, H);
     const O = [440, 262], A = 340, EL = rad(22), B = A * Math.sin(EL);
@@ -16906,6 +17104,8 @@
       <span class="rate" style="min-width: 6.2em"></span>
       ${KEYS.map(([d, k]) => `<button data-day="${d}">${tr(k)}</button>`).join("")}
       <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
     const slider = panel.querySelector("input[type=range]"), lo = 0.3, hi = 1.8;
     slider.value = pg.logPos(speed, lo, hi);
     const rate = panel.querySelector(".rate"), readout = panel.querySelector(".date");
@@ -17028,8 +17228,8 @@
       text(tr("noonSun"), px + 20, y0, { size: 18, color: th.muted });
       const lat = Math.abs(decl) < 0.05 ? tr("equator") : `${R_.num(L, Math.abs(decl), 1)}° ${decl > 0 ? "N" : "S"}`;
       text(lat, px + 20, y0 + 28, { size: 24, weight: 600, color: th.ray });
-      text(tr("neuchatel"), px + 230, y0, { size: 18, color: th.muted });
-      text(`${R_.hm(dayLength(47, decl))} ${tr("ofDay")}`, px + 230, y0 + 28, { size: 24, weight: 600, color: th.text });
+      text(tr("dayNeuchatel"), px + 220, y0, { size: 18, color: th.muted });
+      text(R_.hm(dayLength(47, decl)), px + 220, y0 + 28, { size: 24, weight: 600, color: th.text });
       const legend = [["equator", th.equator], ["tropics", th.tropic], ["polarCircles", th.polar]];
       let lx = px + 20;
       legend.forEach(([k, c]) => {
@@ -17486,6 +17686,347 @@
   };
 })(globalThis);
 
+// ---- src/sims/cosmology/latlong-globe.js ----
+// Sim "latlong-globe": latitude and longitude on a textured globe you can turn (drag) and click (a pin): the pin's
+// latitude φ is drawn along its meridian from the equator, its longitude λ along the equator from the prime meridian
+// (Greenwich), with the angles at the centre of the Earth. Starts on Neuchâtel. On the dark stage in both page themes.
+//   <div class="geores" data-sim="latlong-globe"></div>
+//   data-grid="false": start without the grid of parallels and meridians every 15°
+//   data-badge="true": the small turning globe of a chapter slide (square, grid, Neuchâtel; no controls, no clicks)
+// Ported from GeoKey DF-Cosmology/3-Earth (sims.js, globe() and globeBadge()). Needs GeoRes.textures.earth
+// (dist/textures.js, Solar System Scope, CC BY 4.0) for the textured globe; plain blue without it.
+(function (G) {
+  const R_ = G.GeoRes, { rad, deg, clamp } = R_.lib, pg = R_.page;
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const norm = a => { const l = Math.hypot(...a); return a.map(x => x / l); };
+  const range = (a, b, n) => Array.from({ length: n + 1 }, (_, i) => a + (b - a) * i / n);
+
+  R_.addStrings({
+    en: {
+      llgGrid: "Grid", llgPin: "Pin: {v}", llgEquator: "equator", llgNeuchatel: "Neuchâtel", llgN: "N", llgS: "S", llgE: "E", llgW: "W",
+      llgHint: "Drag the globe to turn it, click to place a pin.", llgCredit: "Texture: Solar System Scope (CC BY 4.0)",
+      llgLabel: "Globe with the parallels and meridians: drag to turn it, click to place a pin",
+      llgBadgeLabel: "Turning globe with its parallels and meridians",
+    },
+    fr: {
+      llgGrid: "Grille", llgPin: "Repère : {v}", llgEquator: "équateur", llgNeuchatel: "Neuchâtel", llgN: "N", llgS: "S", llgE: "E", llgW: "O",
+      llgHint: "Faites tourner le globe en le glissant, cliquez pour placer un repère.", llgCredit: "Texture : Solar System Scope (CC BY 4.0)",
+      llgLabel: "Globe avec les parallèles et les méridiens : glissez pour le tourner, cliquez pour placer un repère",
+      llgBadgeLabel: "Globe qui tourne, avec ses parallèles et ses méridiens",
+    },
+  });
+
+  /* ---------------- Textured, lit sphere (as in earth-year.js) ---------------- */
+
+  let texturePromise = null;
+  function earthTexture() {
+    // the texture already read by earth-year.js, when it is on the page: read once
+    if (R_.earth && R_.earth.earthTexture) return R_.earth.earthTexture();
+    if (!texturePromise) {
+      texturePromise = new Promise(resolve => {
+        const src = R_.textures && R_.textures.earth;
+        if (!src) return resolve(null);
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const c = document.createElement("canvas");
+            c.width = img.naturalWidth;
+            c.height = img.naturalHeight;
+            const x = c.getContext("2d");
+            x.drawImage(img, 0, 0);
+            resolve({ w: c.width, h: c.height, data: x.getImageData(0, 0, c.width, c.height).data });
+          } catch (e) {
+            resolve(null);
+          }
+        };
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+    return texturePromise;
+  }
+
+  // Sphere of radius r, drawn pixel by pixel in any orientation.
+  // View coordinates: x to the right, y up, z towards the viewer.
+  function makeSphere(r, dpr = 2) {
+    const S = Math.ceil(2 * r * dpr);
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = S;
+    const cx = canvas.getContext("2d");
+    const out = cx.createImageData(S, S);
+    const list = [], nx = [], ny = [], nz = [], cover = [];
+    for (let j = 0; j < S; j++) {
+      for (let i = 0; i < S; i++) {
+        const x = (i + 0.5) / S * 2 - 1, y = 1 - (j + 0.5) / S * 2, d2 = x * x + y * y;
+        const c = Math.min(1, (1 - Math.sqrt(d2)) * S / 2 + 0.5);
+        if (c <= 0) continue;
+        list.push(j * S + i);
+        nx.push(x); ny.push(y); nz.push(Math.sqrt(Math.max(0, 1 - d2)));
+        cover.push(c * 255);
+      }
+    }
+    return {
+      // e1, e2, e3: Earth's axes (to 0° N 0° E, to 0° N 90° E, to the North Pole) in view coordinates.
+      // sun: unit vector towards the Sun (view coordinates); night: brightness of the night side.
+      render(tex, e1, e2, e3, sun, night = 0.13) {
+        const D = out.data, T = tex.data, TW = tex.w, TH = tex.h;
+        const TWO_PI = 2 * Math.PI;
+        for (let k = 0; k < list.length; k++) {
+          const x = nx[k], y = ny[k], z = nz[k];
+          const b1 = x * e1[0] + y * e1[1] + z * e1[2];
+          const b2 = x * e2[0] + y * e2[1] + z * e2[2];
+          const b3 = x * e3[0] + y * e3[1] + z * e3[2];
+          const lat = Math.asin(b3 > 1 ? 1 : b3 < -1 ? -1 : b3), lon = Math.atan2(b2, b1);
+          let u = ((lon / TWO_PI + 0.5) * TW) | 0;
+          if (u >= TW) u = TW - 1;
+          let v = ((0.5 - lat / Math.PI) * TH) | 0;
+          if (v >= TH) v = TH - 1;
+          const s = (v * TW + u) * 4, o = list[k] * 4;
+          let f = 1, l = 1;
+          if (sun) {
+            l = x * sun[0] + y * sun[1] + z * sun[2];
+            f = (l + 0.06) / 0.18;
+            f = f < 0 ? 0 : f > 1 ? 1 : f;
+          }
+          const b = night + (1 - night) * f * (0.62 + 0.38 * (l > 0 ? l : 0));
+          D[o] = T[s] * b * (0.7 + 0.3 * f);
+          D[o + 1] = T[s + 1] * b * (0.82 + 0.18 * f);
+          D[o + 2] = T[s + 2] * b * (1.25 - 0.25 * f);
+          D[o + 3] = cover[k];
+        }
+        cx.putImageData(out, 0, 0);
+      },
+      draw(ctx, x, y) {
+        ctx.drawImage(canvas, x - r, y - r, 2 * r, 2 * r);
+      },
+    };
+  }
+
+  // the keynote's colours: latitude blue, longitude red (the deck's .lat and .lon)
+  const COL = { lat: "#7aa7ff", lon: "#ff7a6b", latGrid: "rgba(122, 167, 255, 0.55)", lonGrid: "rgba(255, 122, 107, 0.55)" };
+  const HOME = { lat: 46.99, lon: 6.93 };
+
+  // view coordinates of a point on the globe (degrees), for a globe turned to show lat0, lon0 in front
+  const viewer = (o) => (lat, lon) => {
+    const a = rad(lat), b = rad(lon - o.lon0), c = rad(o.lat0);
+    const q = [Math.cos(a) * Math.cos(b), Math.cos(a) * Math.sin(b), Math.sin(a)];
+    return [q[1], q[2] * Math.cos(c) - q[0] * Math.sin(c), q[0] * Math.cos(c) + q[2] * Math.sin(c)];
+  };
+
+  R_.sims["latlong-globe"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    // a space scene: on the dark stage in both page themes, as the other canvas sims of cosmology
+    container.classList.add("geores-stage", "geores-space");
+    // in a keynote, the pin in the keynote's accent colour (as the deck); else the dark theme's
+    const accent = container.closest(".reveal") && getComputedStyle(container.parentElement || container).getPropertyValue("--accent").trim();
+    const th = R_.theme(accent ? { base: "dark", accent } : "dark"), text = (ctx, s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    if (opts.badge === "true" || opts.badge === true) return badge(container, tr, th);
+
+    const W = 700, H = 610;
+    const ctx = pg.makeCanvas(container, W, H);
+    const canvas = ctx.canvas;
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", tr("llgLabel"));
+    canvas.style.cursor = "grab";
+    canvas.style.touchAction = "none";   // dragging turns the globe, also on a touch screen
+    const web = !container.closest(".reveal");
+    const Gc = [350, 282], R = 250;
+    const sphere = makeSphere(R, 1.3);
+    let tex = null, dirty = true;
+    earthTexture().then(t => { tex = t; dirty = true; });
+    const o = { lat0: 22, lon0: 32 };
+    const home = () => ({ ...HOME, name: tr("llgNeuchatel") });
+    let pin = home(), grid = opts.grid !== "false";
+
+    const panel = pg.controls(container, `
+      <button class="llg-home">${tr("llgNeuchatel")}</button>
+      <label><input type="checkbox" class="llg-grid"${grid ? " checked" : ""}> ${tr("llgGrid")}</label>
+      <span class="date" style="min-width: ${L === "fr" ? 16.2 : 15.4}em"></span>`);
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const readout = panel.querySelector(".date");
+    panel.querySelector(".llg-home").addEventListener("click", () => { pin = home(); o.lat0 = 22; o.lon0 = 32; dirty = true; });
+    panel.querySelector(".llg-grid").addEventListener("change", e => { grid = e.target.checked; dirty = true; });
+
+    const view = viewer(o);
+    const px = (v, r = R) => [Gc[0] + v[0] * r, Gc[1] - v[1] * r];
+
+    function curve(points, style, width, dash = []) {
+      ctx.strokeStyle = style; ctx.lineWidth = width; ctx.setLineDash(dash);
+      ctx.beginPath();
+      let on = false;
+      points.forEach(v => {
+        if (v[2] > 0) { const [x, y] = px(v); on ? ctx.lineTo(x, y) : ctx.moveTo(x, y); on = true; } else on = false;
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    // a label on a dark box
+    const box = (s, x, y, c) => {
+      ctx.font = `600 20px ${th.font}`;
+      const w = ctx.measureText(s).width + 14;
+      ctx.fillStyle = "rgba(10, 14, 26, 0.8)"; ctx.beginPath(); ctx.roundRect(x - w / 2, y - 14, w, 28, 6); ctx.fill();
+      text(ctx, s, x, y + 1, { size: 20, weight: 600, color: c, align: "center", base: "middle" });
+      return w;
+    };
+    const coord = (v, pos, neg, d) => `${R_.num(L, Math.abs(v), d)}°\u00a0${tr(v >= 0 ? pos : neg)}`;
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "rgba(122, 167, 255, 0.12)";
+      ctx.beginPath(); ctx.arc(Gc[0], Gc[1], R + 10, 0, 2 * Math.PI); ctx.fill();
+      if (tex) {
+        sphere.render(tex, view(0, 0), view(0, 90), view(90, 0), norm([-0.45, 0.5, 0.75]), 0.5);
+        sphere.draw(ctx, Gc[0], Gc[1]);
+      } else {
+        ctx.fillStyle = "#1b3f73"; ctx.beginPath(); ctx.arc(Gc[0], Gc[1], R, 0, 2 * Math.PI); ctx.fill();
+      }
+      if (grid) {
+        for (let la = -75; la <= 75; la += 15) if (la) curve(range(-180, 180, 120).map(lo => view(la, lo)), COL.latGrid, 1.2);
+        for (let lo = -165; lo <= 180; lo += 15) if (lo) curve(range(-90, 90, 60).map(la => view(la, lo)), COL.lonGrid, 1.2);
+      }
+      curve(range(-180, 180, 180).map(lo => view(0, lo)), COL.lat, 3);
+      curve(range(-90, 90, 90).map(la => view(la, 0)), COL.lon, 3);
+
+      // the pin, with its latitude and longitude
+      const P = view(pin.lat, pin.lon);
+      if (P[2] > -0.2) {
+        const E1 = view(0, pin.lon), G0 = view(0, 0);
+        // lines from the centre
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.8)"; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+        [P, E1, G0].forEach(v => { ctx.beginPath(); ctx.moveTo(...Gc); ctx.lineTo(...px(v)); ctx.stroke(); });
+        ctx.setLineDash([]);
+        // longitude: along the equator from Greenwich; latitude: along the meridian from the equator
+        curve(range(0, pin.lon, 40).map(lo => view(0, lo)), COL.lon, 6);
+        curve(range(0, pin.lat, 40).map(la => view(la, pin.lon)), COL.lat, 6);
+        const arc = (pts, c) => {
+          ctx.strokeStyle = c; ctx.lineWidth = 3;
+          ctx.beginPath();
+          pts.forEach((v, i) => { const [x, y] = px(v, R * 0.32); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+          ctx.stroke();
+        };
+        arc(range(0, pin.lon, 30).map(lo => view(0, lo)), COL.lon);
+        arc(range(0, pin.lat, 30).map(la => view(la, pin.lon)), COL.lat);
+        const [lx, ly] = px(view(0, pin.lon / 2), R * 0.42);
+        const [fx, fy] = px(view(pin.lat / 2, pin.lon), R * 0.42);
+        box(`λ = ${R_.num(L, Math.abs(pin.lon), 1)}°`, lx, ly + 18, COL.lon);
+        box(`φ = ${R_.num(L, Math.abs(pin.lat), 1)}°`, fx - 46, fy, COL.lat);
+        if (P[2] > 0) {
+          const [x, y] = px(P);
+          ctx.fillStyle = th.accent; ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(x, y, 9, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+          if (pin.name) {
+            ctx.font = `600 20px ${th.font}`;
+            box(pin.name, x + 14 + ctx.measureText(pin.name).width / 2, y - 22, "#fff");
+          }
+        }
+      }
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(...Gc, 4, 0, 2 * Math.PI); ctx.fill();
+      const [ex, ey] = px(view(0, o.lon0 - 60));
+      text(ctx, tr("llgEquator"), ex, ey + 26, { size: 17, color: COL.lat, align: "center" });
+      // on a web page, how to use it and the texture's credit (a deck says both on the slide)
+      if (web) {
+        text(ctx, tr("llgHint"), 6, H - 8, { size: 15, color: th.muted });
+        if (tex) text(ctx, tr("llgCredit"), 6, 14, { size: 11, color: th.muted });   // top left: the enlarge button is top right
+      }
+      readout.innerHTML = tr("llgPin").replace("{v}", `<b>${coord(pin.lat, "llgN", "llgS", 2)}, ${coord(pin.lon, "llgE", "llgW", 2)}</b>`)
+        + (pin.name ? ` · ${pin.name}` : "");
+    }
+
+    // drag to turn, click to place the pin
+    let drag = null;
+    const pos = e => {
+      const r = canvas.getBoundingClientRect();
+      return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height];
+    };
+    canvas.addEventListener("pointerdown", e => {
+      drag = { p: pos(e), moved: false, lat0: o.lat0, lon0: o.lon0 };
+      canvas.setPointerCapture(e.pointerId);
+      canvas.style.cursor = "grabbing";
+      e.preventDefault();
+    });
+    canvas.addEventListener("pointermove", e => {
+      if (!drag) return;
+      const [x, y] = pos(e), dx = x - drag.p[0], dy = y - drag.p[1];
+      if (Math.hypot(dx, dy) > 4) drag.moved = true;
+      if (drag.moved) {
+        o.lon0 = drag.lon0 - dx * 0.35;
+        o.lat0 = clamp(drag.lat0 + dy * 0.35, -85, 85);
+        dirty = true;
+      }
+    });
+    const release = e => {
+      if (drag && !drag.moved && e.type === "pointerup") {
+        const [x, y] = pos(e), vx = (x - Gc[0]) / R, vy = (Gc[1] - y) / R, d2 = vx * vx + vy * vy;
+        if (d2 < 1) {
+          const v = [vx, vy, Math.sqrt(1 - d2)];
+          const la = deg(Math.asin(clamp(dot(v, view(90, 0)), -1, 1)));
+          const lo = deg(Math.atan2(dot(v, view(0, 90)), dot(v, view(0, 0))));
+          pin = { lat: la, lon: lo, name: null };
+          dirty = true;
+        }
+      }
+      drag = null;
+      canvas.style.cursor = "grab";
+    };
+    canvas.addEventListener("pointerup", release);
+    canvas.addEventListener("pointercancel", release);
+
+    pg.loop(container, () => { if (dirty) { dirty = false; draw(); } });
+  };
+
+  /* ---------------- The turning globe of a chapter slide (data-badge="true") ---------------- */
+
+  function badge(container, tr, th) {
+    const S = 520, Gc = [S / 2, S / 2], R = 236;
+    const ctx = pg.makeCanvas(container, S, S);
+    ctx.canvas.setAttribute("role", "img");
+    ctx.canvas.setAttribute("aria-label", tr("llgBadgeLabel"));
+    const sphere = makeSphere(R, 1.2);
+    const o = { lat0: 24, lon0: -20 };
+    const view = viewer(o);
+    let tex = null, ready = false;
+    earthTexture().then(t => { tex = t; ready = true; });
+    // Respect "reduce motion": the globe stays still
+    const still = G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const curve = (points, style, width) => {
+      ctx.strokeStyle = style; ctx.lineWidth = width;
+      ctx.beginPath();
+      let on = false;
+      points.forEach(v => {
+        if (v[2] > 0) { const x = Gc[0] + v[0] * R, y = Gc[1] - v[1] * R; on ? ctx.lineTo(x, y) : ctx.moveTo(x, y); on = true; } else on = false;
+      });
+      ctx.stroke();
+    };
+    let drawn = false;
+    function step(dt) {
+      if (still && drawn) return;
+      o.lon0 += dt * 8;
+      ctx.clearRect(0, 0, S, S);
+      const glow = ctx.createRadialGradient(...Gc, R * 0.9, ...Gc, R * 1.1);
+      glow.addColorStop(0, "rgba(103, 197, 217, 0.35)");
+      glow.addColorStop(1, "rgba(103, 197, 217, 0)");
+      ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(...Gc, R * 1.1, 0, 2 * Math.PI); ctx.fill();
+      if (!ready) return;   // the texture is being read: the glow only, for a frame or two
+      if (tex) {
+        sphere.render(tex, view(0, 0), view(0, 90), view(90, 0), norm([-0.5, 0.45, 0.74]), 0.35);
+        sphere.draw(ctx, ...Gc);
+      } else {
+        ctx.fillStyle = "#1b3f73"; ctx.beginPath(); ctx.arc(...Gc, R, 0, 2 * Math.PI); ctx.fill();
+      }
+      for (let la = -75; la <= 75; la += 15) curve(range(-180, 180, 120).map(lo => view(la, lo)), la ? "rgba(122, 167, 255, 0.6)" : COL.lat, la ? 1.3 : 3.5);
+      for (let lo = -165; lo <= 180; lo += 15) curve(range(-90, 90, 60).map(la => view(la, lo)), lo ? "rgba(255, 122, 107, 0.6)" : COL.lon, lo ? 1.3 : 3.5);
+      const P = view(HOME.lat, HOME.lon);
+      if (P[2] > 0) {
+        ctx.fillStyle = th.accent; ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(Gc[0] + P[0] * R, Gc[1] - P[1] * R, 8, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+      }
+      drawn = true;
+    }
+    pg.loop(container, step);
+  }
+})(globalThis);
+
 // ---- src/sims/cosmology/orrery.js ----
 // Sim "orrery": the eight planets orbiting the Sun, starting at their real positions of today, with a time slider,
 // compressed or real distances and a count of the orbits each planet has completed.
@@ -17878,7 +18419,7 @@
       <button class="play" aria-label="${tr("pspPause")}" data-alt="▶">❚❚</button>
       <label>${tr("pspSpeed")} <input type="range" min="0" max="1000"></label>
       <span class="rate" style="min-width: 5.6em"></span>
-      <label><input type="checkbox" class="grid"${grid ? " checked" : ""}> ${tr("pspGrid")}</label>
+      <label><input type="checkbox" class="psp-grid"${grid ? " checked" : ""}> ${tr("pspGrid")}</label>
       <span class="date" style="min-width: 8.4em"></span>`);
     // in a keynote's .sim box, the controls take the theme's overlay (as the weather sims)
     if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
@@ -17896,7 +18437,7 @@
       play.setAttribute("aria-label", tr(on ? "pspPause" : "pspPlay"));
     };
     play.addEventListener("click", () => setPlaying(!playing));
-    panel.querySelector(".grid").addEventListener("change", e => { grid = e.target.checked; });
+    panel.querySelector(".psp-grid").addEventListener("change", e => { grid = e.target.checked; });
     // Respect "reduce motion": start paused
     if (G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
 
@@ -18022,6 +18563,231 @@
       drawLabels();
       // the textures' licence asks for the credit (a deck gives it on the slide)
       if (R_.data && R_.data.planets && !container.closest(".reveal")) pg.ctxText(ctx, th, tr("pspCredit"), 4, 14, { size: 11, weight: 400, color: P.day, align: "left" });   // top left: the enlarge button is top right
+    }
+    pg.loop(container, step);
+  };
+})(globalThis);
+
+// ---- src/sims/cosmology/precession.js ----
+// Sim "precession": axial precession. Earth's axis traces a cone once in about 26 000 years (left), and the celestial
+// pole moves among the stars around the pole of the ecliptic (right): Thuban was the North Star of the pyramids,
+// Polaris is today's, Vega will be in about 12 000 years. On the dark stage in both page themes.
+//   <div class="geores" data-sim="precession" data-year="2025" data-speed="600"></div>
+//   data-year: the year at the start (default: this year; negative = BC, astronomical: 0 = 1 BC)
+//   data-speed: years per second at the start (50 to 5000, default 600)
+// Ported from GeoKey DF-Cosmology/3-Earth (sims.js, precession()). Uses GeoRes.earth from earth-year.js and
+// GeoRes.textures.earth (dist/textures.js) for the textured globe; a plain blue globe without it.
+// Stars: ecliptic coordinates J2000 (no proper motion); the obliquity is kept at 23.44°.
+(function (G) {
+  const R_ = G.GeoRes, { rad, deg, clamp } = R_.lib, pg = R_.page;
+  const EPS = 23.44 * Math.PI / 180;
+  const PERIOD = 25772;   // years for one turn of the axis
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const norm = a => { const l = Math.hypot(...a); return a.map(x => x / l); };
+  const NB = " ";
+  // 2025, 2600, 14 000: the digits of a year are grouped from 10 000 on; other numbers from 1 000 on
+  const group = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, NB);
+  const yearNum = n => (n >= 10000 ? group(n) : String(n));
+
+  R_.addStrings({
+    en: {
+      prcSpeed: "Speed", prcPerSecond: "1 s = {n} years", prcPyramids: "Pyramids", prcToday: "Today",
+      prcFuture: "AD 14 000", prcAD: "AD {y}", prcBC: "{y} BC", prcTurn: "1 turn of the axis: 26 000 years",
+      prcSky: "The sky around the pole", prcSkySub: "circle: where Earth's axis points, over 26 000 years",
+      prcNorthStar: "North Star: {s}", prcFrom: "{d}° from the pole", prcNone: "none, no bright star near the pole",
+      prcPlay: "Play", prcPause: "Pause",
+      prcPolaris: "Polaris", prcKochab: "Kochab", prcThuban: "Thuban", prcVega: "Vega", prcDeneb: "Deneb",
+      prcAlderamin: "Alderamin", prcErrai: "Errai", prcEltanin: "Eltanin",
+    },
+    fr: {
+      prcSpeed: "Vitesse", prcPerSecond: "1 s = {n} ans", prcPyramids: "Pyramides", prcToday: "Aujourd'hui",
+      prcFuture: "An 14 000", prcAD: "{y} apr. J.-C.", prcBC: "{y} av. J.-C.", prcTurn: "1 tour de l'axe : 26 000 ans",
+      prcSky: "Le ciel autour du pôle", prcSkySub: "cercle : là où pointe l'axe de la Terre, en 26 000 ans",
+      prcNorthStar: "Étoile polaire : {s}", prcFrom: "à {d}° du pôle", prcNone: "aucune, pas d'étoile brillante près du pôle",
+      prcPlay: "Lecture", prcPause: "Pause",
+      prcPolaris: "Polaris", prcKochab: "Kochab", prcThuban: "Thuban", prcVega: "Véga", prcDeneb: "Deneb",
+      prcAlderamin: "Alderamin", prcErrai: "Errai", prcEltanin: "Eltanin",
+    },
+  });
+
+  // Ecliptic longitude and latitude (degrees, J2000) and magnitude of a few bright stars near the pole
+  const POLE_STARS = [
+    ["Polaris", 88.6, 66.10, 2.0],
+    ["Kochab", 133.3, 72.99, 2.1],
+    ["Thuban", 157.5, 66.36, 3.7],
+    ["Vega", 285.3, 61.73, 0.0],
+    ["Deneb", 335.3, 59.91, 1.3],
+    ["Alderamin", 12.8, 68.92, 2.5],
+    ["Errai", 60.1, 64.67, 3.2],
+    ["Eltanin", 268.0, 74.92, 2.2],
+  ];
+
+  R_.sims["precession"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    const { earthTexture, makeSphere, spinAxes } = R_.earth;
+    // a space scene: on the dark stage in both page themes, as the other canvas sims of cosmology
+    container.classList.add("geores-stage", "geores-space");
+    const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    const W = 1280, H = 610;
+    const ctx = pg.makeCanvas(container, W, H);
+    const GC = [290, 330], R = 132, EL = rad(14);
+    const sphere = makeSphere(R, 1.5);
+    let tex = null;
+    earthTexture().then(t => { tex = t; });
+    const vu = [0, Math.sin(EL), Math.cos(EL)], vw = [0, -Math.cos(EL), Math.sin(EL)];
+    const toView = p => [p[0], dot(p, vu), dot(p, vw)];
+    const sunV = norm(toView([-1, -0.5, 0.25]));
+
+    const thisYear = new Date().getFullYear();
+    const lo = 1.7, hi = 3.7;   // 50 to 5 000 years per second
+    let yr = Number.isFinite(+opts.year) && opts.year !== "" ? +opts.year : thisYear;
+    let speed = clamp(+opts.speed || 600, Math.pow(10, lo), Math.pow(10, hi));
+    let playing = true, spin = 0;
+    // Respect "reduce motion": start paused, and the globe does not spin
+    const still = !!(G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("prcPause")}" data-alt="▶">❚❚</button>
+      <label>${tr("prcSpeed")} <input type="range" min="0" max="1000"></label>
+      <span class="rate" style="min-width: ${L === "fr" ? 7.8 : 8.8}em"></span>
+      <button data-year="-2599">${tr("prcPyramids")}</button><button data-year="${thisYear}">${tr("prcToday")}</button><button data-year="14000">${tr("prcFuture")}</button>
+      <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");   // (pg.controls sizes the data-alt buttons after this)
+    const slider = panel.querySelector("input[type=range]");
+    slider.value = pg.logPos(speed, lo, hi);
+    const rate = panel.querySelector(".rate"), readout = panel.querySelector(".date");
+    // two significant digits: 600, 1 300, 4 000 years per second
+    const round2 = x => { const p = Math.pow(10, Math.floor(Math.log10(x)) - 1); return Math.round(x / p) * p; };
+    const showRate = () => { rate.textContent = R_.typo(L, tr("prcPerSecond").replace("{n}", group(round2(speed)))); };
+    showRate();
+    slider.addEventListener("input", () => { speed = pg.logValue(slider.value, lo, hi); showRate(); });
+    const play = panel.querySelector(".play");
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "prcPause" : "prcPlay"));
+    };
+    play.addEventListener("click", () => setPlaying(!playing));
+    panel.querySelectorAll("button[data-year]").forEach(b => b.addEventListener("click", () => {
+      yr = +b.dataset.year;
+      setPlaying(false);
+    }));
+    if (still) setPlaying(false);
+    // astronomical years: 0 is 1 BC, -2599 is 2600 BC
+    const yearText = y => R_.typo(L, y <= 0 ? tr("prcBC").replace("{y}", yearNum(1 - y)) : tr("prcAD").replace("{y}", yearNum(y)));
+
+    // Sky around the pole of the ecliptic, seen from the ground looking up
+    const K = [930, 300], RK = 255, SK = RK / 34;
+    const sky = (lon, lat) => {
+      const r = (90 - lat) * SK;
+      return [K[0] + r * Math.cos(rad(lon)), K[1] - r * Math.sin(rad(lon))];
+    };
+    // ecliptic longitude of the celestial pole: 90° in 2000, going backwards (clockwise on the chart)
+    const poleLon = y => 90 - 360 * (y - 2000) / PERIOD;
+    const sep = (l1, b1, l2, b2) => deg(Math.acos(clamp(Math.sin(rad(b1)) * Math.sin(rad(b2)) +
+      Math.cos(rad(b1)) * Math.cos(rad(b2)) * Math.cos(rad(l1 - l2)), -1, 1)));
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const faint = Array.from({ length: 140 }, () => {
+      const a = rnd() * 2 * Math.PI, r = Math.sqrt(rnd()) * RK;
+      return [K[0] + r * Math.cos(a), K[1] + r * Math.sin(a), 0.4 + rnd() * 0.9];
+    });
+    const starName = name => tr("prc" + name);
+
+    function chart() {
+      ctx.fillStyle = "rgba(8, 12, 28, 0.75)";
+      ctx.beginPath(); ctx.arc(K[0], K[1], RK, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.25)"; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+      faint.forEach(([x, y, s]) => { ctx.beginPath(); ctx.arc(x, y, s, 0, 2 * Math.PI); ctx.fill(); });
+      // path of the celestial pole
+      ctx.strokeStyle = th.accent; ctx.globalAlpha = 0.45; ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+      ctx.beginPath(); ctx.arc(K[0], K[1], 23.44 * SK, 0, 2 * Math.PI); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+      // trail: the last 2 000 years
+      ctx.strokeStyle = th.accent; ctx.lineWidth = 4;
+      ctx.beginPath();
+      for (let i = 0; i <= 40; i++) {
+        const [x, y] = sky(poleLon(yr - 2000 + i * 50), 90 - 23.44);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+      // pole of the ecliptic
+      ctx.strokeStyle = th.muted; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(K[0] - 7, K[1]); ctx.lineTo(K[0] + 7, K[1]); ctx.moveTo(K[0], K[1] - 7); ctx.lineTo(K[0], K[1] + 7); ctx.stroke();
+      // stars
+      POLE_STARS.forEach(([name, lon, lat, mag]) => {
+        const [x, y] = sky(lon, lat), r = Math.max(2.4, 6 - 1.1 * mag);
+        ctx.fillStyle = "#fff";
+        ctx.shadowColor = "#cfe0ff"; ctx.shadowBlur = 8;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.fill();
+        ctx.shadowBlur = 0;
+        text(starName(name), x + r + 6, y + 5, { size: 16, color: th.text });
+      });
+      // the celestial pole now
+      const [px, py] = sky(poleLon(yr), 90 - 23.44);
+      ctx.strokeStyle = th.accent; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(px, py, 11, 0, 2 * Math.PI); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px - 18, py); ctx.lineTo(px - 6, py); ctx.moveTo(px + 6, py); ctx.lineTo(px + 18, py);
+      ctx.moveTo(px, py - 18); ctx.lineTo(px, py - 6); ctx.moveTo(px, py + 6); ctx.lineTo(px, py + 18); ctx.stroke();
+      text(tr("prcSky"), K[0] - RK, 30, { size: 20, weight: 600, color: th.accent });
+      text(tr("prcSkySub"), K[0] - RK, 52, { size: 15, color: th.muted, italic: true });
+    }
+
+    function globe() {
+      // the axis turns clockwise seen from above the ecliptic: against Earth's spin (retrograde)
+      const psi = rad(-20) - 2 * Math.PI * (yr - 2000) / PERIOD;
+      const N = [Math.sin(EPS) * Math.cos(psi), Math.sin(EPS) * Math.sin(psi), Math.cos(EPS)];
+      const Nv = toView(N);
+      const LA = R + 95;
+      // cone traced by the axis
+      const top = [GC[0], GC[1] - LA * Math.cos(EPS) * vu[2]];
+      const rx = LA * Math.sin(EPS), ry = rx * Math.sin(EL);
+      ctx.strokeStyle = th.accent; ctx.globalAlpha = 0.6; ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+      ctx.beginPath(); ctx.ellipse(top[0], top[1], rx, ry, 0, 0, 2 * Math.PI); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(GC[0], GC[1]); ctx.lineTo(top[0] - rx, top[1]); ctx.moveTo(GC[0], GC[1]); ctx.lineTo(top[0] + rx, top[1]); ctx.stroke();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.beginPath(); ctx.moveTo(GC[0], GC[1] - R - 112); ctx.lineTo(GC[0], GC[1] + R + 40); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+      if (tex) {
+        const [e1, e2, e3] = spinAxes(N, spin);
+        sphere.render(tex, toView(e1), toView(e2), toView(e3), sunV, 0.2);
+        sphere.draw(ctx, GC[0], GC[1]);
+      } else {
+        // no texture: a plain blue globe, lit from the left
+        const sx = GC[0] + sunV[0] * R * 0.45, sy = GC[1] - sunV[1] * R * 0.45;
+        const g = ctx.createRadialGradient(sx, sy, R * 0.1, GC[0], GC[1], R);
+        g.addColorStop(0, "#5a9ad6"); g.addColorStop(0.6, "#3d7fc1"); g.addColorStop(1, "#13284a");
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(GC[0], GC[1], R, 0, 2 * Math.PI); ctx.fill();
+      }
+      // axis
+      const tip = [GC[0] + Nv[0] * LA, GC[1] - Nv[1] * LA];
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(GC[0] - Nv[0] * (R + 20), GC[1] + Nv[1] * (R + 20)); ctx.lineTo(...tip); ctx.stroke();
+      ctx.fillStyle = th.accent; ctx.beginPath(); ctx.arc(...tip, 6, 0, 2 * Math.PI); ctx.fill();
+      text("N", tip[0] + 14, tip[1] - 8, { size: 20, weight: 600, color: "#fff" });
+      text(yearText(Math.round(yr)), GC[0], 46, { size: 30, weight: 600, color: th.accent, align: "center" });
+      text(tr("prcTurn"), GC[0], 74, { size: 17, color: th.muted, align: "center", italic: true });
+    }
+
+    function step(dt) {
+      if (playing) yr += speed * dt;
+      if (!still) spin += dt * 2 * Math.PI / 3;
+      ctx.clearRect(0, 0, W, H);
+      globe();
+      chart();
+      const lonP = poleLon(yr), latP = 90 - 23.44;
+      let best = null;
+      POLE_STARS.forEach(([name, lon, lat]) => {
+        const s = sep(lon, lat, lonP, latP);
+        if (s < 5 && (!best || s < best[1])) best = [name, s];
+      });
+      const star = best
+        ? `<b>${starName(best[0])}</b> (${tr("prcFrom").replace("{d}", R_.num(L, best[1], 1))})`
+        : tr("prcNone");
+      readout.innerHTML = R_.typo(L, `<b>${yearText(Math.round(yr))}</b> · ${tr("prcNorthStar").replace("{s}", star)}`);
     }
     pg.loop(container, step);
   };
@@ -18393,11 +19159,12 @@
       date: "Date", latitude: "Latitude", litArea: "lit area × {n}", shadow: "shadow",
       noRise: "The Sun does not rise today", polarNight: "polar night", noonSunShort: "Noon Sun",
       high: "{n}° high", belowHorizon: "below the horizon", lightPerM2: "Light per m²", daylight: "Daylight",
+      neuchatel: "Neuchâtel",
     },
     fr: {
       date: "Date", latitude: "Latitude", litArea: "surface éclairée × {n}", shadow: "ombre",
       noRise: "Le Soleil ne se lève pas aujourd'hui", polarNight: "nuit polaire", noonSunShort: "Soleil à midi",
-      high: "{n}° de hauteur", belowHorizon: "sous l'horizon", lightPerM2: "Lumière par m²", daylight: "Durée du jour",
+      high: "{n}° de hauteur", belowHorizon: "sous l'horizon", lightPerM2: "Lumière par m²", daylight: "Durée du jour",      neuchatel: "Neuchâtel",
     },
   });
 
@@ -18405,7 +19172,7 @@
     const L = opts.lang, tr = k => R_.t(L, k);
     const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
     const { dayLength, declOfDay } = R_.earth;
-    container.classList.add("geores-stage");
+    container.classList.add("geores-stage", "geores-space");
     const W = 740, H = 470;
     const ctx = pg.makeCanvas(container, W, H);
     let day = 171, lat = 47;
@@ -18416,6 +19183,8 @@
       <span class="rate lat-out" style="min-width: 8.3em"></span>
       <button data-day="171">${tr("jun21")}</button><button data-day="78">${tr("mar20")}</button><button data-day="354">${tr("dec21")}</button>
       <button data-lat="47">${tr("neuchatel")}</button>`);
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
     const sDay = panel.querySelector(".day"), sLat = panel.querySelector(".lat");
     const oDay = panel.querySelector(".day-out"), oLat = panel.querySelector(".lat-out");
     const sync = () => {
@@ -18515,6 +19284,7 @@
       });
     }
     sync();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);   // the canvas text in the page font
   };
 })(globalThis);
 
@@ -18857,6 +19627,375 @@
         : tr("sfuIn").replace("{t}", gyr(d, d > 7 ? 2 : 1));
       const html = `<b>${R_.typo(L, when)}</b> · ${R_.typo(L, tr("sfuAgeOf").replace("{t}", gyr(age, age > 12 ? 2 : 1)))}`;
       if (html !== shown) { readout.innerHTML = html; shown = html; }
+    }
+    pg.loop(container, step);
+  };
+})(globalThis);
+
+// ---- src/sims/cosmology/time-zones.js ----
+// Sim "time-zones": live world map of the time zones of today, at the current date and time: each zone coloured by its
+// offset from UTC (summer time included, from the browser's rules for each zone), hatched when it is not a whole
+// number of hours from UTC; the night, the noon and midnight meridians, the time of each ideal 15° zone at the top.
+// Point at a zone: its offset, its time and date, a few of its cities, and every zone with the same time outlined.
+// "Dates" colours the zones by day of the week; "15° zones" draws the ideal zones; time runs faster with the slider.
+// On the dark stage in both page themes, as the other world maps (conflicts, chokepoints): the night is drawn dark.
+//   <div class="geores" data-sim="time-zones"></div>
+//   data-mode="dates": start with the zones coloured by day of the week (default: by hour)
+//   data-lines="true": start with the ideal 15° zones drawn
+//   data-night="false": start without the night
+// Ported from GeoKey DF-Cosmology/3-Earth (sims.js, tzmap()). Needs GeoRes.data.timezones (dist/timezones.js:
+// timezone-boundary-builder 2026d, ODbL; land and borders Natural Earth).
+(function (G) {
+  const R_ = G.GeoRes, { rad, deg, clamp } = R_.lib, pg = R_.page;
+  const DPR = 2;
+
+  R_.addStrings({
+    en: {
+      tzmPlay: "Play", tzmPause: "Pause", tzmSpeed: "Speed", tzmNow: "Now", tzmDates: "Dates", tzmHours: "Hours",
+      tzmNight: "Night", tzmLines: "15° zones", tzmPerMin: "1 s = {n} min", tzmPerHour: "1 s = {n} h", tzmPerDay: "1 s = {n} days",
+      tzmSummer: "(summer time)", tzmNoon: "noon", tzmMidnight: "midnight", tzmMissing: "dist/timezones.js missing",
+      tzmWeekdays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      tzmWd3: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], tzmWd2: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+      tzmLabel: "World map of the time zones: point at a zone to read its time",
+      tzmCredit: "Time zones: timezone-boundary-builder (ODbL) · Natural Earth",
+    },
+    fr: {
+      tzmPlay: "Lecture", tzmPause: "Pause", tzmSpeed: "Vitesse", tzmNow: "Maintenant", tzmDates: "Dates", tzmHours: "Heures",
+      tzmNight: "Nuit", tzmLines: "Fuseaux de 15°", tzmPerMin: "1 s = {n} min", tzmPerHour: "1 s = {n} h", tzmPerDay: "1 s = {n} jours",
+      tzmSummer: "(heure d'été)", tzmNoon: "midi", tzmMidnight: "minuit", tzmMissing: "dist/timezones.js manquant",
+      tzmWeekdays: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+      tzmWd3: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."], tzmWd2: ["di", "lu", "ma", "me", "je", "ve", "sa"],
+      tzmLabel: "Carte du monde des fuseaux horaires : pointez un fuseau pour lire son heure",
+      tzmCredit: "Fuseaux : timezone-boundary-builder (ODbL) · Natural Earth",
+    },
+  });
+
+  // Cities listed when their zone is pointed at (first ones first): name, French name, latitude, longitude
+  const TZ_CITIES = [
+    ["Neuchâtel", "Neuchâtel", 47.0, 6.93], ["London", "Londres", 51.5, -0.13], ["Paris", "Paris", 48.86, 2.35], ["Lisbon", "Lisbonne", 38.72, -9.14],
+    ["Reykjavík", "Reykjavik", 64.15, -21.94], ["Lagos", "Lagos", 6.52, 3.38], ["Kinshasa", "Kinshasa", -4.32, 15.31], ["Cairo", "Le Caire", 30.04, 31.24],
+    ["Johannesburg", "Johannesburg", -26.2, 28.05], ["Istanbul", "Istanbul", 41.01, 28.98], ["Moscow", "Moscou", 55.76, 37.62], ["Nairobi", "Nairobi", -1.29, 36.82],
+    ["Tehran", "Téhéran", 35.69, 51.39], ["Dubai", "Dubaï", 25.2, 55.27], ["Kabul", "Kaboul", 34.53, 69.17], ["Karachi", "Karachi", 24.86, 67.0],
+    ["Delhi", "Delhi", 28.61, 77.21], ["Mumbai", "Bombay", 19.08, 72.88], ["Kathmandu", "Katmandou", 27.72, 85.32], ["Dhaka", "Dacca", 23.81, 90.41],
+    ["Yangon", "Rangoun", 16.87, 96.2], ["Bangkok", "Bangkok", 13.76, 100.5], ["Jakarta", "Jakarta", -6.2, 106.85], ["Beijing", "Pékin", 39.9, 116.41],
+    ["Kashgar", "Kachgar", 39.47, 75.99], ["Manila", "Manille", 14.6, 120.98], ["Perth", "Perth", -31.95, 115.86], ["Seoul", "Séoul", 37.57, 126.98],
+    ["Tokyo", "Tokyo", 35.68, 139.69], ["Darwin", "Darwin", -12.46, 130.84], ["Adelaide", "Adélaïde", -34.93, 138.6], ["Sydney", "Sydney", -33.87, 151.21],
+    ["Vladivostok", "Vladivostok", 43.12, 131.89], ["Auckland", "Auckland", -36.85, 174.76], ["Fiji", "Fidji", -18.14, 178.44], ["Chatham Islands", "îles Chatham", -43.95, -176.56],
+    ["Samoa", "Samoa", -13.83, -171.76], ["Kiritimati", "Kiritimati", 1.87, -157.4], ["Honolulu", "Honolulu", 21.31, -157.86], ["Anchorage", "Anchorage", 61.22, -149.9],
+    ["Los Angeles", "Los Angeles", 34.05, -118.24], ["Denver", "Denver", 39.74, -104.99], ["Mexico City", "Mexico", 19.43, -99.13], ["Chicago", "Chicago", 41.88, -87.63],
+    ["New York", "New York", 40.71, -74.01], ["Lima", "Lima", -12.05, -77.04], ["Caracas", "Caracas", 10.48, -66.9], ["Santiago", "Santiago", -33.45, -70.67],
+    ["São Paulo", "São Paulo", -23.55, -46.63], ["Buenos Aires", "Buenos Aires", -34.6, -58.38], ["St. John's", "Saint-Jean de Terre-Neuve", 47.56, -52.71], ["Nuuk", "Nuuk", 64.18, -51.72],
+    ["Azores", "Açores", 37.74, -25.67], ["Cape Verde", "Cap-Vert", 14.93, -23.51],
+  ];
+
+  // Offset of an IANA time zone from UTC at time t (minutes), summer time included
+  const tzFormats = {};
+  function tzOffset(tz, t) {
+    const f = tzFormats[tz] || (tzFormats[tz] = new Intl.DateTimeFormat("en-GB", { timeZone: tz, timeZoneName: "longOffset" }));
+    const s = f.formatToParts(t).find(p => p.type === "timeZoneName").value;
+    const m = s.match(/([+\-−])(\d{1,2}):?(\d{2})?/);
+    return m ? (m[1] === "+" ? 1 : -1) * (+m[2] * 60 + +(m[3] || 0)) : 0;
+  }
+  const offText = m => {
+    if (!m) return "UTC ± 0";
+    const a = Math.abs(m), mm = a % 60;
+    return `UTC ${m > 0 ? "+" : "−"} ${Math.floor(a / 60)}${mm ? ":" + String(mm).padStart(2, "0") : ""}`;
+  };
+  const twoDigits = n => String(n).padStart(2, "0");
+  const hhmm = d => `${twoDigits(d.getUTCHours())}:${twoDigits(d.getUTCMinutes())}`;
+  // declination of the Sun on day `day` of the year (0 = 1 January), degrees
+  const declOfDay = day => -23.44 * Math.cos(2 * Math.PI * (day + 10) / 365);
+
+  // Colours: one hue per hour from UTC − 12 to UTC + 14, lighter and darker in turn. Blue is the sea's: the hues run
+  // from purple through red, orange, yellow and green to teal (280° to 175°), and skip the blues
+  const hourColor = m => {
+    const h = m / 60, odd = Math.floor(h) % 2;
+    const hue = Math.round(280 + (h + 12) / 26 * 255) % 360;
+    return `hsl(${hue}, ${odd ? 62 : 48}%, ${odd ? 50 : 30}%)`;
+  };
+  // in "dates" mode, one colour per day of the week (Sunday first), no blue
+  const DAY_COLORS = ["#b8577e", "#8b5a3c", "#3f9a83", "#c08a2c", "#7b5cc4", "#c4613f", "#5c8f3c"];
+  const C = {
+    text: "#eddaeb", muted: "rgba(237, 218, 235, 0.6)", accent: "#f2c46d", noon: "#ffd27a", midnight: "#9fd3ff",
+    panel: "rgba(10, 14, 26, 0.85)", sea: "rgba(10, 34, 82, 0.5)",
+  };
+
+  R_.sims["time-zones"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    // on the dark stage in both page themes, as the other world maps (conflicts, chokepoints): the night is dark
+    container.classList.add("geores-stage", "geores-space");
+    const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    // in a keynote, Neuchâtel and the offset of the pointed zone in the keynote's accent colour (as the deck)
+    const accent = (container.closest(".reveal") && getComputedStyle(container.parentElement || container).getPropertyValue("--accent").trim()) || C.accent;
+    const W = 1280, H = 610;
+    const ctx = pg.makeCanvas(container, W, H, DPR);
+    const canvas = ctx.canvas;
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", tr("tzmLabel"));
+    const K = W / 360, LAT0 = 84, LAT1 = -56, TOP = 40, MH = (LAT0 - LAT1) * K;
+    const X = lon => (lon + 180) * K, Y = lat => TOP + (LAT0 - lat) * K;
+    const data = R_.data && R_.data.timezones;
+    if (!data) { text(tr("tzmMissing"), W / 2, H / 2, { align: "center", color: C.muted }); return; }
+    const WD = tr("tzmWeekdays"), WD3 = tr("tzmWd3"), WD2 = tr("tzmWd2"), MONTHS = tr("months");
+
+    // Delta-encoded rings (tenths of a degree) -> one Path2D per layer
+    const toPath = (rings, close, path = new Path2D()) => {
+      rings.forEach(r => {
+        let x = 0, y = 0;
+        for (let i = 0; i < r.length; i += 2) {
+          x += r[i]; y += r[i + 1];
+          i ? path.lineTo(X(x / 10), Y(y / 10)) : path.moveTo(X(x / 10), Y(y / 10));
+        }
+        if (close) path.closePath();
+      });
+      return path;
+    };
+    const zones = data.zones.map(([tz, rings]) => ({ tz, path: toPath(rings, true) }));
+    const land = new Path2D();
+    data.land.forEach(rings => toPath(rings, true, land));
+    const borders = new Path2D();
+    data.borders.forEach(rings => toPath(rings, false, borders));
+    const sea = new Path2D();
+    sea.rect(0, TOP, W, MH);
+    sea.addPath(land);
+
+    const inPath = (path, x, y) => {
+      ctx.save(); ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      const r = ctx.isPointInPath(path, x * DPR, y * DPR);
+      ctx.restore();
+      return r;
+    };
+    const cities = TZ_CITIES.map(([en, fr, lat, lon]) => {
+      const x = X(lon), y = Y(lat);
+      return { name: L === "fr" ? fr : en, x, y, zone: zones.findIndex(z => inPath(z.path, x, y)) };
+    });
+
+    // Hatching for the zones that are not a whole number of hours from UTC
+    const hatchCanvas = document.createElement("canvas");
+    hatchCanvas.width = hatchCanvas.height = 10 * DPR;
+    const hc = hatchCanvas.getContext("2d");
+    hc.scale(DPR, DPR);
+    hc.strokeStyle = "rgba(255, 255, 255, 0.55)"; hc.lineWidth = 1.6;
+    hc.beginPath(); hc.moveTo(-2, 12); hc.lineTo(12, -2); hc.moveTo(-2, 2); hc.lineTo(2, -2); hc.moveTo(8, 12); hc.lineTo(12, 8); hc.stroke();
+    const hatch = ctx.createPattern(hatchCanvas, "repeat");
+    hatch.setTransform(new DOMMatrix().scale(1 / DPR));
+
+    // Night, computed on a 1 pixel per degree grid and stretched over the map
+    const NW = 360, NH = LAT0 - LAT1;
+    const night = document.createElement("canvas");
+    night.width = NW; night.height = NH;
+    const nc = night.getContext("2d"), nimg = nc.createImageData(NW, NH);
+    function drawNight(decl, lonSun) {
+      const sd = Math.sin(rad(decl)), cd = Math.cos(rad(decl));
+      for (let j = 0; j < NH; j++) {
+        const lat = rad(LAT0 - j - 0.5), a = Math.sin(lat) * sd, b = Math.cos(lat) * cd;
+        for (let i = 0; i < NW; i++) {
+          const alt = deg(Math.asin(clamp(a + b * Math.cos(rad(i + 0.5 - 180 - lonSun)), -1, 1)));
+          const k = (j * NW + i) * 4;
+          nimg.data[k] = 4; nimg.data[k + 1] = 8; nimg.data[k + 2] = 26;
+          nimg.data[k + 3] = 165 * clamp((0.5 - alt) / 12.5, 0, 1);
+        }
+      }
+      nc.putImageData(nimg, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(night, 0, TOP, W, MH);
+    }
+
+    let t = Date.now(), speed = 0.25, playing = true;
+    let mode = opts.mode === "dates" ? "dates" : "hours", showNight = opts.night !== "false", lines = opts.lines === "true";
+    let hover = null;
+
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("tzmPause")}" data-alt="▶">❚❚</button>
+      <label>${tr("tzmSpeed")} <input type="range" min="0" max="1000"></label>
+      <span class="rate" style="min-width: ${L === "fr" ? 6.6 : 6.1}em"></span>
+      <button class="tzm-now">${tr("tzmNow")}</button>
+      <button class="tzm-mode" data-alt="${tr(mode === "hours" ? "tzmHours" : "tzmDates")}">${tr(mode === "hours" ? "tzmDates" : "tzmHours")}</button>
+      <label><input type="checkbox" class="tzm-night"${showNight ? " checked" : ""}> ${tr("tzmNight")}</label>
+      <label><input type="checkbox" class="tzm-lines"${lines ? " checked" : ""}> ${tr("tzmLines")}</label>
+      <span class="date" style="min-width: ${L === "fr" ? 17.4 : 16.4}em"></span>`);
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const slider = panel.querySelector("input[type=range]"), lo = -1.78, hi = 2.4;   // 1 min to 10 days per second
+    slider.value = pg.logPos(speed, lo, hi);
+    const rate = panel.querySelector(".rate"), readout = panel.querySelector(".date");
+    const showRate = () => {
+      rate.textContent = R_.typo(L, speed < 1 ? tr("tzmPerMin").replace("{n}", Math.round(speed * 60))
+        : speed < 48 ? tr("tzmPerHour").replace("{n}", Math.round(speed)) : tr("tzmPerDay").replace("{n}", Math.round(speed / 24)));
+    };
+    showRate();
+    slider.addEventListener("input", () => { speed = pg.logValue(slider.value, lo, hi); showRate(); });
+    const play = panel.querySelector(".play");
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "tzmPause" : "tzmPlay"));
+    };
+    play.addEventListener("click", () => setPlaying(!playing));
+    panel.querySelector(".tzm-now").addEventListener("click", () => { t = Date.now(); setPlaying(false); });
+    const modeBtn = panel.querySelector(".tzm-mode");
+    modeBtn.addEventListener("click", () => {
+      mode = mode === "hours" ? "dates" : "hours";
+      modeBtn.textContent = tr(mode === "hours" ? "tzmDates" : "tzmHours");
+    });
+    panel.querySelector(".tzm-night").addEventListener("change", e => { showNight = e.target.checked; });
+    panel.querySelector(".tzm-lines").addEventListener("change", e => { lines = e.target.checked; });
+    // Respect "reduce motion": start paused (on the current time)
+    if (G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+
+    // point at a zone to read its time
+    const pos = e => {
+      const r = canvas.getBoundingClientRect();
+      return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height];
+    };
+    const pick = e => {
+      const [x, y] = pos(e);
+      const i = y > TOP && y < TOP + MH ? zones.findIndex(z => inPath(z.path, x, y)) : -1;
+      hover = i < 0 ? null : { i, x, y };
+    };
+    canvas.addEventListener("pointermove", pick);
+    canvas.addEventListener("pointerdown", pick);
+    canvas.addEventListener("pointerleave", () => { hover = null; });
+
+    // Offsets change only with summer time: recompute them once per (simulated) 10 minutes
+    let offKey = null, offs = [], dst = [];
+    const stdCache = {};
+    function updateOffsets() {
+      const key = Math.floor(t / 600000);
+      if (key === offKey) return;
+      offKey = key;
+      const year = new Date(t).getUTCFullYear();
+      offs = zones.map(z => tzOffset(z.tz, t));
+      dst = zones.map((z, i) => {
+        const k = z.tz + year;
+        if (stdCache[k] === undefined) stdCache[k] = Math.min(tzOffset(z.tz, Date.UTC(year, 0, 1)), tzOffset(z.tz, Date.UTC(year, 6, 1)));
+        return offs[i] > stdCache[k];
+      });
+    }
+    const localDate = m => new Date(t + m * 60000);
+    const dayText = d => `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+
+    function tooltip(i) {
+      const m = offs[i], d = localDate(m);
+      const names = cities.filter(c => c.zone >= 0 && offs[c.zone] === m).map(c => c.name);
+      const rows = [
+        [offText(m) + (dst[i] ? "  " + tr("tzmSummer") : ""), 22, 600, mode === "dates" ? DAY_COLORS[d.getUTCDay()] : accent],
+        [`${hhmm(d)} · ${dayText(d)}`, 19, 600, C.text],
+      ];
+      if (names.length) rows.push([names.slice(0, 4).join(", ") + (names.length > 4 ? " …" : ""), 16, 400, C.muted]);
+      let w = 0;
+      rows.forEach(([s, size, weight]) => { ctx.font = `${weight} ${size}px ${th.font}`; w = Math.max(w, ctx.measureText(s).width); });
+      w += 28;
+      const h = 18 + rows.length * 28;
+      let bx = hover.x + 18, by = hover.y + 18;
+      if (bx + w > W - 6) bx = hover.x - 18 - w;
+      if (by + h > TOP + MH) by = hover.y - 18 - h;
+      ctx.fillStyle = "rgba(10, 14, 26, 0.9)";
+      ctx.beginPath(); ctx.roundRect(bx, by, w, h, 8); ctx.fill();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.25)"; ctx.lineWidth = 1; ctx.stroke();
+      rows.forEach(([s, size, weight, color], k) => text(s, bx + 14, by + 34 + k * 28, { size, weight, color }));
+    }
+
+    // a label on a dark box
+    const tag = (s, x, y, color, { size = 14, italic = true } = {}) => {
+      ctx.font = `${italic ? "italic " : ""}600 ${size}px ${th.font}`;
+      const w = ctx.measureText(s).width + 12;
+      ctx.fillStyle = "rgba(10, 14, 26, 0.8)";
+      ctx.beginPath(); ctx.roundRect(x - w / 2, y - size - 2, w, size + 8, 5); ctx.fill();
+      text(s, x, y, { size, weight: 600, color, align: "center", italic });
+      return w;
+    };
+
+    function step(dt) {
+      if (playing) t += speed * 3600000 * dt;
+      updateOffsets();
+      const now = new Date(t);
+      const utcH = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+      const day = (t - Date.UTC(now.getUTCFullYear(), 0, 1)) / 86400000;
+      const lonSun = ((12 - utcH) * 15 + 540) % 360 - 180;
+      const fill = m => mode === "dates" ? DAY_COLORS[localDate(m).getUTCDay()] : hourColor(m);
+      ctx.clearRect(0, 0, W, H);
+
+      // zones, with the sea darker (and bluer) than the land
+      ctx.save();
+      ctx.beginPath(); ctx.rect(0, TOP, W, MH); ctx.clip();
+      zones.forEach((z, i) => { ctx.fillStyle = fill(offs[i]); ctx.fill(z.path); });
+      ctx.fillStyle = hatch;
+      zones.forEach((z, i) => { if (offs[i] % 60) ctx.fill(z.path); });
+      ctx.fillStyle = C.sea;
+      ctx.fill(sea, "evenodd");
+      if (showNight) drawNight(declOfDay(day), lonSun);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)"; ctx.lineWidth = 0.6;
+      ctx.stroke(borders);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.6)"; ctx.lineWidth = 0.8;
+      ctx.stroke(land);
+      ctx.strokeStyle = "rgba(6, 10, 24, 0.85)"; ctx.lineWidth = 1.2;
+      zones.forEach(z => ctx.stroke(z.path));
+
+      // the ideal 15° zones: meridians at 7.5°, 22.5°, ...
+      if (lines) {
+        ctx.setLineDash([6, 6]); ctx.strokeStyle = "rgba(255, 255, 255, 0.75)"; ctx.lineWidth = 1.5;
+        for (let lon = -172.5; lon < 180; lon += 15) {
+          ctx.beginPath(); ctx.moveTo(X(lon), TOP); ctx.lineTo(X(lon), TOP + MH); ctx.stroke();
+        }
+        ctx.setLineDash([]);
+      }
+
+      // pointed zone: every zone with the same time, outlined (dark under white, readable on every colour)
+      if (hover) {
+        const m = offs[hover.i];
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = "rgba(6, 10, 24, 0.9)"; ctx.lineWidth = 5;
+        zones.forEach((z, i) => { if (offs[i] === m) ctx.stroke(z.path); });
+        ctx.strokeStyle = "#fff"; ctx.lineWidth = 2.5;
+        zones.forEach((z, i) => { if (offs[i] === m) ctx.stroke(z.path); });
+        cities.forEach(c => {
+          if (c.zone < 0 || offs[c.zone] !== m) return;
+          ctx.fillStyle = "#fff"; ctx.strokeStyle = "rgba(6, 10, 24, 0.9)"; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(c.x, c.y, 4, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+        });
+      }
+
+      // noon under the Sun, midnight opposite
+      const lonMid = lonSun >= 0 ? lonSun - 180 : lonSun + 180;
+      ctx.setLineDash([3, 5]); ctx.lineWidth = 2;
+      ctx.strokeStyle = C.noon;
+      ctx.beginPath(); ctx.moveTo(X(lonSun), TOP); ctx.lineTo(X(lonSun), TOP + MH); ctx.stroke();
+      ctx.strokeStyle = C.midnight;
+      ctx.beginPath(); ctx.moveTo(X(lonMid), TOP); ctx.lineTo(X(lonMid), TOP + MH); ctx.stroke();
+      ctx.setLineDash([]);
+      pg.glowSun(ctx, X(lonSun), Y(declOfDay(day)), 7);
+      ctx.restore();
+      tag(tr("tzmNoon"), clamp(X(lonSun), 40, W - 40), TOP + MH - 10, C.noon);
+      tag(tr("tzmMidnight"), clamp(X(lonMid), 40, W - 40), TOP + MH - 10, C.midnight);
+
+      // Neuchâtel
+      const ne = cities[0], neD = ne.zone >= 0 ? localDate(offs[ne.zone]) : now;
+      ctx.fillStyle = accent; ctx.strokeStyle = "#0a0e1a"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(ne.x, ne.y, 6, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+      const neLabel = `${ne.name} ${hhmm(neD)}`;
+      ctx.font = `600 15px ${th.font}`;
+      const nw = ctx.measureText(neLabel).width + 12;
+      ctx.fillStyle = "rgba(10, 14, 26, 0.8)";
+      ctx.beginPath(); ctx.roundRect(ne.x + 9, ne.y - 30, nw, 22, 5); ctx.fill();
+      text(neLabel, ne.x + 15, ne.y - 14, { size: 15, weight: 600, color: accent });
+
+      // top: the time (or day) in each ideal zone; bottom: its offset
+      for (let k = -12; k <= 12; k++) {
+        const x0 = Math.max(0, X(15 * k - 7.5)), x1 = Math.min(W, X(15 * k + 7.5)), xc = (x0 + x1) / 2;
+        const d = localDate(k * 60);
+        ctx.fillStyle = fill(k * 60);
+        ctx.fillRect(x0 + 1, 2, x1 - x0 - 2, TOP - 6);
+        const edge = Math.abs(k) === 12;
+        const label = mode === "dates" ? (edge ? WD2[d.getUTCDay()] : `${WD3[d.getUTCDay()]} ${d.getUTCDate()}`) : hhmm(d);
+        text(label, xc, TOP / 2, { size: edge ? 12 : mode === "dates" && L === "fr" ? 14 : 15, weight: 600, color: "#fff", align: "center", base: "middle" });
+        text(k ? `${k > 0 ? "+" : "−"}${Math.abs(k)}` : "0", xc, TOP + MH + 17, { size: 14, color: C.muted, align: "center" });
+      }
+      // the data's credit, on a web page (a deck gives it in its notes)
+      if (!container.closest(".reveal")) text(tr("tzmCredit"), W - 4, TOP + MH + 36, { size: 11, color: C.muted, align: "right" });
+
+      if (hover) tooltip(hover.i);
+      readout.innerHTML = `<b>UTC ${hhmm(now)}</b> · ${dayText(now)} ${now.getUTCFullYear()}`;
     }
     pg.loop(container, step);
   };
@@ -20863,7 +22002,7 @@
   R_.sims["locate-epicentre"] = function (container, opts = {}) {
     const GE = R_.geology;
     const { L, tr, th, ctx, text, wrap, panel } = GE.stage(container, opts, tr => `
-      <label><input type="checkbox" class="mark"> ${tr("leMark")}</label>
+      <label><input type="checkbox" class="lep-mark"> ${tr("leMark")}</label>
       <button class="circles">${tr("leCircles")}</button><button class="next">${tr("leNext")}</button>`);
     const W = GE.W, H = GE.H;
     // the map
@@ -20889,7 +22028,7 @@
         const d = km(STATIONS[n], quake.at);
         return { n, p: STATIONS[n], d, tp: T0 + d / VP, ts: T0 + d / VS };
       });
-      marks = false; panel.querySelector(".mark").checked = false; circles = 0; guess = null; traces = draw0();
+      marks = false; panel.querySelector(".lep-mark").checked = false; circles = 0; guess = null; traces = draw0();
     }
     function inside([x, y]) {
       let inn = false;
@@ -20923,7 +22062,7 @@
     }
     setEvent(0);
 
-    panel.querySelector(".mark").addEventListener("change", e => { marks = e.target.checked; });
+    panel.querySelector(".lep-mark").addEventListener("change", e => { marks = e.target.checked; });
     panel.querySelector(".circles").addEventListener("click", () => { circles = circles ? 0 : 0.001; });
     panel.querySelector(".next").addEventListener("click", () => setEvent(Math.min(ev + 1, EVENTS.length)));   // the historical ones, then random ones
     const canvas = ctx.canvas;

@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/earth-clock.jpg
+title: "15° per hour"
+description: "Earth seen from above the North Pole, turning under the Sun: why noon moves 15° to the west every hour."
+categories: [Cosmology]
+---
+
+Earth turns anticlockwise under the Sun, seen from above the North Pole. The outer ring of solar hours stays still, with noon facing the Sun; the 24 time zones of 15° turn with Earth, and six cities carry the time of their zone. On the right, a clock for each city. The *Speed* slider sets how many hours pass in one second, ❚❚ pauses and *Now* goes back to the present time.
+
+::: {.column-page}
+{{< geores sim="earth-clock" presets="utc,speed" >}}
+:::
+
+## What to look for
+
+- How many degrees does Earth turn in one hour? In four minutes?
+- When it is noon in London, what time is it in Neuchâtel, New York and Tokyo? Why?
+- Which city sees the Sun rise first, New York or Mumbai?
+- Mumbai's clock is not on a whole hour: why might a country choose a zone of half an hour?
+
+## How it works
+
+Earth turns 360° in 24 hours, so 15° per hour: every 15° to the east, noon comes one hour earlier. The 24 nominal zones are 15° wide; the cities show the standard time of their real zone, without summer time. Day and night are drawn as at an equinox.
+
+## Sources
+
+- Schematic model; time zones of the six cities, standard time.
+- Earth texture: Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

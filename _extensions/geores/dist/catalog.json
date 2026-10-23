@@ -443,6 +443,31 @@
    "images": []
   },
   {
+   "name": "earth-clock",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/earth-clock.js",
+   "description": "15° per hour. Earth seen from above the North Pole, turning anticlockwise under the Sun (on the left), with a fixed ring of solar hours (noon facing the Sun), the 24 nominal time zones of 15° turning with it and six cities with the time of their time zone; on the right, 360° ÷ 24 h = 15° per hour and a clock per city. On the dark stage in both page themes.",
+   "options": [
+    {
+     "option": "data-utc",
+     "example": null,
+     "doc": "UTC time at the start, in hours (0 to 24, default 11)"
+    },
+    {
+     "option": "data-speed",
+     "example": null,
+     "doc": "hours per second at the start (0.05 to 4, default 0.5)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "textures",
+     "script": "textures.js"
+    }
+   ],
+   "images": []
+  },
+  {
    "name": "earth-dive",
    "field": "geology",
    "file": "src/sims/geology/earth-dive.js",
@@ -705,6 +730,31 @@
    "images": []
   },
   {
+   "name": "latlong-globe",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/latlong-globe.js",
+   "description": "latitude and longitude on a textured globe you can turn (drag) and click (a pin): the pin's latitude φ is drawn along its meridian from the equator, its longitude λ along the equator from the prime meridian (Greenwich), with the angles at the centre of the Earth. Starts on Neuchâtel. On the dark stage in both page themes.",
+   "options": [
+    {
+     "option": "data-grid",
+     "example": "false",
+     "doc": "start without the grid of parallels and meridians every 15°"
+    },
+    {
+     "option": "data-badge",
+     "example": "true",
+     "doc": "the small turning globe of a chapter slide (square, grid, Neuchâtel; no controls, no clicks)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "textures",
+     "script": "textures.js"
+    }
+   ],
+   "images": []
+  },
+  {
    "name": "locate-epicentre",
    "field": "geology",
    "file": "src/sims/geology/locate-epicentre.js",
@@ -860,6 +910,31 @@
     {
      "id": "tectonics",
      "script": "tectonics.js"
+    }
+   ],
+   "images": []
+  },
+  {
+   "name": "precession",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/precession.js",
+   "description": "axial precession. Earth's axis traces a cone once in about 26 000 years (left), and the celestial pole moves among the stars around the pole of the ecliptic (right): Thuban was the North Star of the pyramids, Polaris is today's, Vega will be in about 12 000 years. On the dark stage in both page themes.",
+   "options": [
+    {
+     "option": "data-year",
+     "example": null,
+     "doc": "the year at the start (default: this year; negative = BC, astronomical: 0 = 1 BC)"
+    },
+    {
+     "option": "data-speed",
+     "example": null,
+     "doc": "years per second at the start (50 to 5000, default 600)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "textures",
+     "script": "textures.js"
     }
    ],
    "images": []
@@ -1334,6 +1409,36 @@
     }
    ],
    "bundles": [],
+   "images": []
+  },
+  {
+   "name": "time-zones",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/time-zones.js",
+   "description": "live world map of the time zones of today, at the current date and time: each zone coloured by its offset from UTC (summer time included, from the browser's rules for each zone), hatched when it is not a whole number of hours from UTC; the night, the noon and midnight meridians, the time of each ideal 15° zone at the top. Point at a zone: its offset, its time and date, a few of its cities, and every zone with the same time outlined. \"Dates\" colours the zones by day of the week; \"15° zones\" draws the ideal zones; time runs faster with the slider. On the dark stage in both page themes, as the other world maps (conflicts, chokepoints): the night is drawn dark.",
+   "options": [
+    {
+     "option": "data-mode",
+     "example": "dates",
+     "doc": "start with the zones coloured by day of the week (default: by hour)"
+    },
+    {
+     "option": "data-lines",
+     "example": "true",
+     "doc": "start with the ideal 15° zones drawn"
+    },
+    {
+     "option": "data-night",
+     "example": "false",
+     "doc": "start without the night"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "timezones",
+     "script": "timezones.js"
+    }
+   ],
    "images": []
   },
   {

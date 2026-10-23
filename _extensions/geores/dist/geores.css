@@ -171,8 +171,9 @@
 
 /* on a slide: the drawing fits the height of the .sim box */
 .reveal .sim .geores-steps-figure { max-width: none; }
-/* a canvas sim in a keynote's .sim box keeps its proportions (the theme makes every canvas 1280 × 610) */
-.reveal .sim canvas.geores-canvas { height: auto; }
+/* a canvas sim in a keynote's .sim box takes the width of the box and keeps its proportions (the theme makes every
+   canvas 1280 × 610) */
+.reveal .sim canvas.geores-canvas { width: 100%; height: auto; }
 /* the four solstices and equinoxes of season-steps: two by two; one column on a phone, one row of four on a wide
    screen (full screen on a beamer); on a slide, two by two at the height of the .sim box */
 .geores-four {
@@ -365,7 +366,8 @@
   overflow: hidden;
 }
 
-/* Space sims (orrery, planet-spin, hr-diagram, sun-future, comet-orbit) in a keynote's .sim box: on the slide's starry
+/* Space sims (orrery, planet-spin, hr-diagram, sun-future, comet-orbit, earth-year, sun-angle, precession,
+   latlong-globe, earth-clock, time-zones) in a keynote's .sim box: on the slide's starry
    background, as the deck drew them */
 .reveal .sim .geores-stage.geores-space {
   background: transparent;
@@ -398,6 +400,38 @@
 .reveal .sim [data-sim="sun-future"] .sim-controls .date {
   flex-basis: auto;   /* on the row of the buttons: canvas and controls within the 610 px of the box */
 }
+/* earth-year in a keynote's .sim box: the controls across the width, under the orbit and the side panel
+   (the buttons on one row, the sentence on the next) */
+.reveal .sim [data-sim="earth-year"] .sim-controls { right: 0; max-width: none; }
+/* earth-clock in a keynote's .sim box: the controls under the panel of the clocks (a shorter slider: one row) */
+.reveal .sim [data-sim="earth-clock"] .sim-controls {
+  left: auto;
+  right: 50px;
+  bottom: 10px;
+  max-width: 430px;
+}
+.reveal .sim [data-sim="earth-clock"] .sim-controls input[type=range] { width: 110px; }
+/* precession in a keynote's .sim box: the controls under the globe, up to the sky chart (a shorter slider: one row) */
+.reveal .sim [data-sim="precession"] .sim-controls { max-width: 720px; }
+.reveal .sim [data-sim="precession"] .sim-controls input[type=range] { width: 110px; }
+/* latlong-globe in a keynote's .sim box: 700 px wide, at the right of the slide (the text on the left) */
+.reveal .sim:has(> [data-sim="latlong-globe"]) { left: auto; right: 0; width: 700px; }
+.reveal .sim [data-sim="latlong-globe"] .sim-controls { left: auto; right: 0; }
+/* the chapter-slide globe (latlong-globe data-badge) in a .part-img: on the slide's background */
+.reveal .part-img .geores-stage.geores-space { background: transparent; padding: 0; margin: 0; border-radius: 0; }
+/* sun-angle in a keynote's .sim box: 740 px wide, at the left of the slide (text on the right), as in the decks;
+   the controls below the drawing, clear of its ground labels */
+.reveal .sim:has(> [data-sim="sun-angle"]) { width: 740px; height: 600px; }
+.reveal .sim [data-sim="sun-angle"] .sim-controls {
+  position: static;
+  max-width: none;
+  margin-top: 4px;
+  padding: 6px 14px;
+}
+/* time-zones in a keynote's .sim box: the controls on one row across the width, the date at the right */
+.reveal .sim [data-sim="time-zones"] .sim-controls { right: 0; max-width: none; flex-wrap: nowrap; white-space: nowrap; padding: 6px 14px; }
+.reveal .sim [data-sim="time-zones"] .sim-controls .date { flex-basis: auto; margin-left: auto; }
+.reveal .sim [data-sim="time-zones"] .sim-controls > * { flex-shrink: 0; }
 /* hr-diagram in a keynote's .sim box: the controls under the panel of the chosen star, clear of the diagram */
 .reveal .sim [data-sim="hr-diagram"] .sim-controls {
   left: auto;

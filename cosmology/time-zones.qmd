@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/time-zones.jpg
+title: "Time zones today"
+description: "The world's time zones at this very moment, with the night, noon and midnight, and the ideal zones of 15°."
+categories: [Cosmology]
+---
+
+The map shows the time zones at this moment, coloured by their offset from UTC, with summer time where it applies; zones that are not a whole number of hours from UTC are hatched. Point at a zone for its time, its date and some of its cities: every zone with the same time is outlined. *Dates* colours the zones by day of the week, *Night* shows or hides the night, and *15° zones* draws the ideal zones. The *Speed* slider makes time run, and *Now* comes back to the present.
+
+::: {.column-page}
+{{< geores sim="time-zones" presets="mode,lines,night" >}}
+:::
+
+## What to look for
+
+- Compare the real zones with the ideal 15° zones: where do they follow the meridians, and where do borders win?
+- China spans about 60° of longitude: how many time zones does it use? What does that mean for sunrise in the west of the country?
+- Switch to *Dates*: where does one day end and the next begin? Follow the date line across the Pacific.
+- Find the zones that are hatched: which countries use a half-hour or quarter-hour offset?
+
+## How it works
+
+Each zone is a region that keeps the same legal time; its offset from UTC, with summer time, comes from the browser's time-zone rules for the date shown. The ideal zones are 15° wide, centred on the meridians every 15° from Greenwich. The night is drawn for the position of the Sun at the time shown.
+
+## Sources
+
+- Time-zone boundaries: timezone-boundary-builder 2026d (ODbL).
+- Land and borders: Natural Earth (public domain).
