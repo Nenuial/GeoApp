@@ -5,10 +5,10 @@ description: "Natalité, mortalité et population au fil des cinq phases du mod�
 categories: [Démographie]
 ---
 
-L'outil s'ouvre sur le modèle complet. Appuyez sur ▶ pour repartir de la première étape (les courbes seules) et avancer : chaque phase apparaît avec sa colonne du tableau et sa pyramide, qui se forme à partir de celle de la phase précédente. *Modèle complet* réaffiche le tout. Sous le graphique, une phrase résume la phase affichée.
+L'outil s'ouvre sur le modèle complet. Revenez avec ◀ à l'étape 0, puis reconstruisez-le avec ▶ en 13 étapes : la natalité et la mortalité, l'accroissement naturel entre les deux, le tableau, puis chaque phase avec sa colonne et sa pyramide, qui se forme à partir de celle de la phase précédente. *Modèle complet* réaffiche le tout. Sous les commandes, une phrase explique chaque étape.
 
 ::: {.column-page}
-{{< geores sim="dtm-steps" >}}
+{{< geores sim="dtm-build" >}}
 :::
 
 ## À observer

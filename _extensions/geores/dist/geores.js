@@ -21315,15 +21315,52 @@
 // Sim "dtm-build": the demographic transition model built in 13 steps, as in the GeoKey keynote: the birth, death and
 // population lines draw themselves, the natural increase fills in, the labels appear, then for each stage its column
 // and its pyramid, which morphs out of the previous stage's. In a keynote, the steps follow the slide's fragments (13
-// hidden fragments in the sim); elsewhere, buttons. Data and helpers: diagram "demographic-transition" (layout).
+// hidden fragments in the sim); elsewhere, buttons and a sentence for each step. Data and helpers: diagram "demographic-transition" (layout).
 // Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js). See also dtm-steps (6 steps, for books) and dtm-mini.
 //   <div class="geores" data-sim="dtm-build"></div>
 (function (G) {
   const R_ = G.GeoRes, pg = R_.page;
 
   R_.addStrings({
-    en: { dtbTitle: "Demographic transition model", dtbStep: "Step {i} of {n}" },
-    fr: { dtbTitle: "Modèle de la transition démographique", dtbStep: "Étape {i} sur {n}" },
+    en: {
+      dtbTitle: "Demographic transition model", dtbStep: "Step {i} of {n}",
+      // what each step shows (on a page; a keynote has its own text): 0 = nothing yet, 1–13
+      dtbSay: [
+        "Press ▶: the model builds up step by step.",
+        "The <b>birth rate</b> (CBR, orange) and the <b>death rate</b> (CDR, red), with the <b>population</b> (light line).",
+        "Between them, the <b>natural increase</b> (RNI): the population grows when births outnumber deaths.",
+        "The table: for each stage, the birth rate, the death rate, the natural increase and the population pyramid.",
+        "<b>Stage 1</b>: birth rate high, death rate high: the natural increase is close to zero.",
+        "Stage 1 pyramid: a wide base and a narrow top. Many children are born, few people reach old age.",
+        "<b>Stage 2</b>: the death rate falls rapidly (food, hygiene, medicine), the birth rate stays high: <b>rapid increase</b>.",
+        "Stage 2 pyramid: more children survive, so the base gets wider.",
+        "<b>Stage 3</b>: the birth rate falls too (school, towns, women's work, contraception): the increase slows down.",
+        "Stage 3 pyramid: fewer births each year, so the base narrows.",
+        "<b>Stage 4</b>: birth and death rates are both low: the population is <b>stable</b>.",
+        "Stage 4 pyramid: almost a column, about as many people in each age group up to old age.",
+        "<b>Stage 5</b>: the birth rate falls below the death rate: the population starts to <b>decrease</b>.",
+        "Stage 5 pyramid: fewer young people than adults: the population shrinks and ages.",
+      ],
+    },
+    fr: {
+      dtbTitle: "Modèle de la transition démographique", dtbStep: "Étape {i} sur {n}",
+      dtbSay: [
+        "Appuyez sur ▶ : le modèle se construit étape par étape.",
+        "Le <b>taux de natalité</b> (orange) et le <b>taux de mortalité</b> (rouge), avec la <b>population</b> (ligne claire).",
+        "Entre les deux, l'<b>accroissement naturel</b> : la population augmente quand les naissances dépassent les décès.",
+        "Le tableau : pour chaque phase, la natalité, la mortalité, l'accroissement naturel et la pyramide des âges.",
+        "<b>Phase 1</b> : natalité élevée, mortalité élevée : l'accroissement naturel est proche de zéro.",
+        "Pyramide de la phase 1 : une base large et un sommet étroit. Beaucoup d'enfants naissent, peu de gens atteignent la vieillesse.",
+        "<b>Phase 2</b> : la mortalité baisse rapidement (alimentation, hygiène, médecine), la natalité reste élevée : <b>forte hausse</b>.",
+        "Pyramide de la phase 2 : davantage d'enfants survivent, la base s'élargit.",
+        "<b>Phase 3</b> : la natalité baisse à son tour (école, villes, travail des femmes, contraception) : la hausse ralentit.",
+        "Pyramide de la phase 3 : moins de naissances chaque année, la base se rétrécit.",
+        "<b>Phase 4</b> : natalité et mortalité sont toutes deux basses : la population est <b>stable</b>.",
+        "Pyramide de la phase 4 : presque une colonne, à peu près autant de personnes dans chaque tranche d'âge jusqu'à la vieillesse.",
+        "<b>Phase 5</b> : la natalité passe sous la mortalité : la population commence à <b>diminuer</b>.",
+        "Pyramide de la phase 5 : moins de jeunes que d'adultes : la population diminue et vieillit.",
+      ],
+    },
   });
 
   const NS = "http://www.w3.org/2000/svg", MORPH_MS = 1400;
@@ -21434,9 +21471,10 @@
       });
       if (!animate) { svg.getBoundingClientRect(); svg.classList.remove("dtm-instant"); }
       if (count) count.textContent = tr("dtbStep").replace("{i}", k).replace("{n}", STEPS);
+      if (say) say.innerHTML = tr("dtbSay")[k];
     }
 
-    let count = null;
+    let count = null, say = null;
     if (reveal) {
       // in a keynote: the steps are hidden fragments of the slide
       const section = container.closest("section"), steps = document.createElement("div");
@@ -21459,10 +21497,15 @@
       // elsewhere: buttons
       const panel = pg.controls(container, `
         <button class="prev" aria-label="${tr("prev")}">◀</button>
-        <span class="rate count" style="min-width: 7.5em"></span>
+        <span class="rate count" style="min-width: ${L === "fr" ? 7.1 : 6.2}em"></span>
         <button class="next" aria-label="${tr("next")}">▶</button>
         <button class="all">${tr("dtmAll")}</button>`);
       count = panel.querySelector(".count");
+      // the sentence of the step, under the controls: its length never moves them
+      say = document.createElement("p");
+      say.className = "geores-steps-text";
+      say.setAttribute("aria-live", "polite");
+      container.appendChild(say);
       panel.querySelector(".prev").addEventListener("click", () => apply(Math.max(0, n - 1), true));
       panel.querySelector(".next").addEventListener("click", () => apply(n >= STEPS ? 0 : n + 1, n < STEPS));
       panel.querySelector(".all").addEventListener("click", () => apply(STEPS, false));

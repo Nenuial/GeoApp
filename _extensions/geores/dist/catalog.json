@@ -443,7 +443,7 @@
    "name": "dtm-build",
    "field": "demography",
    "file": "src/sims/demography/dtm-build.js",
-   "description": "the demographic transition model built in 13 steps, as in the GeoKey keynote: the birth, death and population lines draw themselves, the natural increase fills in, the labels appear, then for each stage its column and its pyramid, which morphs out of the previous stage's. In a keynote, the steps follow the slide's fragments (13 hidden fragments in the sim); elsewhere, buttons. Data and helpers: diagram \"demographic-transition\" (layout). Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js). See also dtm-steps (6 steps, for books) and dtm-mini.",
+   "description": "the demographic transition model built in 13 steps, as in the GeoKey keynote: the birth, death and population lines draw themselves, the natural increase fills in, the labels appear, then for each stage its column and its pyramid, which morphs out of the previous stage's. In a keynote, the steps follow the slide's fragments (13 hidden fragments in the sim); elsewhere, buttons and a sentence for each step. Data and helpers: diagram \"demographic-transition\" (layout). Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js). See also dtm-steps (6 steps, for books) and dtm-mini.",
    "options": [],
    "bundles": [],
    "images": []
