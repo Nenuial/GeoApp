@@ -128,12 +128,12 @@ test.describe("pyramids", () => {
     await expect(page).toHaveURL(/c=NER/);
     await page.locator(".app-pyramids input.rel").check();
     await expect(page).toHaveURL(/rel=1/);
-    expect(await page.locator(".app-svg rect.app-men").count()).toBe(21);
+    await expect(page.locator(".app-svg rect.app-men")).toHaveCount(21);
   });
 
   test("one bar per year of age, an outline to compare", async ({ page }) => {
     await page.goto(`${url}?c=CHE&y=2024&cmp=IND`);
-    expect(await page.locator(".app-svg rect.app-men").count()).toBe(101);
+    await expect(page.locator(".app-svg rect.app-men")).toHaveCount(101);   // waits for the data
     await expect(page.locator(".app-svg path.app-outline")).toHaveCount(2);
   });
 
