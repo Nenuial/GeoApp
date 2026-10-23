@@ -469,3 +469,77 @@
   padding: 0;
   border-radius: 0;
 }
+
+/* leap-year on a page (in a keynote, the deck's .leap rules style it) */
+.geores-leap:not(.reveal .geores) .lpy-box {
+  max-width: 30rem;
+  padding: 0.9rem 1.1rem;
+  border-top: 3px solid #25935a;
+  border-radius: 6px;
+  background: rgba(127, 127, 127, 0.08);
+}
+.geores-leap:not(.reveal .geores) .ttl { display: block; margin-bottom: 0.5rem; font-size: 1.3em; font-weight: 600; color: #25935a; }
+.geores-leap:not(.reveal .geores) input {
+  width: 7em; padding: 0.15em 0.5em; border: 2px solid #25935a; border-radius: 6px; background: transparent;
+  color: inherit; font: inherit; font-size: 1.4em; font-weight: 600;
+}
+.geores-leap:not(.reveal .geores) .examples { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0.7rem 0; }
+.geores-leap:not(.reveal .geores) button {
+  padding: 0.1em 0.6em; border: 1px solid #25935a; border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer;
+}
+.geores-leap:not(.reveal .geores) .rule { margin: 0.2rem 0; opacity: 0.6; }
+.geores-leap:not(.reveal .geores) .rule.used { opacity: 1; }
+.geores-leap:not(.reveal .geores) .rule b { display: inline-block; width: 1.4em; }
+.geores-leap:not(.reveal .geores) .verdict { margin-top: 0.6rem; font-size: 1.3em; font-weight: 600; color: #25935a; }
+
+/* dtm-build and dtm-mini: the demographic transition model built step by step (from the GeoKey keynote, js/dtm.js) */
+.geores-dtm-build { position: relative; --dtm-ink: #262b36; --dtm-head: var(--r-link-color, #6b452b); }
+.geores-dtm-build.geores-dark { --dtm-ink: #d8dbe2; --dtm-head: var(--r-link-color, #e3b26b); }
+.geores-dtm-build .dtb-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: "Fira Sans", sans-serif; font-weight: 600; }
+.geores-dtm-build .dtb-svg text { text-anchor: middle; dominant-baseline: central; font-size: 36px; }
+.geores-dtm-build .dtm-steps { position: absolute; width: 0; height: 0; overflow: hidden; }
+.geores-dtm-build .dtm-line { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1 2; stroke-dashoffset: 1.05; transition: stroke-dashoffset 3s ease-in-out; }
+.geores-dtm-build .dtm-s1 .dtm-line { stroke-dashoffset: 0; }
+.geores-dtm-build .dtm-line.dtm-cbr, .geores-dtm-mini .dtm-line.dtm-cbr { stroke: #fc8320; }
+.geores-dtm-build .dtm-line.dtm-cdr, .geores-dtm-mini .dtm-line.dtm-cdr { stroke: #b73023; }
+.geores-dtm-build .dtm-line.dtm-pop, .geores-dtm-mini .dtm-line.dtm-pop { stroke: #7f9ad4; }
+.geores-dtm-build .dtm-line.dtm-pop { transition-delay: .4s; }
+.geores-dtm-build .dtm-rni { fill: #849042; }
+.geores-dtm-build .dtm-wipe { transition: transform 3s ease-in-out; }
+.geores-dtm-build .dtm-s2 .dtm-wipe { transform: translateX(1900px); }
+.geores-dtm-build .dtm-grid { stroke: #a2a2a2; stroke-width: 2; }
+.geores-dtm-build .dtm-axis, .geores-dtm-build .dtm-centre { stroke: var(--dtm-ink); stroke-width: 5; }
+.geores-dtm-build .dtm-labels { opacity: 0; transition: opacity .8s; }
+.geores-dtm-build .dtm-s3 .dtm-labels { opacity: 1; }
+.geores-dtm-build .dtm-label.dtm-cbr { fill: #fc8320; }
+.geores-dtm-build .dtm-label.dtm-cdr { fill: #b73023; }
+.geores-dtm-build .dtm-label.dtm-rni { fill: #849042; }
+.geores-dtm-build .dtm-label.dtm-pop { fill: #7f9ad4; }
+.geores-dtm-build .dtm-label.dtm-pyr { fill: var(--dtm-ink); }
+.geores-dtm-build .dtm-head, .geores-dtm-build .dtm-value { fill: var(--dtm-head); opacity: 0;
+  transform: translateY(14px); transition: opacity .5s, transform .5s; }
+.geores-dtm-build .dtm-on .dtm-head, .geores-dtm-build .dtm-on .dtm-value { opacity: 1; transform: none;
+  transition-delay: calc(.25s + var(--i) * .12s); }
+.geores-dtm-build .dtm-colline { transform-box: fill-box; transform-origin: top; transform: scaleY(0); transition: transform .8s ease-in-out; }
+.geores-dtm-build .dtm-rowline { transform-box: fill-box; transform-origin: left; transform: scaleX(0); transition: transform .6s ease-in-out; }
+.geores-dtm-build .dtm-on .dtm-colline, .geores-dtm-build .dtm-on .dtm-rowline { transform: none; }
+.geores-dtm-build .dtm-band { fill: currentColor; opacity: 0; transition: opacity .6s, transform .8s ease-in-out; }
+.geores-dtm-build .dtm-band.dtm-on { opacity: .05; }
+.geores-dtm-build .dtm-male { fill: #2d9ad3; }
+.geores-dtm-build .dtm-female { fill: #fb8d8e; }
+.geores-dtm-build .dtm-pyramid { visibility: hidden; }
+.geores-dtm-build .dtm-pyramid.dtm-on { visibility: visible; }
+.geores-dtm-build .dtm-pyramid.dtm-first { transform-box: fill-box; transform-origin: bottom; transform: scaleY(0);
+  transition: transform 1s cubic-bezier(.3, 1.3, .6, 1), visibility 0s 1s; }
+.geores-dtm-build .dtm-pyramid.dtm-first.dtm-on { transform: none; transition-delay: 0s; }
+.geores-dtm-build .dtm-instant, .geores-dtm-build .dtm-instant *,
+.geores-dtm-mini .dtm-instant, .geores-dtm-mini .dtm-instant * { transition: none !important; }
+.geores-dtm-mini .dtm-mini-svg { display: block; height: 200px; width: auto; margin: 0 auto; overflow: visible; font-family: "Fira Sans", sans-serif; font-weight: 600; }
+.geores-dtm-mini .dtm-mini-svg text { text-anchor: middle; dominant-baseline: central; font-size: 72px; }
+.geores-dtm-mini .dtm-line { fill: none; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+.geores-dtm-mini .dtm-rni { fill: #939b58; }
+.geores-dtm-mini .dtm-grid { stroke: #f4f4f4; stroke-width: 4; opacity: .7; }
+.geores-dtm-mini .dtm-band { fill: #63452f; transition: transform .9s ease-in-out .3s; }
+.geores-dtm-mini .dtm-head { fill: #f6eed7; opacity: .5; transition: opacity .6s .6s; }
+.geores-dtm-mini .dtm-head.dtm-on { opacity: 1; }

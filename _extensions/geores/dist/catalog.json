@@ -440,6 +440,30 @@
    "images": []
   },
   {
+   "name": "dtm-build",
+   "field": "demography",
+   "file": "src/sims/demography/dtm-build.js",
+   "description": "the demographic transition model built in 13 steps, as in the GeoKey keynote: the birth, death and population lines draw themselves, the natural increase fills in, the labels appear, then for each stage its column and its pyramid, which morphs out of the previous stage's. In a keynote, the steps follow the slide's fragments (13 hidden fragments in the sim); elsewhere, buttons. Data and helpers: diagram \"demographic-transition\" (layout). Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js). See also dtm-steps (6 steps, for books) and dtm-mini.",
+   "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "dtm-mini",
+   "field": "demography",
+   "file": "src/sims/demography/dtm-mini.js",
+   "description": "a small demographic transition model (the curves and the row of stages) with one stage highlighted, for the slides about each stage. In a keynote, the highlight slides over from the stage of the previous slide when that slide has a dtm-mini too. Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js).",
+   "options": [
+    {
+     "option": "data-stage",
+     "example": null,
+     "doc": "the stage highlighted, 1 to 5"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
    "name": "dtm-steps",
    "field": "demography",
    "file": "src/sims/demography/dtm-steps.js",
@@ -787,6 +811,21 @@
      "script": "textures.js"
     }
    ],
+   "images": []
+  },
+  {
+   "name": "leap-year",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/leap-year.js",
+   "description": "\"Is it a leap year?\" in the Gregorian calendar (1582): divisible by 4, except the years divisible by 100, except those divisible by 400. Type a year or click an example; the rules used are shown in turn. From GeoKey DF-Cosmology/3-Earth (earth.html, leap()). The classes of the deck are kept (.ttl, .examples, .rule, .rule.used, .verdict): a deck can restyle them; geores.css has the look elsewhere.",
+   "options": [
+    {
+     "option": "data-year",
+     "example": null,
+     "doc": "the year at the start (default 2100)"
+    }
+   ],
+   "bundles": [],
    "images": []
   },
   {

@@ -462,6 +462,13 @@
       el.innerHTML = fn(Object.assign({}, el.dataset, {
         lang: pageLang(el), theme: markTheme(el), images: GeoRes.images || {},
       }));
+      // the steps of a diagram (groups <g data-step="n">) as reveal.js fragments: fragments="steps" one after the other
+      // (fragment n − 1), "once" all together (fragment 0)
+      const mode = el.dataset.fragments;
+      if (mode === "steps" || mode === "once") el.querySelectorAll("[data-step]").forEach(g => {
+        g.classList.add("fragment");
+        g.setAttribute("data-fragment-index", mode === "once" ? 0 : +g.getAttribute("data-step") - 1);
+      });
       el.dataset.mounted = "";
       el.dispatchEvent(new CustomEvent("geores:drawn", { bubbles: true }));
     };
@@ -3734,6 +3741,430 @@
   };
 })(globalThis);
 
+// ---- src/diagrams/cosmology/circle-fiftieth.js ----
+// Eratosthenes' calculation: 7° 12′ is 1/50 of the circle, so the circumference of the Earth is 50 × 5 000 stadia
+// = 250 000 stadia, about 39 375 km (a stadion of 157.5 m). From GeoKey DF-Cosmology/3-Earth (earth.html, pie50()).
+// The classes of the deck are kept (.slice, .slice.one, .fill with --i on each slice: a deck fills the circle slice
+// by slice when that fragment appears).
+//   <div class="geores" data-diagram="circle-fiftieth" data-fragments="true"></div>
+//   data-fragments="true": in a keynote, the 49 other slices, "= 5 000 stadia", the whole circle, the result
+//   (fragments 0 to 3)
+(function (G) {
+  const R_ = G.GeoRes, { P, svgDoc, text, esc, cssVar } = R_.lib;
+
+  R_.addStrings({
+    en: { cfiTitle: "Eratosthenes' calculation: 1/50 of the circle", cfiSlices: "50 equal slices", cfiStadia: "= 5 000 stadia", cfiResult: "39 375 km" },
+    fr: { cfiTitle: "Le calcul d'Ératosthène : 1/50 du cercle", cfiSlices: "50 parts égales", cfiStadia: "= 5 000 stades", cfiResult: "39 375 km" },
+  });
+
+  R_.diagrams["circle-fiftieth"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), dark = th.name === "dark";
+    const frag = opts.fragments === true || opts.fragments === "true";
+    const step = (i, s, cls = "") => (frag ? `<g class="fragment${cls ? " " + cls : ""}" data-fragment-index="${i}">${s}</g>` : `<g${cls ? ` class="${cls}"` : ""}>${s}</g>`);
+    const accent = cssVar(opts, "--accent", dark ? "#e8a65d" : "#c0661b"), edge = dark ? "#10131c" : "#ffffff";
+    const cx = 240, cy = 250, r = 205;
+    // vars: CSS custom properties before the fill (the order of a slice, --i, for a deck's animation)
+    const slice = (i, cls, fill, op, vars = "") => {
+      const a0 = 90 - i * 7.2, a1 = a0 - 7.2;
+      return `<path d="M${cx},${cy} L${P(cx, cy, r, a0)} A${r},${r} 0 0 1 ${P(cx, cy, r, a1)} Z" class="slice${cls}" style="${vars}fill: ${fill}" fill-opacity="${op}" stroke="${edge}" stroke-width="1.5"/>`;
+    };
+    const rest = Array.from({ length: 49 }, (_, i) => slice(i + 1, "", accent, 0.12)).join("");
+    const full = Array.from({ length: 49 }, (_, i) => slice(i + 1, "", accent, 0.75, `--i: ${i}; `)).join("");
+    const [lx, ly] = P(cx, cy, r + 18, 86.4);
+    const t = (x, y, s, a = {}) => text(x, y, s, Object.assign({ "font-size": 22, fill: th.text }, a));
+    const body = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" style="stroke: ${accent}" stroke-width="2"/>` +
+      step(0, rest + t(cx, cy + r + 40, esc(tr("cfiSlices")), { class: "accent", "text-anchor": "middle", "font-weight": 600, style: `fill: ${accent}` })) +
+      slice(0, " one", accent, 1) +
+      t(lx, ly, "7° 12′", { class: "accent", "font-weight": 600, style: `fill: ${accent}` }) +
+      step(1, t(lx + 76, ly, esc(tr("cfiStadia")))) +
+      step(2, full, "fill") +
+      step(3, t(cx, cy + 12, esc(tr("cfiResult")), { class: "big", "text-anchor": "middle", "font-size": 40, "font-weight": 600, "paint-order": "stroke", stroke: edge, "stroke-width": 6 }));
+    return svgDoc("0 0 480 510", body, th, { title: tr("cfiTitle"), cls: "geores-cfi" });
+  };
+})(globalThis);
+
+// ---- src/diagrams/cosmology/daylight-year.js ----
+// Hours of daylight through the year at four latitudes: Neuchâtel (47° N), the equator, Cape Town (34° S) and Tromsø
+// (70° N, midnight sun and polar night). Sunrise and sunset with the refraction of the horizon (−0.833°).
+// From GeoKey DF-Cosmology/3-Earth (earth.html, daylight()). Keeps the keynote's chart classes (svg.chart, .grid,
+// .ax, .curve.draw, .lbl, .big): in a deck, the theme draws each curve when its fragment appears.
+//   <div class="geores" data-diagram="daylight-year" data-fragments="true"></div>
+//   data-fragments="true": in a keynote, one place at a time
+(function (G) {
+  const R_ = G.GeoRes, { r1, pts, svgDoc, text, esc } = R_.lib;
+  const EPS = 23.44, rad = d => d * Math.PI / 180;
+
+  R_.addStrings({
+    en: {
+      dlyTitle: "Hours of daylight through the year",
+      dlyMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      dlyKeyDays: ["20 Mar", "21 Jun", "23 Sep", "21 Dec"],
+      dlyPlaces: ["Neuchâtel", "Equator", "Cape Town", "Tromsø"],
+      dlyMidnightSun: "midnight sun", dlyPolar: "polar", dlyNight: "night",
+    },
+    fr: {
+      dlyTitle: "Durée du jour au fil de l'année",
+      dlyMonths: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+      dlyKeyDays: ["20 mars", "21 juin", "23 sept.", "21 déc."],
+      dlyPlaces: ["Neuchâtel", "Équateur", "Le Cap", "Tromsø"],
+      dlyMidnightSun: "soleil de minuit", dlyPolar: "nuit", dlyNight: "polaire",
+    },
+  });
+
+  function dayLength(lat, day) {
+    const decl = rad(-EPS * Math.cos(2 * Math.PI * (day + 10) / 365)), p = rad(lat);
+    const c = (Math.sin(rad(-0.833)) - Math.sin(p) * Math.sin(decl)) / (Math.cos(p) * Math.cos(decl));
+    return c >= 1 ? 0 : c <= -1 ? 24 : 24 * Math.acos(c) / Math.PI;
+  }
+  const hm = (L, h) => { const m = Math.round(h * 60); return R_.typo(L, `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}`); };
+
+  // latitude, its label, colour on a dark and on a light page
+  const PLACES = [[47.0, "47° N", "#f2c46d", "#c98a00"], [0, "0°", "#ef5b4c", "#d63a2b"],
+    [-33.9, "34° S", "#7fd1a7", "#25935a"], [69.65, "70° N", "#9fd3ff", "#2f7fc4"]];
+
+  R_.diagrams["daylight-year"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), dark = th.name === "dark";
+    const frag = opts.fragments === true || opts.fragments === "true";
+    const x0 = 90, x1 = 1000, y0 = 34, y1 = 474;
+    const X = d => r1(x0 + (x1 - x0) * d / 365), Y = h => r1(y1 - (y1 - y0) * h / 24);
+    const small = { "font-size": 17, fill: th.text };
+    const grid = `class="chart-grid" stroke="${th.text}" stroke-opacity="0.12" stroke-width="1"`;
+    let out = "";
+    [0, 6, 12, 18, 24].forEach(h => {
+      out += `<line x1="${x0}" y1="${Y(h)}" x2="${x1}" y2="${Y(h)}" ${grid}/>` + text(x0 - 12, Y(h) + 5, `${h} h`, { ...small, "text-anchor": "end" });
+    });
+    tr("dlyMonths").forEach((m, i) => { out += text(X(i * 30.4 + 15.2), y1 + 28, esc(m), { ...small, "text-anchor": "middle" }); });
+    [79, 172, 265, 355].forEach((d, i) => {
+      out += `<line x1="${X(d)}" y1="${y0}" x2="${X(d)}" y2="${y1}" ${grid} stroke-dasharray="6 6"/>` +
+        text(X(d), y0 - 10, esc(tr("dlyKeyDays")[i]), { ...small, "text-anchor": "middle" });
+    });
+    out += `<path d="M${x0},${y0 - 4} L${x0},${y1} L${x1},${y1}" class="ax" fill="none" stroke="${th.axis}" stroke-width="2"/>`;
+    PLACES.forEach(([lat, latText, cDark, cLight], k) => {
+      const c = dark ? cDark : cLight, name = tr("dlyPlaces")[k], list = [];
+      for (let d = 0; d <= 365; d++) list.push([X(d), Y(dayLength(lat, d))]);
+      const endY = list[list.length - 1][1];
+      // a colour in style: the keynote's ".chart text" rule would override a fill attribute
+      const lbl = (x, y, s, a = {}) => text(x, y, s, Object.assign({ class: "lbl", "font-size": 19, "font-weight": 600, style: `fill: ${c}` }, a));
+      let extra = "";
+      if (k === 0) {
+        const big = { class: "big", "font-size": 22, "font-weight": 700, fill: th.text, "text-anchor": "middle" };
+        extra = text(X(172), Y(dayLength(lat, 172)) - 14, hm(L, dayLength(lat, 172)), big) +
+          text(X(350), Y(dayLength(lat, 355)) + 30, hm(L, dayLength(lat, 355)), big);
+      }
+      if (k === 3) {
+        extra = lbl(X(172), Y(24) + 26, esc(tr("dlyMidnightSun")), { "text-anchor": "middle" }) +
+          `<text x="${x1 - 4}" y="${Y(0) - 34}" text-anchor="end" class="lbl" font-size="19" font-weight="600" style="fill: ${c}">${esc(tr("dlyPolar"))}<tspan x="${x1 - 4}" dy="21">${esc(tr("dlyNight"))}</tspan></text>`;
+      }
+      const g = `<path d="M${pts(list)}" class="curve draw" pathLength="1" fill="none" stroke-width="4" stroke-linejoin="round" style="stroke: ${c}"/>` +
+        lbl(x1 + 14, endY + 6, esc(name)) + text(x1 + 14, endY + 26, latText, small) + extra;
+      out += frag ? `<g class="fragment">${g}</g>` : `<g>${g}</g>`;
+    });
+    return svgDoc("0 0 1180 520", out, th, { title: tr("dlyTitle"), cls: "chart geores-daylight" });
+  };
+})(globalThis);
+
+// ---- src/diagrams/cosmology/eratosthenes.js ----
+// Eratosthenes' geometry (about 240 BC): parallel sunrays, the well at Syene where the Sun is overhead, the shadow of
+// the obelisk at Alexandria (7° 12′, with a zoom), and the same angle at the centre of the Earth. Not to scale, except
+// the angle. From GeoKey DF-Cosmology/3-Earth (earth.html, erato()). Steps 1–4 are <g data-step="n">; the classes of
+// the deck (.ray, .radial, .arc, text.city, text.angle, text.small) are kept, so a deck can restyle them.
+//   <div class="geores" data-diagram="eratosthenes" data-fragments="steps"></div>
+//   data-fragments="steps": in a keynote, the four steps one after the other
+(function (G) {
+  const R_ = G.GeoRes, { r1, pts, svgDoc, text, esc } = R_.lib;
+  const rad = d => d * Math.PI / 180;
+
+  R_.addStrings({
+    en: {
+      eraTitle: "Eratosthenes' geometry: the same angle at Alexandria and at the centre of the Earth",
+      eraCentre: "centre of the Earth", eraSyene: "Syene", eraAlexandria: "Alexandria",
+      eraNotToScale: "Not to scale, except the angle", eraRays: "Sun's rays: parallel",
+    },
+    fr: {
+      eraTitle: "La géométrie d'Ératosthène : le même angle à Alexandrie et au centre de la Terre",
+      eraCentre: "centre de la Terre", eraSyene: "Syène", eraAlexandria: "Alexandrie",
+      eraNotToScale: "Pas à l'échelle, sauf l'angle", eraRays: "Rayons du Soleil : parallèles",
+    },
+  });
+
+  let uid = 0;
+  R_.diagrams["eratosthenes"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), dark = th.name === "dark";
+    const id = "gr-era" + (++uid);
+    const ray = dark ? "#ffd27a" : "#c98a00", accent = dark ? "#e8a65d" : "#c0661b", halo = dark ? "#10131c" : "#ffffff";
+    const radial = dark ? "#ffffff" : th.text;
+    const C = [110, 560], R = 520, aS = 38, aA = 45.2, HOB = 110;
+    const u = a => [Math.cos(rad(a)), -Math.sin(rad(a))];
+    const at = (a, r) => [r1(C[0] + r * u(a)[0]), r1(C[1] + r * u(a)[1])];
+    const S = at(aS, R), A = at(aA, R), T = at(aA, R + HOB);
+    const d = [-Math.cos(rad(aS)), Math.sin(rad(aS))];      // direction of sunlight
+    const tang = a => [Math.sin(rad(a)), Math.cos(rad(a))];  // along the ground, towards the south
+    const lineCls = { ray: `class="ray" stroke="${ray}" stroke-width="3" fill="none"`, radial: `class="radial" stroke="${radial}" stroke-width="2" stroke-dasharray="8 7" fill="none"` };
+    const label = (x, y, s, cls, a = {}) => text(x, y, s, Object.assign({ class: cls }, a));
+    const haloed = { "paint-order": "stroke", stroke: halo, "stroke-width": 5 };
+
+    // where a ray through point q hits the ground
+    const hit = q => {
+      const w = [q[0] - C[0], q[1] - C[1]], b = w[0] * d[0] + w[1] * d[1];
+      const t = -b - Math.sqrt(b * b - (w[0] * w[0] + w[1] * w[1] - R * R));
+      return [r1(q[0] + t * d[0]), r1(q[1] + t * d[1])];
+    };
+    const tip = hit(T);
+    const rayTo = (end, from) => {
+      const Lr = 620;
+      return `<line x1="${r1(from[0] - Lr * d[0])}" y1="${r1(from[1] - Lr * d[1])}" x2="${end[0]}" y2="${end[1]}" ${lineCls.ray} marker-end="url(#${id}-arrow)"/>`;
+    };
+
+    const wedge = `M${C} L${at(14, R)} A${R},${R} 0 0 0 ${at(76, R)} Z`;
+    const ground = `<path d="${wedge}" fill="url(#${id}-inside)"/>
+      <path d="M${at(14, R - 6)} A${R - 6},${R - 6} 0 0 0 ${at(76, R - 6)}" fill="none" stroke="#7a5534" stroke-width="12"/>
+      <path d="M${at(14, R)} A${R},${R} 0 0 0 ${at(76, R)}" fill="none" stroke="#e7c48a" stroke-width="2"/>`;
+
+    // well at Syene and obelisk at Alexandria (both hugely enlarged)
+    const [ts, us] = [tang(aS), u(aS)];
+    const well = [[7, 0], [-7, 0], [-7, -44], [7, -44]].map(([p, q]) => [r1(S[0] + p * ts[0] + q * us[0]), r1(S[1] + p * ts[1] + q * us[1])]);
+    const water = [[6, -34], [-6, -34], [-6, -43], [6, -43]].map(([p, q]) => [r1(S[0] + p * ts[0] + q * us[0]), r1(S[1] + p * ts[1] + q * us[1])]);
+    const [ta, ua] = [tang(aA), u(aA)];
+    const ob = (p, q) => [r1(A[0] + p * ta[0] + q * ua[0]), r1(A[1] + p * ta[1] + q * ua[1])];
+    const obelisk = `<polygon points="${pts([ob(-8, 0), ob(8, 0), ob(4.5, 96), ob(-4.5, 96)])}" fill="#d8b57a"/>
+      <polygon points="${pts([ob(0, 0), ob(-8, 0), ob(-4.5, 96), ob(0, 96)])}" fill="#a07a44"/>
+      <polygon points="${pts([ob(-4.5, 96), ob(4.5, 96), ob(0, HOB)])}" fill="#f1d39b"/>`;
+    const shadow = `<path d="M${A} A${R},${R} 0 0 0 ${tip}" fill="none" stroke="#1b120a" stroke-width="7"/>`;
+
+    // angle at the top of the obelisk (between the vertical and the ray) and at the centre
+    const angAt = (p, r, a0, a1, sweep, cls = "arc", stroke = accent, w = 4) =>
+      `<path d="M${r1(p[0] + r * Math.cos(rad(a0)))},${r1(p[1] - r * Math.sin(rad(a0)))} A${r},${r} 0 0 ${sweep} ${r1(p[0] + r * Math.cos(rad(a1)))},${r1(p[1] - r * Math.sin(rad(a1)))}" class="${cls}" fill="none" stroke="${stroke}" stroke-width="${w}"/>`;
+    const topArc = angAt(T, 36, aA, aS, 1);
+    const RC = 240;
+    const centreArc = `<path d="M${C} L${at(aS, RC)} A${RC},${RC} 0 0 0 ${at(aA, RC)} Z" fill="#fff" fill-opacity=".3"/>` +
+      angAt(C, RC, aS, aA, 0, "arc centre", "#ffffff", 5);
+    // label of the rays, along the ray that hits the ground at 31°
+    const rl = (([x, y]) => [r1(x - 180 * d[0]), r1(y - 180 * d[1])])(at(31, R));
+
+    // zoom on the obelisk
+    const M = at(aA, R + HOB / 2), Z = [655, 468], RZ = 104, k = 1.6;
+    const zx = Z[0] - M[0], zy = Z[1] - M[1], zl = Math.hypot(zx, zy), nx = -zy / zl, ny = zx / zl;
+    const rS = 66;
+    const zoomed = `<g clip-path="url(#${id}-zoom)">
+        <circle cx="${Z[0]}" cy="${Z[1]}" r="${RZ}" fill="#0b0e16"/>
+        <g transform="translate(${Z[0]} ${Z[1]}) scale(${k}) translate(${-M[0]} ${-M[1]})">
+          ${ground}${shadow}${obelisk}
+          <line x1="${T[0]}" y1="${T[1]}" x2="${r1(T[0] + 60 * ua[0])}" y2="${r1(T[1] + 60 * ua[1])}" ${lineCls.radial}/>
+          ${rayTo(tip, T)}
+          ${angAt(T, 30, aA, aS, 1)}
+        </g>
+      </g>
+      <circle cx="${Z[0]}" cy="${Z[1]}" r="${RZ}" fill="none" stroke="${radial}" stroke-opacity=".7" stroke-width="2"/>`;
+    const zl1 = `<line x1="${r1(M[0] + rS * nx)}" y1="${r1(M[1] + rS * ny)}" x2="${r1(Z[0] + RZ * nx)}" y2="${r1(Z[1] + RZ * ny)}" stroke="${radial}" stroke-opacity=".5"/>
+      <line x1="${r1(M[0] - rS * nx)}" y1="${r1(M[1] - rS * ny)}" x2="${r1(Z[0] - RZ * nx)}" y2="${r1(Z[1] - RZ * ny)}" stroke="${radial}" stroke-opacity=".5"/>
+      <circle cx="${M[0]}" cy="${M[1]}" r="${rS}" fill="none" stroke="${radial}" stroke-opacity=".7" stroke-width="2"/>`;
+    const TZ = [Z[0] + k * (T[0] - M[0]), Z[1] + k * (T[1] - M[1])];
+
+    const rays = [24, 31, 52, 58, 64].map(a => rayTo(at(a, R), at(a, R))).join("");
+    const ANGLE = "7° 12′";
+    const body = `<defs>
+        <radialGradient id="${id}-inside" cx="${C[0]}" cy="${C[1]}" r="${R}" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#fff3b0"/><stop offset=".22" stop-color="#ffb347"/><stop offset=".5" stop-color="#e8572a"/>
+          <stop offset=".8" stop-color="#9c2a1c"/><stop offset="1" stop-color="#5a1d14"/>
+        </radialGradient>
+        <clipPath id="${id}-sky"><rect x="0" y="0" width="780" height="590"/></clipPath>
+        <clipPath id="${id}-zoom"><circle cx="${Z[0]}" cy="${Z[1]}" r="${RZ}"/></clipPath>
+        <marker id="${id}-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${ray}"/></marker>
+      </defs>
+      ${ground}
+      <circle cx="${C[0]}" cy="${C[1]}" r="6" fill="#fff"/>` +
+      label(C[0] + 6, C[1] + 28, esc(tr("eraCentre")), "small", { "text-anchor": "middle", fill: "#fff", "font-size": 17, "font-style": "italic" }) +
+      `<circle cx="${S[0]}" cy="${S[1]}" r="5" fill="#fff"/><circle cx="${A[0]}" cy="${A[1]}" r="5" fill="#fff"/>` +
+      label(S[0] + 20, S[1] + 22, esc(tr("eraSyene")), "city", { "font-size": 22, "font-weight": 600, fill: th.text, ...haloed }) +
+      label(A[0] - 22, A[1] + 4, esc(tr("eraAlexandria")), "city", { "text-anchor": "end", "font-size": 22, "font-weight": 600, fill: th.text, ...haloed }) +
+      label(8, 22, esc(tr("eraNotToScale")), "small", { "font-size": 17, "font-style": "italic", fill: th.muted }) +
+      `<g data-step="1" clip-path="url(#${id}-sky)">${rays}${rayTo(S, S)}${rayTo(tip, T)}` +
+      label(rl[0], r1(rl[1] - 12), esc(tr("eraRays")), "ray", { transform: `rotate(${-aS} ${rl[0]} ${rl[1]})`, "text-anchor": "middle", "font-size": 20, "font-weight": 600, fill: ray, "paint-order": "stroke", stroke: halo, "stroke-width": 6 }) +
+      `</g>
+      <g data-step="2">
+        <polygon points="${pts(well)}" fill="#24170d" stroke="#e7c48a" stroke-width="1.5"/>
+        <polygon points="${pts(water)}" fill="#3f8fcf"/>
+        <line x1="${S[0]}" y1="${S[1]}" x2="${r1(S[0] - 36 * us[0])}" y2="${r1(S[1] - 36 * us[1])}" ${lineCls.ray}/>
+        <line x1="${r1(S[0] - 44 * us[0])}" y1="${r1(S[1] - 44 * us[1])}" x2="${C[0]}" y2="${C[1]}" ${lineCls.radial}/>
+      </g>
+      <g data-step="3">${shadow}${obelisk}${zl1}${zoomed}` +
+      label(r1(TZ[0] + 34), r1(TZ[1] - 30), ANGLE, "angle", { "font-size": 24, "font-weight": 600, fill: accent, ...haloed }) + topArc +
+      `</g>
+      <g data-step="4">
+        <line x1="${T[0]}" y1="${T[1]}" x2="${C[0]}" y2="${C[1]}" ${lineCls.radial}/>
+        ${centreArc}` +
+      label(at(33, RC + 14)[0], at(33, RC + 14)[1] + 8, ANGLE, "angle centre", { "font-size": 24, "font-weight": 600, fill: "#ffffff", ...haloed, stroke: "#10131c" }) +
+      `</g>`;
+    return svgDoc("0 0 780 590", body, th, { title: tr("eraTitle"), cls: "geores-eratosthenes" });
+  };
+})(globalThis);
+
+// ---- src/diagrams/cosmology/metonic-cycle.js ----
+// The 19-year cycle of the Hebrew calendar (the Metonic cycle, 5th century BC): 12 months in a year, 13 in 7 years
+// out of 19 (years 3, 6, 8, 11, 14, 17, 19), so that the year stays with the seasons: 19 solar years = 6 939.6 days
+// ≈ 235 lunar months = 6 939.7 days. From GeoKey DF-Cosmology/3-Earth (earth.html, metonic()).
+//   <div class="geores" data-diagram="metonic-cycle"></div>
+(function (G) {
+  const R_ = G.GeoRes, { svgDoc, text, esc, cssVar } = R_.lib;
+
+  R_.addStrings({
+    en: {
+      metTitle: "The 19-year cycle: 7 years with a 13th month", metYear: "year", metMonths: "months",
+      metSum: "19 years = 6 939.6 days ≈ 235 Moon months = 6 939.7 days", metNote: "(the “Metonic cycle”, 5th century BC)",
+    },
+    fr: {
+      metTitle: "Le cycle de 19 ans : 7 années avec un 13e mois", metYear: "année", metMonths: "mois",
+      metSum: "19 ans = 6 939,6 jours ≈ 235 mois lunaires = 6 939,7 jours", metNote: "(le « cycle de Méton », Ve siècle av. J.-C.)",
+    },
+  });
+
+  const LEAP = [3, 6, 8, 11, 14, 17, 19];
+
+  R_.diagrams["metonic-cycle"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), dark = th.name === "dark";
+    const accent = cssVar(opts, "--accent", dark ? "#7fd1a7" : "#25935a");
+    const W = 1152, gap = 6, w = (W - 18 * gap) / 19, h = 74;
+    let out = "";
+    for (let i = 0; i < 19; i++) {
+      const x = i * (w + gap), leap = LEAP.includes(i + 1), cx = x + w / 2;
+      out += `<rect x="${x.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${h}" rx="6" ${leap ? `style="fill: ${accent}" fill-opacity="0.22"` : `fill="${th.panel}"`}/>` +
+        (leap ? `<rect x="${x.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="3" style="fill: ${accent}"/>` : "") +
+        text(cx, 24, String(i + 1), { "text-anchor": "middle", "font-size": 14, fill: th.muted }) +
+        text(cx, 58, leap ? "13" : "12", { "text-anchor": "middle", "font-size": 26, "font-weight": 600, ...(leap ? { style: `fill: ${accent}` } : { fill: th.text }) });
+    }
+    out += text(0, h + 40, esc(R_.typo(L, tr("metSum"))), { "font-size": 22, fill: th.text }) +
+      text(0, h + 68, esc(tr("metNote")), { "font-size": 19, "font-style": "italic", fill: th.muted });
+    return svgDoc(`0 0 ${W} ${h + 78}`, out, th, { title: tr("metTitle"), cls: "geores-metonic" });
+  };
+})(globalThis);
+
+// ---- src/diagrams/cosmology/milankovitch.js ----
+// Milankovitch cycles: the tilt of Earth's axis, the shape of its orbit (eccentricity) and the wobble (precession
+// index e·sin ϖ) over the last 400 000 years, Berger & Loutre (1991) (GeoRes.data.orbital, dist/orbital.js).
+// From GeoKey DF-Cosmology/3-Earth (earth.html, milankovitch()). Keeps the keynote's chart classes (svg.chart, .grid,
+// .curve.draw, .lbl, .big): in a deck, the theme draws each curve when its fragment appears.
+//   <div class="geores" data-diagram="milankovitch" data-fragments="true"></div>
+//   data-fragments="true": in a keynote, one cycle at a time
+(function (G) {
+  const R_ = G.GeoRes, { r1, pts, svgDoc, text, esc } = R_.lib;
+  const rad = d => d * Math.PI / 180;
+
+  R_.addStrings({
+    en: {
+      mlkTitle: "Milankovitch cycles over the last 400 000 years",
+      mlkNames: ["Tilt of the axis", "Shape of the orbit", "Wobble (precession)"],
+      mlkWhat: ["between 22.1° and 24.5°", "rounder or more oval", "which season is closest to the Sun"],
+      mlkPeriods: ["≈ 41 000 years", "≈ 100 000 years", "≈ 21 000 years"],
+      mlkAxis: ["400 000 years ago", "300 000", "200 000", "100 000", "today"],
+      mlkNoData: "dist/orbital.js missing",
+    },
+    fr: {
+      mlkTitle: "Les cycles de Milankovitch au cours des 400 000 dernières années",
+      mlkNames: ["Inclinaison de l'axe", "Forme de l'orbite", "Précession"],
+      mlkWhat: ["entre 22,1° et 24,5°", "plus ronde ou plus ovale", "quelle saison est la plus proche du Soleil"],
+      mlkPeriods: ["≈ 41 000 ans", "≈ 100 000 ans", "≈ 21 000 ans"],
+      mlkAxis: ["il y a 400 000 ans", "300 000", "200 000", "100 000", "aujourd'hui"],
+      mlkNoData: "dist/orbital.js manquant",
+    },
+  });
+
+  const COLORS = { dark: ["#ef5b4c", "#7aa7ff", "#c79be0"], light: ["#d63a2b", "#3d5fc4", "#8e4fb0"] };
+
+  R_.diagrams["milankovitch"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
+    const D = R_.data && R_.data.orbital;
+    if (!D) return svgDoc("0 0 1180 120", text(20, 60, tr("mlkNoData"), { fill: th.muted }), th);
+    const frag = opts.fragments === true || opts.fragments === "true";
+    const C = COLORS[th.name === "dark" ? "dark" : "light"];
+    const n = D.ecc.length, x0 = 330, x1 = 1150;
+    const X = i => r1(x0 + (x1 - x0) * i / (n - 1));
+    const SERIES = [D.obl, D.ecc, D.ecc.map((e, i) => e * Math.sin(rad(D.per[i])))];
+    const grid = `class="chart-grid" stroke="${th.text}" stroke-opacity="0.12" stroke-width="1"`;
+    let out = "";
+    SERIES.forEach((data, k) => {
+      const top = 10 + k * 148, h = 118, c = C[k];
+      const lo = Math.min(...data), hi = Math.max(...data), pad = (hi - lo) * 0.08;
+      const Y = v => r1(top + h - (v - lo + pad) / (hi - lo + 2 * pad) * h);
+      const g = `<line x1="${x0}" y1="${top + h}" x2="${x1}" y2="${top + h}" ${grid}/>` +
+        text(0, top + 34, esc(tr("mlkNames")[k]), { class: "lbl", "font-size": 19, "font-weight": 600, style: `fill: ${c}` }) +
+        text(0, top + 60, esc(tr("mlkWhat")[k]), { "font-size": 17, fill: th.text }) +
+        text(0, top + 94, esc(tr("mlkPeriods")[k]), { class: "big", "font-size": 22, "font-weight": 700, fill: th.text }) +
+        `<path d="M${pts(data.map((v, i) => [X(i), Y(v)]))}" class="curve draw" pathLength="1" fill="none" style="stroke: ${c}; stroke-width: 3;"/>` +
+        `<circle cx="${X(n - 1)}" cy="${Y(data[n - 1])}" r="6" fill="${c}"/>`;
+      out += frag ? `<g class="fragment">${g}</g>` : `<g>${g}</g>`;
+    });
+    const axisY = 10 + 3 * 148 - 8;
+    [-400000, -300000, -200000, -100000, 0].forEach((year, i) => {
+      const x = X((year - D.start) / D.step);
+      out += `<line x1="${x}" y1="10" x2="${x}" y2="${axisY - 22}" ${grid} stroke-dasharray="4 6"/>` +
+        text(x, axisY, esc(tr("mlkAxis")[i]), { "font-size": 17, fill: th.text, "text-anchor": year === 0 ? "end" : year === -400000 ? "start" : "middle" });
+    });
+    return svgDoc(`0 0 1180 ${axisY + 8}`, out, th, { title: tr("mlkTitle"), cls: "chart geores-milankovitch" });
+  };
+})(globalThis);
+
+// ---- src/diagrams/cosmology/ramadan-dates.js ----
+// The start of Ramadan, 2025–2058: a lunar year of 12 months (354.37 days) is about 11 days shorter than the solar
+// year, so the month moves back through the seasons (in 2030, it starts twice). Approximate dates, from 1 March 2025
+// every 354.367 days. From GeoKey DF-Cosmology/3-Earth (earth.html, ramadan()). Keeps the keynote's chart classes.
+//   <div class="geores" data-diagram="ramadan-dates"></div>
+(function (G) {
+  const R_ = G.GeoRes, { r1, svgDoc, text, esc, cssVar } = R_.lib;
+
+  R_.addStrings({
+    en: {
+      ramTitle: "Start of Ramadan, 2025–2058", ramMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      ramSeasons: ["winter", "spring", "summer", "autumn"], ramFirst: "2025: 1 March", ramTwice: "2030: twice!", ramAxis: "Start of Ramadan (approximate)",
+    },
+    fr: {
+      ramTitle: "Début du ramadan, 2025–2058", ramMonths: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+      ramSeasons: ["hiver", "printemps", "été", "automne"], ramFirst: "2025 : 1er mars", ramTwice: "2030 : deux fois !", ramAxis: "Début du ramadan (approximatif)",
+    },
+  });
+
+  const SEASONS = [[355, 444, "#9fd3ff", "#2f7fc4"], [79, 172, "#7fd1a7", "#25935a"], [172, 266, "#f2c46d", "#c98a00"], [266, 355, "#e8a65d", "#c0661b"]];
+  const MONTH_START = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+
+  R_.diagrams["ramadan-dates"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), dark = th.name === "dark";
+    const accent = cssVar(opts, "--accent", dark ? "#7fd1a7" : "#25935a"), strong = dark ? "#ffffff" : th.text;
+    const x0 = 70, x1 = 560, y0 = 20, y1 = 400, Y0 = 2025, Y1 = 2059;
+    const X = y => r1(x0 + (x1 - x0) * (y - Y0) / (Y1 - Y0)), Y = d => r1(y0 + (y1 - y0) * d / 365);
+    const start = Date.UTC(2025, 2, 1), DAY = 86400000, points = [];
+    for (let n = 0; n <= 34; n++) {
+      const t = new Date(start + n * 354.367 * DAY), yr = t.getUTCFullYear();
+      if (yr >= Y1) break;
+      const doy = (t - Date.UTC(yr, 0, 1)) / DAY;
+      points.push([yr + doy / 365, doy, yr]);
+    }
+    const small = { "font-size": 17, fill: th.text };
+    let out = "";
+    SEASONS.forEach(([d0, d1, cd, cl], i) => {
+      const c = dark ? cd : cl, parts = d1 > 365 ? [[d0, 365], [0, d1 - 365]] : [[d0, d1]];
+      parts.forEach(([a, b]) => { out += `<rect x="${x0}" y="${Y(a)}" width="${x1 - x0}" height="${r1(Y(b) - Y(a))}" fill="${c}" opacity=".12"/>`; });
+      out += text(x1 + 8, Y((d0 + Math.min(d1, 365)) / 2) + 5, esc(tr("ramSeasons")[i]), { "font-size": 17, style: `fill: ${c}` });
+    });
+    tr("ramMonths").forEach((m, i) => { out += text(x0 - 10, Y(MONTH_START[i] + 15) + 5, esc(m), { ...small, "text-anchor": "end" }); });
+    for (let y = 2025; y < Y1; y += 5) {
+      out += `<line x1="${X(y)}" y1="${y0}" x2="${X(y)}" y2="${y1}" class="chart-grid" stroke="${th.text}" stroke-opacity="0.12" stroke-width="1"/>` +
+        text(X(y), y1 + 24, String(y), { ...small, "text-anchor": "middle" });
+    }
+    let path = "";
+    points.forEach(([x, d], i) => { path += `${i && !(d > points[i - 1][1]) ? "L" : "M"}${X(x)},${Y(d)} `; });
+    out += `<path d="${path}" class="curve" fill="none" style="stroke: ${accent}; stroke-width: 2.5; opacity: .6;"/>`;
+    points.forEach(([x, d, yr]) => {
+      out += `<circle cx="${X(x)}" cy="${Y(d)}" r="${yr === 2030 ? 7 : 5}" style="fill: ${accent}"${yr === 2030 ? ` stroke="${strong}" stroke-width="2"` : ""}/>`;
+    });
+    const p30 = points.filter(p => p[2] === 2030), lbl = { class: "lbl", "font-size": 19, "font-weight": 600 };
+    out += text(X(points[0][0]) + 6, Y(points[0][1]) + 30, esc(tr("ramFirst")), { ...lbl, style: `fill: ${accent}` }) +
+      text(X(2030.5), Y(190), esc(tr("ramTwice")), { ...lbl, "text-anchor": "middle", style: `fill: ${strong}` }) +
+      `<line x1="${X(2030.5)}" y1="${Y(175)}" x2="${X(p30[0][0])}" y2="${Y(p30[0][1]) + 10}" stroke="${strong}" stroke-opacity=".6"/>` +
+      `<line x1="${X(2030.5)}" y1="${Y(198)}" x2="${X(p30[1][0])}" y2="${Y(p30[1][1]) - 10}" stroke="${strong}" stroke-opacity=".6"/>` +
+      text((x0 + x1) / 2, y1 + 52, esc(tr("ramAxis")), { ...lbl, "text-anchor": "middle", fill: th.text });
+    return svgDoc("0 0 640 460", out, th, { title: tr("ramTitle"), cls: "chart geores-ramadan" });
+  };
+})(globalThis);
+
 // ---- src/diagrams/cosmology/redshift.js ----
 // The Doppler effect and the redshift, static and qualitative (the sim "redshift" animates it).
 // Top: a source moving to the right; its wavefronts are squeezed in front and stretched behind.
@@ -4158,12 +4589,75 @@
   };
 })(globalThis);
 
+// ---- src/diagrams/cosmology/year-wheel.js ----
+// The solar year as a wheel: the twelve months, the four seasons (northern hemisphere) and the solstices and
+// equinoxes; in the middle, 365.2422 days, one trip around the Sun. From GeoKey DF-Cosmology/3-Earth (earth.html,
+// yearWheel()). The classes of the deck are kept (.month, .month.odd, text.season, .key, text.big).
+//   <div class="geores" data-diagram="year-wheel"></div>
+(function (G) {
+  const R_ = G.GeoRes, { r1, svgDoc, text, esc, cssVar } = R_.lib;
+  const rad = d => d * Math.PI / 180;
+
+  R_.addStrings({
+    en: {
+      ywhTitle: "The solar year: months, seasons, solstices and equinoxes",
+      ywhMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      ywhSeasons: ["winter", "spring", "summer", "autumn"], ywhKeyDays: ["20 Mar", "21 Jun", "23 Sep", "21 Dec"],
+      ywhDays: "days: one trip", ywhAround: "around the Sun",
+    },
+    fr: {
+      ywhTitle: "L'année solaire : mois, saisons, solstices et équinoxes",
+      ywhMonths: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+      ywhSeasons: ["hiver", "printemps", "été", "automne"], ywhKeyDays: ["20 mars", "21 juin", "23 sept.", "21 déc."],
+      ywhDays: "jours : un tour", ywhAround: "autour du Soleil",
+    },
+  });
+
+  // [first day, last day (after 365: next year)], colours on a dark and a light page
+  const SEASONS = [[355, 444, "#9fd3ff", "#2f7fc4"], [79, 172, "#7fd1a7", "#25935a"], [172, 266, "#f2c46d", "#c98a00"], [266, 355, "#e8a65d", "#c0661b"]];
+  const MONTH_START = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+
+  R_.diagrams["year-wheel"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), dark = th.name === "dark";
+    const accent = cssVar(opts, "--accent", dark ? "#7fd1a7" : "#25935a"), edge = dark ? "#10131c" : "#ffffff";
+    const cx = 240, cy = 240, R0 = 118, R1 = 178, RS = 196;
+    const ang = d => rad(-90 + 360 * d / 365);
+    const pt = (d, r) => [r1(cx + r * Math.cos(ang(d))), r1(cy + r * Math.sin(ang(d)))];
+    const band = (d0, d1, ra, rb) => {
+      const big = d1 - d0 > 182.5 ? 1 : 0;
+      return `M${pt(d0, rb)} A${rb},${rb} 0 ${big} 1 ${pt(d1, rb)} L${pt(d1, ra)} A${ra},${ra} 0 ${big} 0 ${pt(d0, ra)} Z`;
+    };
+    let out = "";
+    tr("ywhMonths").forEach((m, i) => {
+      const [d0, d1] = [MONTH_START[i], MONTH_START[i + 1]], [x, y] = pt((d0 + d1) / 2, (R0 + R1) / 2);
+      out += `<path d="${band(d0, d1, R0, R1)}" class="month${i % 2 ? " odd" : ""}" fill="${th.text}" fill-opacity="${i % 2 ? 0.14 : 0.08}" stroke="${edge}" stroke-width="2"/>` +
+        text(x, r1(y + 6), esc(m), { "text-anchor": "middle", "font-size": 17, fill: th.text });
+    });
+    SEASONS.forEach(([d0, d1, cd, cl], i) => {
+      // the name outside the ring, anchored away from it (French names are long)
+      const c = dark ? cd : cl, [x, y] = pt((d0 + d1) / 2, RS + 14), dx = x - cx;
+      const anchor = Math.abs(dx) < 60 ? "middle" : dx > 0 ? "start" : "end", dy = Math.abs(dx) < 60 ? (y < cy ? -6 : 18) : 6;
+      out += `<path d="${band(d0, d1, R1 + 4, RS)}" fill="${c}"/>` +
+        text(x, r1(y + dy), esc(tr("ywhSeasons")[i]), { class: "season", "text-anchor": anchor, "font-size": 18, "font-weight": 600, style: `fill: ${c}` });
+    });
+    [79, 172, 266, 355].forEach((d, i) => {
+      const [a0, a1] = [pt(d, R0 - 4), pt(d, RS + 6)], [x, y] = pt(d, RS + 24);
+      out += `<line x1="${a0[0]}" y1="${a0[1]}" x2="${a1[0]}" y2="${a1[1]}" class="key" style="stroke: ${accent}" stroke-width="3"/>` +
+        text(x, r1(y + 5), esc(tr("ywhKeyDays")[i]), { class: "key", "text-anchor": "middle", "font-size": 15, "font-weight": 600, style: `fill: ${accent}` });
+    });
+    out += text(cx, cy - 8, R_.num(L, 365.2422, 4), { class: "big", "text-anchor": "middle", "font-size": 34, "font-weight": 600, style: `fill: ${accent}` }) +
+      text(cx, cy + 20, esc(tr("ywhDays")), { "text-anchor": "middle", "font-size": 17, fill: th.text }) +
+      text(cx, cy + 42, esc(tr("ywhAround")), { "text-anchor": "middle", "font-size": 17, fill: th.text });
+    return svgDoc("-24 -24 528 528", out, th, { title: tr("ywhTitle"), cls: "year-wheel-svg" });
+  };
+})(globalThis);
+
 // ---- src/diagrams/demography/demographic-transition.js ----
 // The demographic transition model: birth and death rates, natural increase and population
 // through 5 stages, with the table of the stages and a population pyramid for each.
 // Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js, data from the original Keynote).
 // Groups: data-step 1 curves, natural increase and row labels; 2–6 stage 1–5 (column + pyramid).
-// GeoRes.diagrams["demographic-transition"].layout: data and helpers for the sim.
+// GeoRes.diagrams["demographic-transition"].layout: data and helpers for the sims (dtm-steps, dtm-build, dtm-mini).
 (function (G) {
   const R_ = G.GeoRes, { svgDoc, text } = R_.lib;
 
@@ -4217,7 +4711,7 @@
     `<path class="dtm-female" d="${halfPyramid(cx, right, 1)}" fill="${C.female}"/>` +
     `<line class="dtm-centre" x1="${cx}" y1="${PYR_TOP}" x2="${cx}" y2="${AXIS}" stroke="${ink}" stroke-width="5"/>`;
 
-  const layout = { DATA, COLS, CHART_TOP, AXIS, X0, X1, halfPyramid };
+  const layout = { DATA, COLS, CHART_TOP, TABLE_TOP, ROW_H, PYR_TOP, PYR_BOT, AXIS, X0, X1, C, smooth, halfPyramid };
 
   R_.diagrams["demographic-transition"] = function (opts = {}) {
     const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
@@ -7479,6 +7973,53 @@
   };
 })(globalThis);
 
+// ---- src/diagrams/geopolitics/africa-borders.js ----
+// Africa's borders: the countries of Africa (Natural Earth 1:50m, the frame of the other maps of Africa, _africa.js)
+// and, drawn last, the long straight stretches of border, traced along parallels, meridians or straight lines by the
+// colonial powers (Natural Earth, simplified with mapshaper). From GeoKey DF-Introduction/1-Introduction (intro.html).
+// In a keynote, the straight borders take the slide's --accent.
+//   <div class="geores" data-diagram="africa-borders" data-fragments="true" data-step="3"></div>
+//   data-fragments="true": in a keynote, the straight borders appear as a fragment (paths with pathLength="1", in a
+//   group of class "straight": a deck can draw them with stroke-dashoffset); data-step: its fragment index (default 0)
+(function (G) {
+  const R_ = G.GeoRes, { svgDoc, text, esc, cssVar } = R_.lib;
+
+  R_.addStrings({
+    en: { afbTitle: "Africa's borders, and its long straight borders", afbLegend: "— long straight borders" },
+    fr: { afbTitle: "Les frontières de l'Afrique et ses longues frontières rectilignes", afbLegend: "— longues frontières rectilignes" },
+  });
+
+  // [lon, lat, lon, lat, ...] of each straight stretch
+  const STRAIGHT = [[47.98,8,44.91,4.9],[25.26,-17.79,26.31,-19.65],[23.98,19.5,15.99,23.44],[5.84,19.48,7.48,20.87],[7.48,20.87,11.97,23.52],[-8.68,27.29,-4.82,25],[13.48,14.48,15.47,16.92],[15.47,16.92,15.77,19.98],[31.44,22,36.88,22],[-16.96,21.33,-13.02,21.33],[-12.02,23.5,-12.02,25.99],[-12.02,25.99,-8.68,26.01],[1.15,21.1,-4.82,24.99],[24.98,22,24.87,19.99],[23.97,15.69,23.98,19.5],[24.98,29.18,24.98,22],[40.97,2.81,40.98,-0.87],[33.98,-1,37.66,-3.07],[30.83,-1,33.9,-1],[4.24,17,4.23,19.14],[-6.59,24.99,-5.61,16.5],[22.02,-16.25,21.98,-13],[21.98,-13,24,-13],[23.38,-17.64,21.39,-18.01],[19.98,-24.75,19.98,-28.42],[23.25,-18,20.98,-18.32],[20.98,-18.32,20.97,-22],[19.98,-22,19.98,-24.75],[31.95,-25.96,31.86,-23.95],[33.2,-14.01,30.21,-14.98]];
+
+  R_.diagrams["africa-borders"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k), A = R_.africa;
+    const frag = opts.fragments === true || opts.fragments === "true";
+    const accent = cssVar(opts, "--accent", th.name === "dark" ? "#ff7a59" : "#c03728");
+    const W = 600, H = 616, box = { x: 0, y: 0, w: W, h: H - 40 };
+    // the borders are the subject: drawn in ink, not in the light edge of the other maps
+    const ink = th.name === "dark" ? "rgba(230, 220, 200, 0.5)" : "rgba(91, 70, 48, 0.6)";
+    let out = A.map(th, box, () => null, { stroke: () => [ink, 0.9] });
+    // each stretch with points every degree or so, as the borders run straight in longitude and latitude
+    const line = r => {
+      let d = "";
+      for (let i = 0; i + 3 < r.length; i += 2) {
+        const [lon0, lat0, lon1, lat1] = [r[i], r[i + 1], r[i + 2], r[i + 3]];
+        const n = Math.max(1, Math.ceil(Math.hypot(lon1 - lon0, lat1 - lat0)));
+        for (let k = i ? 1 : 0; k <= n; k++) {
+          const [x, y] = A.point(box, lon0 + (lon1 - lon0) * k / n, lat0 + (lat1 - lat0) * k / n);
+          d += (d ? "L" : "M") + x + "," + y;
+        }
+      }
+      return `<path pathLength="1" d="${d}" fill="none" style="stroke: ${accent}" stroke-width="4" stroke-linecap="round"/>`;
+    };
+    const straight = STRAIGHT.map(line).join("") +
+      text(20, H - 14, esc(tr("afbLegend")), { "font-size": 17, "font-weight": 600, style: `fill: ${accent}` });
+    out += frag ? `<g class="straight fragment" data-fragment-index="${+opts.step || 0}">${straight}</g>` : `<g class="straight">${straight}</g>`;
+    return svgDoc(`0 0 ${W} ${H}`, out, th, { title: tr("afbTitle"), cls: "geores-afb" });
+  };
+})(globalThis);
+
 // ---- src/diagrams/geopolitics/africa-un-votes.js ----
 // How the 54 African states voted at the UN General Assembly on the war in Ukraine: resolution ES-11/1 of 2 March
 // 2022 ("Aggression against Ukraine", 141–5–35 in the world) and ES-11/7 of 24 February 2025 (Ukraine's and the EU's
@@ -9040,6 +9581,8 @@
 // with the neighbouring sciences each field borrows from.
 // Ported from GeoKey DF-Introduction/1-Introduction (intro.html, fields()).
 // Groups: data-step 1 human fields, 2 physical fields, 3 neighbouring sciences, 4 the "bridge" line.
+//   <div class="geores" data-diagram="geography-fields" data-fragments="true"></div>
+//   data-fragments="true": in a keynote, the four groups appear one by one (fragments 0 to 3)
 (function (G) {
   const R_ = G.GeoRes, { mix, svgDoc, text } = R_.lib;
 
@@ -9083,6 +9626,8 @@
   R_.diagrams["geography-fields"] = function (opts = {}) {
     const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
     const id = "gr-fields" + (++uid);
+    const frag = opts.fragments === true || opts.fragments === "true";
+    const step = n => `data-step="${n}"${frag ? ` class="fragment" data-fragment-index="${n - 1}"` : ""}`;
     const ink = th.name === "dark" ? th.muted : COLORS.ink;
     // text vertically centred on y (no dominant-baseline: not every renderer supports it)
     const label = (x, y, s, attrs) => text(x, y + 7, s, Object.assign({ "text-anchor": "middle" }, attrs));
@@ -9104,18 +9649,18 @@
       </radialGradient></defs>
       <ellipse cx="640" cy="367" rx="339" ry="208" fill="none" ${dashed}/>
       <line x1="301" y1="367" x2="979" y2="367" ${dashed}/>
-      <g data-step="1">
+      <g ${step(1)}>
         ${text(292, 349, tr("human"), { "text-anchor": "end", "font-size": 26, "font-weight": 700, fill: COLORS.human })}
         ${HUMAN.map(oval(COLORS.human)).join("")}
       </g>
-      <g data-step="2">
+      <g ${step(2)}>
         ${text(292, 397, tr("physical"), { "text-anchor": "end", "font-size": 26, "font-weight": 700, fill: COLORS.physical })}
         ${PHYSICAL.map(oval(COLORS.physical)).join("")}
       </g>
       <circle cx="640" cy="367" r="72" fill="url(#${id}-globe)" stroke="${ink}" stroke-width="2"/>
       ${label(640, 367, tr("geography"), { "font-size": 22, "font-weight": 700, fill: "#ffffff", stroke: "#000000", "stroke-opacity": 0.45, "stroke-width": 4, "paint-order": "stroke" })}
-      <g data-step="3">${NEIGHBOURS.map(box).join("")}</g>
-      <g data-step="4">${text(640, 706, tr("bridge"), { "text-anchor": "middle", "font-size": 18, "font-weight": 600, "font-style": "italic", fill: th.accent })}</g>`;
+      <g ${step(3)}>${NEIGHBOURS.map(box).join("")}</g>
+      <g ${step(4)}>${text(640, 706, tr("bridge"), { "text-anchor": "middle", "font-size": 18, "font-weight": 600, "font-style": "italic", fill: th.accent })}</g>`;
     // cropped to the drawing (the keynote slide is 1280 × 720)
     return svgDoc("100 40 1080 680", body, th, { title: tr("fieldsTitle"), cls: "geores-fields", width: opts.width });
   };
@@ -18727,6 +19272,63 @@
   }
 })(globalThis);
 
+// ---- src/sims/cosmology/leap-year.js ----
+// Sim "leap-year": "Is it a leap year?" in the Gregorian calendar (1582): divisible by 4, except the years divisible
+// by 100, except those divisible by 400. Type a year or click an example; the rules used are shown in turn.
+// From GeoKey DF-Cosmology/3-Earth (earth.html, leap()). The classes of the deck are kept (.ttl, .examples, .rule,
+// .rule.used, .verdict): a deck can restyle them; geores.css has the look elsewhere.
+//   <div class="geores" data-sim="leap-year" data-year="2100"></div>
+//   data-year: the year at the start (default 2100)
+(function (G) {
+  const R_ = G.GeoRes;
+
+  R_.addStrings({
+    en: {
+      lpyTitle: "Is it a leap year?", lpyYear: "Year", lpyBy: n => `divisible by ${n}?`,
+      lpyYes: y => `${y}: yes, 366 days`, lpyNo: y => `${y}: no, 365 days`,
+    },
+    fr: {
+      lpyTitle: "Année bissextile ?", lpyYear: "Année", lpyBy: n => `divisible par ${n} ?`,
+      lpyYes: y => `${y} : oui, 366 jours`, lpyNo: y => `${y} : non, 365 jours`,
+    },
+  });
+
+  R_.sims["leap-year"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    container.classList.add("geores-leap");
+    const start = Math.max(1583, Math.min(9999, +opts.year || 2100));
+    const box = document.createElement("div");
+    box.className = "lpy-box";
+    box.innerHTML = `<span class="ttl">${tr("lpyTitle")}</span>
+      <input type="number" min="1583" max="9999" value="${start}" aria-label="${tr("lpyYear")}">
+      <div class="examples">${[1900, 2000, 2028, 2100].map(y => `<button type="button">${y}</button>`).join("")}</div>
+      ${[4, 100, 400].map(n => `<div class="rule" data-n="${n}"><b></b>${tr("lpyBy")(n)}</div>`).join("")}
+      <div class="verdict"></div>`;
+    container.appendChild(box);
+    const input = box.querySelector("input"), rules = [...box.querySelectorAll(".rule")], verdict = box.querySelector(".verdict");
+    const update = () => {
+      const y = parseInt(input.value, 10);
+      if (!(y > 0)) { verdict.textContent = ""; return; }
+      const div = [4, 100, 400].map(n => y % n === 0);
+      // the rules used: 4, then 100 if divisible by 4, then 400 if divisible by 100
+      const used = [true, div[0], div[0] && div[1]];
+      rules.forEach((r, i) => {
+        r.classList.toggle("used", used[i]);
+        r.querySelector("b").textContent = used[i] ? (div[i] ? "✓" : "✗") : "–";
+      });
+      verdict.textContent = div[0] && (!div[1] || div[2]) ? tr("lpyYes")(y) : tr("lpyNo")(y);
+    };
+    input.addEventListener("input", update);
+    box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      input.value = b.textContent;
+      update();
+      // in a keynote, the space bar must go on driving the slides
+      if (container.closest(".reveal")) setTimeout(() => b.blur(), 0);
+    }));
+    update();
+  };
+})(globalThis);
+
 // ---- src/sims/cosmology/orrery.js ----
 // Sim "orrery": the eight planets orbiting the Sun, starting at their real positions of today, with a time slider,
 // compressed or real distances and a count of the orbits each planet has completed.
@@ -20706,6 +21308,230 @@
       readout.innerHTML = `<b>UTC ${hhmm(now)}</b> · ${dayText(now)} ${now.getUTCFullYear()}`;
     }
     pg.loop(container, step);
+  };
+})(globalThis);
+
+// ---- src/sims/demography/dtm-build.js ----
+// Sim "dtm-build": the demographic transition model built in 13 steps, as in the GeoKey keynote: the birth, death and
+// population lines draw themselves, the natural increase fills in, the labels appear, then for each stage its column
+// and its pyramid, which morphs out of the previous stage's. In a keynote, the steps follow the slide's fragments (13
+// hidden fragments in the sim); elsewhere, buttons. Data and helpers: diagram "demographic-transition" (layout).
+// Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js). See also dtm-steps (6 steps, for books) and dtm-mini.
+//   <div class="geores" data-sim="dtm-build"></div>
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  R_.addStrings({
+    en: { dtbTitle: "Demographic transition model", dtbStep: "Step {i} of {n}" },
+    fr: { dtbTitle: "Modèle de la transition démographique", dtbStep: "Étape {i} sur {n}" },
+  });
+
+  const NS = "http://www.w3.org/2000/svg", MORPH_MS = 1400;
+  const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const mix = (a, b, t) => a.map((v, i) => lerp(v, b[i], t));
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  let uid = 0;
+
+  R_.sims["dtm-build"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    const Y = R_.diagrams["demographic-transition"].layout, D = Y.DATA, COLS = Y.COLS;
+    const stages = tr("dtmStages"), NSTAGE = stages.length;
+    const STEPS = 3 + 2 * NSTAGE;   // 1 lines, 2 natural increase, 3 labels, then per stage: column, pyramid
+    const reveal = container.closest(".reveal");
+    container.classList.add("geores-dtm-build");
+
+    const svg = el("svg", { viewBox: "0 88 1920 880", class: "dtb-svg", role: "img", "aria-label": tr("dtbTitle") }, container);
+    const defs = el("defs", {}, svg), id = "dtb" + (++uid);
+    // soft-edged wipe for the natural increase
+    const grad = el("linearGradient", { id: id + "g" }, defs);
+    el("stop", { offset: "0.9", "stop-color": "white" }, grad);
+    el("stop", { offset: "1", "stop-color": "black" }, grad);
+    const mask = el("mask", { id: id + "m", maskUnits: "userSpaceOnUse", x: 0, y: 0, width: 1920, height: 1066 }, defs);
+    el("rect", { class: "dtm-wipe", x: Y.X0 - 2000, y: 0, width: 2000, height: 1066, fill: `url(#${id}g)` }, mask);
+    // highlight band behind the current stage
+    const band = el("rect", { class: "dtm-band", x: COLS[0], y: Y.CHART_TOP, width: COLS[1] - COLS[0], height: Y.AXIS - Y.CHART_TOP }, svg);
+    el("path", { class: "dtm-rni", d: Y.smooth(D.cbr) + Y.smooth(D.cdr.slice().reverse(), false) + "Z", mask: `url(#${id}m)` }, svg);
+    for (const k of ["cbr", "cdr", "pop"]) el("path", { class: "dtm-line dtm-" + k, d: Y.smooth(D[k]), pathLength: 1 }, svg);
+    // row labels and their lines
+    const labels = el("g", { class: "dtm-labels" }, svg);
+    el("line", { x1: Y.X0, y1: Y.CHART_TOP, x2: Y.X0, y2: Y.AXIS, class: "dtm-grid" }, labels);
+    el("line", { x1: Y.X0, y1: Y.TABLE_TOP, x2: Y.X1, y2: Y.TABLE_TOP, class: "dtm-grid" }, labels);
+    [["cbr", "cbr"], ["cdr", "cdr"], ["rni", "rni"]].forEach(([key, cls], r) => {
+      const y = Y.TABLE_TOP + Y.ROW_H * (r + 1);
+      el("line", { x1: 0, y1: y + Y.ROW_H, x2: Y.X0, y2: y + Y.ROW_H, class: "dtm-grid" }, labels);
+      el("text", { x: Y.X0 / 2, y: y + Y.ROW_H / 2, class: "dtm-label dtm-" + cls }, labels).textContent = tr(key);
+    });
+    el("text", { x: Y.X0 / 2, y: 852, class: "dtm-label dtm-pop" }, labels).textContent = tr("dtmPopulation");
+    el("text", { x: Y.X0 / 2, y: 904, class: "dtm-label dtm-pyr" }, labels).textContent = tr("pyramid");
+    el("line", { x1: Y.X0, y1: Y.AXIS, x2: Y.X1, y2: Y.AXIS, class: "dtm-axis" }, labels);
+    // one column per stage
+    const columns = stages.map((texts, s) => {
+      const g = el("g", { class: "dtm-stage" }, svg), a = COLS[s], b = COLS[s + 1], cx = (a + b) / 2;
+      el("line", { x1: b, y1: Y.CHART_TOP, x2: b, y2: Y.AXIS, class: "dtm-grid dtm-colline" }, g);
+      for (let r = 1; r <= 4; r++) {
+        const y = Y.TABLE_TOP + Y.ROW_H * r;
+        el("line", { x1: a, y1: y, x2: b, y2: y, class: "dtm-grid dtm-rowline" }, g);
+      }
+      [`${tr("stage")} ${s + 1}`, ...texts].forEach((t, r) => {
+        el("text", { x: cx, y: Y.TABLE_TOP + Y.ROW_H * r + Y.ROW_H / 2, class: r === 0 ? "dtm-head" : "dtm-value", style: `--i:${r}` }, g).textContent = t;
+      });
+      return g;
+    });
+    // pyramids, drawn here so that they can morph from one stage to the next
+    const pyrs = D.pyramids.map((_, i) => {
+      const g = el("g", { class: i === 0 ? "dtm-pyramid dtm-first" : "dtm-pyramid" }, svg);
+      return { g, l: el("path", { class: "dtm-male" }, g), r: el("path", { class: "dtm-female" }, g),
+        c: el("line", { class: "dtm-centre", y1: Y.PYR_TOP, y2: Y.AXIS }, g), raf: null };
+    });
+    const drawPyramid = (p, cx, left, right) => {
+      p.l.setAttribute("d", Y.halfPyramid(cx, left, -1));
+      p.r.setAttribute("d", Y.halfPyramid(cx, right, 1));
+      p.c.setAttribute("x1", cx); p.c.setAttribute("x2", cx);
+    };
+    // pyramid i between the shape of stage `from` and its own, forwards or back
+    const morph = (p, from, to, forward, done) => {
+      const A = D.pyramids[from], B = D.pyramids[to], start = performance.now();
+      cancelAnimationFrame(p.raf);
+      if (document.hidden) { const E = forward ? B : A; drawPyramid(p, E.cx, E.left, E.right); if (done) done(); return; }
+      const frame = now => {
+        const t = Math.min((now - start) / MORPH_MS, 1), e = ease(forward ? t : 1 - t);
+        drawPyramid(p, lerp(A.cx, B.cx, e), mix(A.left, B.left, e), mix(A.right, B.right, e));
+        if (t < 1) p.raf = requestAnimationFrame(frame); else if (done) done();
+      };
+      p.raf = requestAnimationFrame(frame);
+    };
+
+    let n;
+    function apply(k, animate) {
+      const old = n;
+      n = k;
+      svg.classList.toggle("dtm-instant", !animate);
+      for (let s = 1; s <= STEPS; s++) svg.classList.toggle("dtm-s" + s, s <= k);
+      columns.forEach((g, s) => g.classList.toggle("dtm-on", k >= 4 + 2 * s));
+      const shown = Math.max(0, Math.min(NSTAGE, Math.floor((k - 3) / 2)));
+      const cur = k >= 4 ? Math.min(Math.floor((k - 4) / 2), NSTAGE - 1) : -1;
+      band.classList.toggle("dtm-on", cur >= 0);
+      if (cur >= 0) band.style.transform = `translateX(${COLS[cur] - COLS[0]}px)`;
+      pyrs.forEach((p, i) => {
+        const visible = i < shown, wasVisible = old !== undefined && i < Math.max(0, Math.floor((old - 3) / 2)), E = D.pyramids[i];
+        if (animate && visible && !wasVisible) {
+          p.g.classList.add("dtm-on");
+          if (i === 0) drawPyramid(p, E.cx, E.left, E.right); else morph(p, i - 1, i, true);
+        } else if (animate && !visible && wasVisible) {
+          if (i === 0) p.g.classList.remove("dtm-on");
+          else morph(p, i - 1, i, false, () => { if (n < 5 + 2 * i) p.g.classList.remove("dtm-on"); });
+        } else {
+          cancelAnimationFrame(p.raf);
+          drawPyramid(p, E.cx, E.left, E.right);
+          p.g.classList.toggle("dtm-on", visible);
+        }
+      });
+      if (!animate) { svg.getBoundingClientRect(); svg.classList.remove("dtm-instant"); }
+      if (count) count.textContent = tr("dtbStep").replace("{i}", k).replace("{n}", STEPS);
+    }
+
+    let count = null;
+    if (reveal) {
+      // in a keynote: the steps are hidden fragments of the slide
+      const section = container.closest("section"), steps = document.createElement("div");
+      steps.className = "dtm-steps";
+      for (let s = 0; s < STEPS; s++) { const f = document.createElement("span"); f.className = "fragment dtm-step"; steps.appendChild(f); }
+      container.appendChild(steps);
+      apply(0, false);
+      const R = G.Reveal, visible = () => container.querySelectorAll(".dtm-step.visible").length;
+      const sync = animate => apply(R.isPrintView && R.isPrintView() ? STEPS : visible(), animate);
+      const onFragment = e => { if (e.fragment && container.contains(e.fragment)) sync(true); };
+      const hook = () => {
+        R.on("fragmentshown", onFragment);
+        R.on("fragmenthidden", onFragment);
+        R.on("slidechanged", e => { if (e.currentSlide === section) sync(false); });
+        R.on("pdf-ready", () => apply(STEPS, false));
+        sync(false);
+      };
+      if (R && R.isReady && R.isReady()) { R.sync(); hook(); } else if (R) R.on("ready", hook);
+    } else {
+      // elsewhere: buttons
+      const panel = pg.controls(container, `
+        <button class="prev" aria-label="${tr("prev")}">◀</button>
+        <span class="rate count" style="min-width: 7.5em"></span>
+        <button class="next" aria-label="${tr("next")}">▶</button>
+        <button class="all">${tr("dtmAll")}</button>`);
+      count = panel.querySelector(".count");
+      panel.querySelector(".prev").addEventListener("click", () => apply(Math.max(0, n - 1), true));
+      panel.querySelector(".next").addEventListener("click", () => apply(n >= STEPS ? 0 : n + 1, n < STEPS));
+      panel.querySelector(".all").addEventListener("click", () => apply(STEPS, false));
+      apply(STEPS, false);
+    }
+  };
+})(globalThis);
+
+// ---- src/sims/demography/dtm-mini.js ----
+// Sim "dtm-mini": a small demographic transition model (the curves and the row of stages) with one stage
+// highlighted, for the slides about each stage. In a keynote, the highlight slides over from the stage of the
+// previous slide when that slide has a dtm-mini too. Ported from GeoKey DF-Demography/1-Statistics (js/dtm.js).
+//   <div class="geores" data-sim="dtm-mini" data-stage="3"></div>
+//   data-stage: the stage highlighted, 1 to 5
+(function (G) {
+  const R_ = G.GeoRes;
+  const NS = "http://www.w3.org/2000/svg", MINI_HEAD = 160;
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  let hooked = false;
+
+  R_.sims["dtm-mini"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    const Y = R_.diagrams["demographic-transition"].layout, D = Y.DATA, COLS = Y.COLS, n = tr("dtmStages").length;
+    const stage = Math.min(Math.max(parseInt(opts.stage || "1", 10), 1), n) - 1;
+    container.classList.add("geores-dtm-mini");
+    const bottom = Y.TABLE_TOP + MINI_HEAD;
+    const svg = el("svg", { viewBox: `${Y.X0 - 4} ${Y.CHART_TOP - 4} ${Y.X1 - Y.X0 + 8} ${bottom - Y.CHART_TOP + 8}`, class: "dtm-mini-svg",
+      role: "img", "aria-label": `${tr("dtbTitle")}, ${tr("stage")} ${stage + 1}` }, container);
+    const band = el("rect", { class: "dtm-band", x: COLS[0], y: Y.CHART_TOP, width: COLS[1] - COLS[0], height: bottom - Y.CHART_TOP }, svg);
+    el("path", { class: "dtm-rni", d: Y.smooth(D.cbr) + Y.smooth(D.cdr.slice().reverse(), false) + "Z" }, svg);
+    for (const k of ["cbr", "cdr", "pop"]) el("path", { class: "dtm-line dtm-" + k, d: Y.smooth(D[k]) }, svg);
+    for (let s = 0; s <= n; s++) el("line", { x1: COLS[s], y1: Y.CHART_TOP, x2: COLS[s], y2: bottom, class: "dtm-grid" }, svg);
+    for (const y of [Y.TABLE_TOP, bottom]) el("line", { x1: Y.X0, y1: y, x2: Y.X1, y2: y, class: "dtm-grid" }, svg);
+    const heads = Array.from({ length: n }, (_, s) => {
+      const h = el("text", { x: (COLS[s] + COLS[s + 1]) / 2, y: Y.TABLE_TOP + MINI_HEAD / 2, class: "dtm-head" }, svg);
+      h.textContent = `${tr("stage")} ${s + 1}`;
+      return h;
+    });
+    container.dtmMini = {
+      stage,
+      set(s) {
+        band.style.transform = `translateX(${COLS[s] - COLS[0]}px)`;
+        heads.forEach((h, k) => h.classList.toggle("dtm-on", k === s));
+      },
+    };
+    container.dtmMini.set(stage);
+
+    // in a keynote: slide the highlight over from the stage of the previous slide (one listener for all the minis)
+    const R = G.Reveal;
+    if (!container.closest(".reveal") || !R || hooked) return;
+    hooked = true;
+    const hook = () => R.on("slidechanged", e => {
+      const cur = e.currentSlide.querySelector(".geores-dtm-mini"), prev = e.previousSlide && e.previousSlide.querySelector(".geores-dtm-mini");
+      if (!cur || !cur.dtmMini) return;
+      const s = cur.querySelector("svg");
+      if (prev && prev.dtmMini && !document.hidden) {
+        s.classList.add("dtm-instant");
+        cur.dtmMini.set(prev.dtmMini.stage);
+        s.getBoundingClientRect();
+        s.classList.remove("dtm-instant");
+      }
+      cur.dtmMini.set(cur.dtmMini.stage);
+    });
+    if (R.isReady && R.isReady()) hook(); else R.on("ready", hook);
   };
 })(globalThis);
 
