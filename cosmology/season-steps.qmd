@@ -1,11 +1,11 @@
 ---
 image: ../assets/thumbs/season-steps.jpg
-title: "Drawing the June solstice"
-description: "The side view of Earth at the June solstice, built in seven steps from the ecliptic to the Sun's rays."
+title: "Drawing the solstices and equinoxes"
+description: "The side view of Earth at the four points of its orbit, built in seven steps from the ecliptic to the Sun's rays."
 categories: [Cosmology]
 ---
 
-The whole drawing is shown first. Go back with ◀ to step 1, then build it again with ▶: the text under the drawing says what to draw at each step, and why. *Whole drawing* shows all the steps at once.
+Choose a point of the orbit, the March equinox, the June solstice, the September equinox or the December solstice, or *All four* to see them side by side. The whole drawing is shown first: go back with ◀ to step 1, then build it again with ▶. The text under the drawing says what to draw at each step, and why. Changing the point keeps the step, so you can compare the same step at another date.
 
 ::: {.column-page}
 {{< geores sim="season-steps" presets="season" >}}
@@ -13,15 +13,15 @@ The whole drawing is shown first. Go back with ◀ to step 1, then build it agai
 
 ## What to look for
 
-- Step 2: in which direction does the North Pole lean, and by how many degrees?
+- June solstice, step 2: in which direction does the North Pole lean, and by how many degrees? And in December?
+- *All four* at step 2: the axis seems to lean one way, then the other. Yet it keeps its direction in space all year: why does it look different on each drawing?
 - Step 4: why are the parallels drawn at right angles to the axis, and not to the ecliptic?
-- Step 6: the polar circles go through the points where the perpendicular cuts the edge of the globe. Compare the perpendicular with the limit of the night: what do you notice?
-- With the night shaded: which polar region stays in daylight all day long, and which stays in the dark?
-- Then draw the December solstice on paper: what changes, and what stays the same?
+- Step 6 at the solstices: which polar region has daylight for 24 hours, and which has night? What about the equinoxes?
+- Last step: where is the Sun overhead at noon at each of the four dates? Which season begins in each hemisphere?
 
 ## How it works
 
-Earth is drawn from the side, with the Sun on the left: the axis is tilted by 23.4° from the perpendicular to the ecliptic, the North Pole towards the Sun. The Sun's rays are drawn as parallel lines; sizes and distances are not to scale.
+Earth is drawn from the side, with the Sun on the left: the axis is tilted by 23.4° from the perpendicular to the ecliptic, the North Pole towards the Sun in June and away from it in December. At the equinoxes the axis leans sideways, towards you in March (⊙) and away from you in September (⊗), so on the drawing it is vertical. The Sun's rays are drawn as parallel lines; sizes and distances are not to scale.
 
 ## Sources
 

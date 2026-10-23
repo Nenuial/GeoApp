@@ -3796,7 +3796,7 @@
   const EPS = 23.44;
 
   // Tilt of the axis on the drawing: positive = North Pole to the right (away from the Sun).
-  // At the equinoxes the axis leans sideways (towards the viewer in March, away in September).
+  // At the equinoxes the axis leans sideways (towards the viewer in March, away in September): its ends carry ⊙ / ⊗.
   const TILT = { winter: EPS, summer: -EPS, spring: 0, autumn: 0 };
   const SIDEWAYS = { spring: "towardsYou", autumn: "awayFromYou" };
   const LINES = [
@@ -3856,7 +3856,7 @@
     if (mini) {
       tilt = "";
     } else if (tau === 0) {
-      tilt = text(cx + 16, cy - R - 40, `${tr("tilted")} ${tr(SIDEWAYS[season])}`,
+      tilt = text(cx + 26, cy - R - 40, `${tr("tilted")} ${tr(SIDEWAYS[season])}`,
         { fill: th.muted, "font-style": "italic", "font-size": 17 });
     } else {
       // the angle goes at the pole whose polar-circle label is out of the way
@@ -3867,9 +3867,21 @@
         text(tx, ty + (tau > 0 ? 0 : 14), `${R_.num(L, 23.4, 1)}°`, { "text-anchor": "end", fill: th.accent, "font-weight": 600 });
     }
     const axis = (op = 1) => `<line x1="${n1[0]}" y1="${n1[1]}" x2="${n2[0]}" y2="${n2[1]}" stroke="${th.axis}" stroke-width="4" stroke-opacity="${op}" stroke-linecap="round"/>`;
+    // At the equinoxes the axis leans towards or away from the reader: on the drawing it looks vertical, so its ends
+    // carry the signs of physics, ⊙ (coming out of the page, towards you) and ⊗ (going into it, away from you)
+    const outIn = (x, y, out) => {
+      // a white disc with a dark mark: readable on the dark axis and in both themes
+      const r = mini ? 17 : 14, ink = "#1d2433", c = `<circle cx="${x}" cy="${y}" r="${r}" fill="#ffffff" stroke="${ink}" stroke-width="2.5"/>`;
+      if (out) return c + `<circle cx="${x}" cy="${y}" r="${r1(r * 0.34)}" fill="${ink}"/>`;
+      const d = r1(r * 0.55);
+      return c + `<path d="M${x - d},${y - d} L${x + d},${y + d} M${x - d},${y + d} L${x + d},${y - d}" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+    };
+    // (between the globe and the letters N and S)
+    const [e1, e2] = [P(cx, cy, R + 30, 90), P(cx, cy, R + 30, 270)];
+    const ends = tau === 0 ? outIn(e1[0], e1[1], season === "spring") + outIn(e2[0], e2[1], season !== "spring") : "";
     const poles = `<text x="${nl[0]}" y="${r1(nl[1] + 9)}" text-anchor="middle" font-size="${mini ? 40 : 26}" font-weight="600">N</text>` +
       `<text x="${sl[0]}" y="${r1(sl[1] + 9)}" text-anchor="middle" font-size="${mini ? 40 : 26}" font-weight="600">S</text>`;
-    groups.push(tilt + axis() + poles);
+    groups.push(tilt + axis() + ends + poles);
 
     // 3. Day and night
     const tex = (name, op) => image(opts.images, name, {
@@ -17052,12 +17064,21 @@
 })(globalThis);
 
 // ---- src/sims/cosmology/season-steps.js ----
-// Sim "season-steps": the solstice / equinox drawing (diagram "season-earth"), built step by
-// step with ◀ ▶ buttons and the instruction of each step. Follows the page's light/dark theme.
+// Sim "season-steps": the solstice and equinox drawings (diagram "season-earth"), built step by step with ◀ ▶ and
+// the instruction of each step, for the four points of the orbit: the March equinox, the June solstice, the September
+// equinox and the December solstice, one at a time or all four side by side ("All four"), at the same step: what
+// changes (the tilt towards or away from the Sun, where the Sun is overhead, which polar region has day all day) and
+// what stays (the axis keeps its direction in space). Switching keeps the step. Follows the page's light/dark theme.
 //   <div class="geores" data-sim="season-steps" data-season="winter"></div>
+//   data-season: the point shown first, summer (June solstice, default), winter (December), spring (March equinox),
+//   autumn (September), or all (the four together); data-choose="false": no buttons to change the point (a page that
+//   shows one point per section)
 // The step texts come from GeoKey DF-Cosmology/3-Earth (index.qmd, .steps lists).
 (function (G) {
   const R_ = G.GeoRes, pg = R_.page;
+
+  // calendar order
+  const POINTS = ["spring", "summer", "autumn", "winter"];
 
   const STEPS = {
     en: {
@@ -17067,19 +17088,37 @@
         "Shade the <b>night</b>: the half of Earth away from the Sun.",
         "All parallels are <b>at right angles to the axis</b>. The <b>equator</b> goes through the centre, where the dashed lines cross.",
         "The <b>tropics</b> go through the points where the <b>ecliptic</b> cuts the edge of the globe.",
-        "The <b>polar circles</b> go through the points where the <b>perpendicular</b> cuts the edge.",
-        "Draw the <b>Sun's rays</b>: parallel lines. The ray along the ecliptic hits the <b>{line}</b> at a right angle: the Sun is <b>overhead</b> there at noon.",
+        "The <b>polar circles</b> go through the points where the <b>perpendicular</b> cuts the edge. {polar}",
+        "Draw the <b>Sun's rays</b>: parallel lines. The ray along the ecliptic hits the <b>{line}</b> at a right angle: the Sun is <b>overhead</b> there at noon. {seasons}",
       ],
       equinox: [
         "Draw the <b>Sun</b>, <b>Earth</b> and the <b>ecliptic</b>, with its perpendicular.",
-        "Draw the <b>axis</b>: it is still tilted by 23.4°, but <b>sideways</b> ({side}), so on the drawing it is <b>vertical</b>.",
-        "Shade the <b>night</b>: the half of Earth away from the Sun.",
+        "Draw the <b>axis</b>: it is still tilted by 23.4°, but <b>sideways</b> ({side}: the North Pole is marked {mark}), so on the drawing it is <b>vertical</b>.",
+        "Shade the <b>night</b>: the half of Earth away from the Sun. The boundary goes through <b>both poles</b>: 12 hours of day everywhere.",
         "Draw the <b>equator</b>, at right angles to the axis.",
         "Add the <b>tropics</b> (23.4° N and S).",
-        "Add the <b>polar circles</b> (66.6° N and S).",
-        "Draw the <b>Sun's rays</b>. The ray along the ecliptic hits the <b>equator</b> at a right angle: the Sun is <b>overhead</b> there.",
+        "Add the <b>polar circles</b> (66.6° N and S). {polar}",
+        "Draw the <b>Sun's rays</b>. The ray along the ecliptic hits the <b>equator</b> at a right angle: the Sun is <b>overhead</b> there. {seasons}",
       ],
       towards: "towards the Sun", away: "away from the Sun",
+      out: "⊙ (towards you)", in: "⊗ (away from you)",
+      polar: {
+        summer: "North of the Arctic Circle it is <b>day for 24 hours</b>; south of the Antarctic Circle, <b>night for 24 hours</b>.",
+        winter: "North of the Arctic Circle it is <b>night for 24 hours</b>; south of the Antarctic Circle, <b>day for 24 hours</b>.",
+        spring: "No region has day or night for 24 hours.", autumn: "No region has day or night for 24 hours.",
+      },
+      seasons: {
+        summer: "<b>Summer</b> begins in the northern hemisphere, <b>winter</b> in the southern.",
+        winter: "<b>Winter</b> begins in the northern hemisphere, <b>summer</b> in the southern.",
+        spring: "<b>Spring</b> begins in the northern hemisphere, <b>autumn</b> in the southern.",
+        autumn: "<b>Autumn</b> begins in the northern hemisphere, <b>spring</b> in the southern.",
+      },
+      names: { spring: "March equinox", summer: "June solstice", autumn: "September equinox", winter: "December solstice" },
+      dates: { spring: "20 March", summer: "21 June", autumn: "23 September", winter: "21 December" },
+      four: "All four", fourText: "<b>Solstices:</b> {s}<br><b>Equinoxes:</b> {e}",
+      both: { pole: "towards the Sun in June, away from it in December", line: "Tropic of Cancer in June, of Capricorn in December",
+        side: "towards you in March, away from you in September", mark: "⊙ in March, ⊗ in September" },
+      fourAxis: "On every drawing the Sun is on the left: we look at Earth from a different side each time. In space the axis <b>always points the same way</b> (towards the Pole Star): what changes is where Earth is on its orbit.",
       step: "Step {i} of {n}", all: "Whole drawing", prev: "Previous step", next: "Next step",
     },
     fr: {
@@ -17089,41 +17128,70 @@
         "Ombrer la <b>nuit</b> : la moitié de la Terre opposée au Soleil.",
         "Tous les parallèles sont <b>perpendiculaires à l'axe</b>. L'<b>équateur</b> passe par le centre, là où les traitillés se croisent.",
         "Les <b>tropiques</b> passent par les points où l'<b>écliptique</b> coupe le bord du globe.",
-        "Les <b>cercles polaires</b> passent par les points où la <b>perpendiculaire</b> coupe le bord.",
-        "Tracer les <b>rayons du Soleil</b> : des lignes parallèles. Le rayon le long de l'écliptique frappe le <b>{line}</b> à angle droit : le Soleil y est <b>au zénith</b> à midi.",
+        "Les <b>cercles polaires</b> passent par les points où la <b>perpendiculaire</b> coupe le bord. {polar}",
+        "Tracer les <b>rayons du Soleil</b> : des lignes parallèles. Le rayon le long de l'écliptique frappe le <b>{line}</b> à angle droit : le Soleil y est <b>au zénith</b> à midi. {seasons}",
       ],
       equinox: [
         "Dessiner le <b>Soleil</b>, la <b>Terre</b> et l'<b>écliptique</b>, avec sa perpendiculaire.",
-        "Tracer l'<b>axe</b> : il est toujours incliné de 23,4°, mais <b>de côté</b> ({side}), donc <b>vertical</b> sur le dessin.",
-        "Ombrer la <b>nuit</b> : la moitié de la Terre opposée au Soleil.",
+        "Tracer l'<b>axe</b> : il est toujours incliné de 23,4°, mais <b>de côté</b> ({side} : le pôle Nord est marqué {mark}), donc <b>vertical</b> sur le dessin.",
+        "Ombrer la <b>nuit</b> : la moitié de la Terre opposée au Soleil. La limite passe par <b>les deux pôles</b> : 12 heures de jour partout.",
         "Tracer l'<b>équateur</b>, perpendiculaire à l'axe.",
         "Ajouter les <b>tropiques</b> (23,4° N et S).",
-        "Ajouter les <b>cercles polaires</b> (66,6° N et S).",
-        "Tracer les <b>rayons du Soleil</b>. Le rayon le long de l'écliptique frappe l'<b>équateur</b> à angle droit : le Soleil y est <b>au zénith</b>.",
+        "Ajouter les <b>cercles polaires</b> (66,6° N et S). {polar}",
+        "Tracer les <b>rayons du Soleil</b>. Le rayon le long de l'écliptique frappe l'<b>équateur</b> à angle droit : le Soleil y est <b>au zénith</b>. {seasons}",
       ],
       towards: "vers le Soleil", away: "à l'opposé du Soleil",
+      out: "⊙ (vers vous)", in: "⊗ (loin de vous)",
+      polar: {
+        summer: "Au nord du cercle polaire arctique, il fait <b>jour 24 heures</b> ; au sud du cercle polaire antarctique, <b>nuit 24 heures</b>.",
+        winter: "Au nord du cercle polaire arctique, il fait <b>nuit 24 heures</b> ; au sud du cercle polaire antarctique, <b>jour 24 heures</b>.",
+        spring: "Aucune région n'a 24 heures de jour ou de nuit.", autumn: "Aucune région n'a 24 heures de jour ou de nuit.",
+      },
+      seasons: {
+        summer: "L'<b>été</b> commence dans l'hémisphère Nord, l'<b>hiver</b> dans l'hémisphère Sud.",
+        winter: "L'<b>hiver</b> commence dans l'hémisphère Nord, l'<b>été</b> dans l'hémisphère Sud.",
+        spring: "Le <b>printemps</b> commence dans l'hémisphère Nord, l'<b>automne</b> dans l'hémisphère Sud.",
+        autumn: "L'<b>automne</b> commence dans l'hémisphère Nord, le <b>printemps</b> dans l'hémisphère Sud.",
+      },
+      names: { spring: "Équinoxe de mars", summer: "Solstice de juin", autumn: "Équinoxe de septembre", winter: "Solstice de décembre" },
+      dates: { spring: "20 mars", summer: "21 juin", autumn: "23 septembre", winter: "21 décembre" },
+      four: "Les quatre", fourText: "<b>Solstices :</b> {s}<br><b>Équinoxes :</b> {e}",
+      both: { pole: "vers le Soleil en juin, à l'opposé en décembre", line: "tropique du Cancer en juin, du Capricorne en décembre",
+        side: "vers vous en mars, loin de vous en septembre", mark: "⊙ en mars, ⊗ en septembre" },
+      fourAxis: "Sur chaque dessin, le Soleil est à gauche : on regarde la Terre d'un côté différent à chaque fois. Dans l'espace, l'axe <b>garde toujours la même direction</b> (vers l'étoile Polaire) : ce qui change, c'est la place de la Terre sur son orbite.",
       step: "Étape {i} sur {n}", all: "Dessin complet", prev: "Étape précédente", next: "Étape suivante",
     },
   };
 
   R_.sims["season-steps"] = function (container, opts = {}) {
-    const L = R_.lang(opts.lang), S = STEPS[L];
-    const season = opts.season || "summer";
-    const equinox = season === "spring" || season === "autumn";
-    const texts = (equinox ? S.equinox : S.solstice).map(s => s
-      .replace("{pole}", season === "summer" ? S.towards : S.away)
-      .replace("{line}", R_.t(L, season === "summer" ? "cancer" : "capricorn"))
-      .replace("{side}", R_.t(L, season === "spring" ? "towardsYou" : "awayFromYou")));
-    const n = texts.length;
+    const L = R_.lang(opts.lang), S = STEPS[L], ty = s => R_.typo(L, s);
+    const equinox = p => p === "spring" || p === "autumn";
+    // the step texts of a point, or of both solstices / both equinoxes ("solstices", "equinoxes": the four together,
+    // without the sentences about one point); the strings of this file are not added with addStrings: typography here
+    const texts = p => {
+      const both = p === "solstices" || p === "equinoxes";
+      return (equinox(p) || p === "equinoxes" ? S.equinox : S.solstice).map(s => ty(s
+        .replace("{pole}", both ? S.both.pole : p === "summer" ? S.towards : S.away)
+        .replace("{line}", both ? S.both.line : R_.t(L, p === "summer" ? "cancer" : "capricorn"))
+        .replace("{side}", both ? S.both.side : R_.t(L, p === "spring" ? "towardsYou" : "awayFromYou"))
+        .replace("{mark}", both ? S.both.mark : p === "spring" ? S.out : S.in)
+        .replace(" {polar}", both ? "" : " " + S.polar[p]).replace(" {seasons}", both ? "" : " " + S.seasons[p])));
+    };
+    const n = S.solstice.length;
+    let point = opts.season === "all" || POINTS.includes(opts.season) ? opts.season : "summer";
     let k = n;   // number of steps shown: the whole drawing first
+    const choose = opts.choose !== "false" && opts.choose !== false;
 
     container.classList.add("geores-steps");
     const figure = document.createElement("div");
     figure.className = "geores-steps-figure";
     container.appendChild(figure);
-    const panel = pg.controls(container, `
+    // the points on a row of their own, the steps on the next: ◀ and ▶ always together
+    const chooser = choose ? POINTS.map(p => `<button class="pt" data-p="${p}">${S.names[p]}</button>`).join("") +
+      `<button class="pt" data-p="all">${S.four}</button><span class="geores-break"></span>` : "";
+    const panel = pg.controls(container, `${chooser}
       <button class="prev" aria-label="${S.prev}">◀</button>
-      <span class="rate count"></span>
+      <span class="rate count" style="min-width: 6.4em"></span>
       <button class="next" aria-label="${S.next}">▶</button>
       <button class="all">${S.all}</button>`);
     const caption = document.createElement("p");
@@ -17131,10 +17199,15 @@
     caption.setAttribute("aria-live", "polite");
     container.appendChild(caption);
 
+    const drawing = p => R_.diagrams["season-earth"]({ season: p, lang: L, theme: pg.markTheme(container), images: R_.images || {} });
     function draw() {
-      figure.innerHTML = R_.diagrams["season-earth"]({
-        season, lang: L, theme: pg.markTheme(container), images: R_.images || {},
-      });
+      // the four: the whole width of the figure (the drawing of one point keeps its 640 px)
+      container.classList.toggle("geores-wide", point === "all");
+      if (point === "all") {
+        // the four in calendar order, two by two, each with its date and name
+        figure.innerHTML = `<div class="geores-four">${POINTS.map(p =>
+          `<div><div style="font-weight: 600; margin: 0.2rem 0 -0.4rem">${ty(`${S.dates[p]} · ${S.names[p]}`)}</div>${drawing(p)}</div>`).join("")}</div>`;
+      } else figure.innerHTML = drawing(point);
       show();
     }
     function show() {
@@ -17144,13 +17217,19 @@
         g.style.transition = "opacity .35s";
       });
       panel.querySelector(".count").textContent = S.step.replace("{i}", k).replace("{n}", n);
-      caption.innerHTML = `<b>${k}.</b> ${texts[k - 1]}`;
+      // all four: the solstice and the equinox instruction (without the sentences of one point)
+      caption.innerHTML = `<b>${k}.</b> ` + (point === "all"
+        ? ty(S.fourText).replace("{s}", texts("solstices")[k - 1]).replace("{e}", texts("equinoxes")[k - 1]) + (k === 2 ? "<br>" + ty(S.fourAxis) : "")
+        : texts(point)[k - 1]);
       panel.querySelector(".prev").disabled = k <= 1;
       panel.querySelector(".next").disabled = k >= n;
+      panel.querySelectorAll(".pt").forEach(b => b.setAttribute("aria-pressed", b.dataset.p === point ? "true" : "false"));
     }
     panel.querySelector(".prev").addEventListener("click", () => { k = Math.max(1, k - 1); show(); });
     panel.querySelector(".next").addEventListener("click", () => { k = Math.min(n, k + 1); show(); });
     panel.querySelector(".all").addEventListener("click", () => { k = n; show(); });
+    // another point: the same step
+    panel.querySelectorAll(".pt").forEach(b => b.addEventListener("click", () => { point = b.dataset.p; draw(); }));
     draw();
     pg.onThemeChange(draw);
   };

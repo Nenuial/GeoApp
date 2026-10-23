@@ -1125,12 +1125,17 @@
    "name": "season-steps",
    "field": "cosmology",
    "file": "src/sims/cosmology/season-steps.js",
-   "description": "the solstice / equinox drawing (diagram \"season-earth\"), built step by step with ◀ ▶ buttons and the instruction of each step. Follows the page's light/dark theme.",
+   "description": "the solstice and equinox drawings (diagram \"season-earth\"), built step by step with ◀ ▶ and the instruction of each step, for the four points of the orbit: the March equinox, the June solstice, the September equinox and the December solstice, one at a time or all four side by side (\"All four\"), at the same step: what changes (the tilt towards or away from the Sun, where the Sun is overhead, which polar region has day all day) and what stays (the axis keeps its direction in space). Switching keeps the step. Follows the page's light/dark theme.",
    "options": [
     {
      "option": "data-season",
-     "example": "winter",
-     "doc": null
+     "example": null,
+     "doc": "the point shown first, summer (June solstice, default), winter (December), spring (March equinox), autumn (September), or all (the four together)"
+    },
+    {
+     "option": "data-choose",
+     "example": "false",
+     "doc": "no buttons to change the point (a page that shows one point per section)"
     }
    ],
    "bundles": [],
