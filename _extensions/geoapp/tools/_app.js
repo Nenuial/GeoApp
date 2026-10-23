@@ -51,7 +51,7 @@
     // A tooltip in the GeoRes style (.geores-tip), following the pointer
     tip(container) {
       const box = document.createElement("div");
-      box.className = "geores-tip";
+      box.className = "geores-tip app-tip";
       box.hidden = true;
       document.body.appendChild(box);
       return {

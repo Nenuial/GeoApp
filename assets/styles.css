@@ -302,6 +302,10 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
   fill: var(--geores-fg);
   fill-opacity: 0.08;
 }
+/* The tooltips of GeoApp's tools hang on the body: above the full-screen view (.geores-expanded, z-index 2000) */
+.geores-tip.app-tip {
+  z-index: 2010;
+}
 .app-message {
   padding: 3rem 1rem;
   text-align: center;

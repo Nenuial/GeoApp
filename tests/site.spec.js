@@ -259,6 +259,25 @@ test.describe("swiss votes", () => {
     await expect(page).toHaveURL(/view=cartogram/);
     await expect(page.locator(".app-votes .geores[data-mounted], .app-votes .geores canvas, .app-votes .geores svg").first()).toBeVisible();
   });
+
+  test("the map's tooltip shows in full screen", async ({ page }) => {
+    await page.goto(`${url}?d=1991-06-02&lvl=cantons`);
+    await expect(page.locator(".app-head")).toBeVisible();
+    await page.locator(".app-toolbar button").first().click();
+    await expect(page.locator(".geores.geores-expanded")).toBeVisible();
+    const canton = page.locator(".app-lvl-cantons path").nth(1);
+    await canton.hover({ force: true });
+    const tip = page.locator(".geores-tip.app-tip");
+    await expect(tip).toBeVisible();
+    // the tooltip lets the pointer through: catch it for a moment to see what is on top at its centre
+    const onTop = await tip.evaluate(t => {
+      t.style.pointerEvents = "auto";
+      const r = t.getBoundingClientRect(), hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      t.style.pointerEvents = "";
+      return t.contains(hit);
+    });
+    expect(onTop, "the tooltip is hidden behind the full-screen view").toBe(true);
+  });
 });
 
 // Every link of every page that stays on the site answers 200 (navbar, listings, text, language links)
