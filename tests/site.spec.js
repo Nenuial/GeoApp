@@ -137,6 +137,21 @@ test.describe("pyramids", () => {
     await expect(page.locator(".app-svg path.app-outline")).toHaveCount(2);
   });
 
+  test("a click follows a generation through the years, a second click stops", async ({ page }) => {
+    await page.goto(`${url}?c=CHE&y=1990`);
+    await expect(page.locator(".app-svg rect.app-men")).toHaveCount(101);
+    // force: the click goes to the transparent layer over the bars, as a pointer's does
+    await page.locator(".app-svg rect.app-men").nth(40).click({ force: true });
+    await expect(page).toHaveURL(/b=1950/);
+    await expect(page.locator(".app-svg rect.app-cohort")).toHaveCount(2);
+    await page.goto(`${url}?c=CHE&y=2010&b=1950`);
+    await expect(page.locator(".app-svg .app-cohort-text", { hasText: /^60$/ })).toHaveCount(1);     // its age
+    await expect(page.locator(".app-svg .app-cohort-text", { hasText: /^1950$/ })).toHaveCount(1);   // its year of birth
+    await page.locator(".app-svg rect.app-cohort").first().click({ force: true });
+    await expect(page.locator(".app-svg rect.app-cohort")).toHaveCount(0);
+    await expect(page).not.toHaveURL(/b=/);
+  });
+
   test("play moves the years on", async ({ page }) => {
     await page.goto(`${url}?y=1950`);
     await page.locator(".app-pyramids button.play").click();

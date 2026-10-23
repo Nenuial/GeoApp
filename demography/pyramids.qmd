@@ -5,15 +5,15 @@ description: "The age pyramid of every country, the World and the continents, ye
 categories: [Demography, Data]
 ---
 
-Choose a place and a year, or press *Play* to watch the generations move up the pyramid. Each bar is one year of age; the years of birth are on the right. Tick *5-year groups (%)* to compare the shapes of places of very different sizes, and use *Compare with* to draw the outline of another year or another place.
+Choose a place and a year, or press *Play* to watch the generations move up the pyramid. Each bar is one year of age; the years of birth are on the right. Click a bar to follow that generation as the years change (click it again to stop). Tick *5-year groups (%)* to compare the shapes of places of very different sizes, and use *Compare with* to draw the outline of another year or another place.
 
 ::: {.column-page}
-{{< app tool="pyramids" presets="c,y,rel,cmp" >}}
+{{< app tool="pyramids" presets="c,y,rel,cmp,b" >}}
 :::
 
 ## What to look for
 
-- Play the years for a country you know: find a hollow or a bulge and follow it up the pyramid. When were these people born, and what happened then?
+- Play the years for a country you know: find a hollow or a bulge, click it and follow it up the pyramid. When were these people born, and what happened then?
 - Compare Niger and Japan in the same year with *5-year groups (%)*: what share of the population is under 15, and over 65, in each?
 - Compare a country with itself in 1950 and 2050: in which stage of the demographic transition is it at each date?
 - Above 70 or 80 years, which bars are longer, men's or women's? Is it so everywhere?
@@ -21,7 +21,7 @@ Choose a place and a year, or press *Play* to watch the generations move up the 
 
 ## How it works
 
-The bars are the population on 1 July of each year by single year of age (0 to 99, then 100 and over) and sex, as estimated by the United Nations up to 2023 and projected from 2024 (medium variant). The axis stays the same while the years play, so that growth and decline show. An outline of another place is scaled to the same total population, so that only the shapes are compared. The median age splits the population into two halves.
+The bars are the population on 1 July of each year by single year of age (0 to 99, then 100 and over) and sex, as estimated by the United Nations up to 2023 and projected from 2024 (medium variant). The axis stays the same while the years play, so that growth and decline show. An outline of another place is scaled to the same total population, so that only the shapes are compared. The median age splits the population into two halves. A generation followed is the people of one age in the year of the click: born in the twelve months before 1 July of the year shown on the right.
 
 ## Sources
 

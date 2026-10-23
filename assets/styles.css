@@ -283,6 +283,15 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
 .app-svg .app-projected rect {
   fill-opacity: 0.6;
 }
+/* Pyramids: the generation followed, in the accent of the sims (navy, gold in dark), as GeoResources' russia-pyramid */
+.app-svg rect.app-cohort {
+  fill: var(--geores-accent);
+  fill-opacity: 1;
+}
+.app-svg .app-cohort-text {
+  fill: var(--geores-accent);
+  font-weight: 700;
+}
 .app-svg .app-outline {
   fill: none;
   stroke: var(--geores-fg);

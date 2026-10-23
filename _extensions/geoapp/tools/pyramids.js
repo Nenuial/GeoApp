@@ -1,11 +1,14 @@
 // Tool "pyramids": the age pyramid of any country, the World or a continent, 1950–2100 (UN World Population
 // Prospects 2024; projections from 2024, medium variant). One bar per year of age (0–99, 100+), or 5-year groups in %
 // of the population; the years of birth beside the ages; play the years; compare with the outline of another year
-// or another place (another place at the same total population, so that the shapes compare).
+// or another place (another place at the same total population, so that the shapes compare). A click on a bar follows
+// that generation (its bars in the accent colour) while the years change; a click on it again stops. As GeoResources'
+// russia-pyramid (geokey): same mark, its strings rpyClick and rpyCohort.
 //
-//   {{< app tool="pyramids" presets="c,y,rel,cmp" >}}
+//   {{< app tool="pyramids" presets="c,y,rel,cmp,b" >}}
 //   data-c: place (ISO3 code, or WORLD AFRICA ASIA EUROPE LATAM NORTHAM OCEANIA), default CHE;  data-y: year (2024);
-//   data-rel="1": 5-year groups in %;  data-cmp: outline of a year ("1950") or of a place ("IND")
+//   data-rel="1": 5-year groups in %;  data-cmp: outline of a year ("1950") or of a place ("IND");
+//   data-b: the year of birth of a generation followed ("1946")
 // Data: /data/wpp/places.json, /data/wpp/pyramids/<code>.json (data-raw/wpp.R).
 (function (G) {
   const R_ = G.GeoRes, pg = R_.page, A = () => R_.app;
@@ -18,6 +21,8 @@
       pyAge: "age", pyBorn: "born", pyBornIn: "born in", pyMedian: "median age", pyProjection: "projection",
       pyScaled: "outline: {p} {y}, at the same total population", pyOutline: "outline: {p} {y}",
       pyInhab: "inhabitants", pySource: "UN, World Population Prospects 2024", pyOfPop: "of the population",
+      pyUnfollow: "click: stop following",
+      pyAged: "aged {a}", pyUnborn: "not born yet",
     },
     fr: {
       pyPlace: "Lieu", pyYear: "Année", pyPlay: "Lecture", pyPause: "Pause", pyRel: "Groupes de 5 ans (%)",
@@ -26,6 +31,8 @@
       pyAge: "âge", pyBorn: "nés en", pyBornIn: "nés en", pyMedian: "âge médian", pyProjection: "projection",
       pyScaled: "contour : {p} {y}, à population totale égale", pyOutline: "contour : {p} {y}",
       pyInhab: "habitants", pySource: "ONU, World Population Prospects 2024", pyOfPop: "de la population",
+      pyUnfollow: "clic : ne plus la suivre",
+      pyAged: "{a} ans", pyUnborn: "pas encore nés",
     },
   });
 
@@ -41,9 +48,9 @@
 
     const state = {
       code: (opts.c || "CHE").toUpperCase(), year: +opts.y || 2024, rel: opts.rel === "1",
-      cmp: (opts.cmp || "").toUpperCase(),
+      cmp: (opts.cmp || "").toUpperCase(), born: /^\d{4}$/.test(opts.b || "") ? +opts.b : null,
     };
-    let places = [], byCode = {}, pyr = null, cmpPyr = null, playing = null, hover = null, meta = null;
+    let places = [], byCode = {}, pyr = null, cmpPyr = null, playing = null, hover = null, meta = null, geom = null;
     const tip = A().tip(container);
 
     const panel = pg.controls(container, `
@@ -98,7 +105,7 @@
       yearOut.textContent = state.year;
       relIn.checked = state.rel;
       cmpSel.value = state.cmp;
-      A().setUrl({ c: state.code, y: state.year, rel: state.rel ? "1" : "", cmp: state.cmp });
+      A().setUrl({ c: state.code, y: state.year, rel: state.rel ? "1" : "", cmp: state.cmp, b: state.born ?? "" });
     }
 
     // Men and women of a year: single years (101 values) or 5-year groups in % (21 values: 0–4 … 95–99, 100+)
@@ -134,6 +141,15 @@
       }
       return 100;
     }
+    // Row of the generation followed this year (null before its birth); its age
+    function cohortRow(n) {
+      if (state.born === null || state.year < state.born) return null;
+      const age = state.year - state.born;
+      return state.rel ? Math.min(20, Math.floor(age / 5)) : Math.min(100, age);
+    }
+    // Year of birth followed after a click on row k (5-year groups: the middle of the group)
+    const bornOf = k => state.year - (state.rel ? Math.min(100, k * 5 + 2) : k);
+
     // Round axis steps: 1, 2, 2.5 or 5 × 10^n, about 3 ticks a side (2 on a phone)
     function step(max, ticks) {
       const raw = max / ticks, p = Math.pow(10, Math.floor(Math.log10(raw)));
@@ -189,6 +205,13 @@
         const t = el("text", { x: W - 4, y: small ? 22 : 26, "text-anchor": "end", class: "app-badge" }, svg);
         t.textContent = `${tr("pyProjection")}`;
       }
+      // The generation followed: its year of birth and age (wide screens; on phones its row labels say it)
+      const ck = cohortRow(n);
+      if (state.born !== null && !small) {
+        const age = state.year - state.born;
+        el("text", { x: W - 4, y: 48, "text-anchor": "end", class: "app-cohort-text" }, svg).textContent =
+          `${tr("rpyCohort").replace("{y}", state.born)} · ${age < 0 ? tr("pyUnborn") : tr("pyAged").replace("{a}", age)}`;
+      }
       el("text", { x: x0 - 4, y: top - 8, "text-anchor": "end", class: "app-men-text" }, svg).textContent = tr("pyMen");
       el("text", { x: x1 + 4, y: top - 8, class: "app-women-text" }, svg).textContent = tr("pyWomen");
 
@@ -208,8 +231,9 @@
       const bars = el("g", { class: proj ? "app-projected" : null }, svg);
       for (let k = 0; k < n; k++) {
         const y = yOf(k) + gap / 2, h = Math.max(0.5, rowH - gap);
-        el("rect", { x: x0 - r.m[k] * sx, y, width: r.m[k] * sx, height: h, class: "app-men" }, bars);
-        el("rect", { x: x1, y, width: r.f[k] * sx, height: h, class: "app-women" }, bars);
+        const c = k === ck ? " app-cohort" : "";
+        el("rect", { x: x0 - r.m[k] * sx, y, width: r.m[k] * sx, height: h, class: "app-men" + c }, bars);
+        el("rect", { x: x1, y, width: r.f[k] * sx, height: h, class: "app-women" + c }, bars);
       }
 
       // Outline of the comparison
@@ -227,13 +251,16 @@
         el("text", { x: left, y: small ? H - 26 : H - 8, class: "app-muted" }, svg).textContent = `— ${cmpLabel}`;
       }
 
-      // Ages in the middle, years of birth on the right (single years only)
+      // Ages in the middle, years of birth on the right (single years only); the row of the generation followed in
+      // the accent colour, in place of the labels it would overlap
       const ageStep = state.rel ? 2 : 10;   // in rows
-      for (let k = 0; k < n; k += ageStep) {
+      const label = (k, cls) => {
         const age = state.rel ? k * 5 : k, y = yOf(k) + rowH / 2 + fs * 0.35;
-        el("text", { x: (x0 + x1) / 2, y, "text-anchor": "middle", class: "app-muted" }, svg).textContent = age;
-        if (!state.rel) el("text", { x: W - 2, y, "text-anchor": "end", class: "app-muted" }, svg).textContent = state.year - age;
-      }
+        el("text", { x: (x0 + x1) / 2, y, "text-anchor": "middle", class: cls }, svg).textContent = age === 100 && k === ck ? "100+" : age;
+        if (!state.rel) el("text", { x: W - 2, y, "text-anchor": "end", class: cls }, svg).textContent = k === ck ? state.born : state.year - age;
+      };
+      for (let k = 0; k < n; k += ageStep) if (ck === null || Math.abs(k - ck) * rowH >= fs * 1.1) label(k, "app-muted");
+      if (ck !== null) label(ck, "app-cohort-text");
       el("text", { x: (x0 + x1) / 2, y: top - 8, "text-anchor": "middle", class: "app-muted app-small" }, svg).textContent = tr("pyAge");
       if (!state.rel) el("text", { x: W - 2, y: top - 8, "text-anchor": "end", class: "app-muted app-small" }, svg).textContent = tr("pyBorn");
       el("text", { x: W - 2, y: H - 8, "text-anchor": "end", class: "app-muted app-small" }, svg).textContent = tr("pySource");
@@ -258,14 +285,26 @@
         const v = x => (state.rel ? `${R_.num(L, x, 2)} %` : int(L, x));
         tip.show(`<div class="geores-tip-head">${tr("pyAge")} ${age} · ${tr("pyBornIn")} ${born}</div>` +
           `<span class="app-men-text">■</span> ${tr("pyMen")} ${v(r.m[k])}<br>` +
-          `<span class="app-women-text">■</span> ${tr("pyWomen")} ${v(r.f[k])}`, e);
+          `<span class="app-women-text">■</span> ${tr("pyWomen")} ${v(r.f[k])}<br>` +
+          `<span class="app-muted">${tr(k === ck ? "pyUnfollow" : "rpyClick")}</span>`, e);
       };
       overlay.addEventListener("pointermove", show);
       overlay.addEventListener("pointerdown", show);
       overlay.addEventListener("pointerleave", () => { hover = null; tip.hide(); draw(); });
 
       host.replaceChildren(svg);
+      geom = { rowAt, ck };
     }
+
+    // A click on a row follows its generation, a click on the generation followed stops (on the host: a click
+    // redraws the svg between pointerdown and click)
+    host.addEventListener("click", e => {
+      const k = geom && geom.rowAt(e);
+      if (k === null || k === undefined) return;
+      state.born = k === geom.ck ? null : bornOf(k);
+      sync();
+      draw();
+    });
 
     function stop() {
       clearInterval(playing);
