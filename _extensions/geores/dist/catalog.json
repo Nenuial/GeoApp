@@ -61,6 +61,21 @@
    "images": []
   },
   {
+   "name": "altitude-belts",
+   "field": "climatology",
+   "file": "src/sims/climatology/altitude-belts.js",
+   "description": "Humboldt's mountain. The vegetation belts, the tree line and the snow line on a mountain at the chosen latitude, with the mean temperature by altitude (−6.5 °C per 1 000 m): towards the poles the belts slide down, as they do going up the mountain. Values are approximate (they also depend on rain and on the side of the mountain): tree and snow lines from about 3 800 / 4 900 m on Chimborazo to 2 000 / 2 900 m in the Alps and 900 / 1 450 m in southern Norway (62° N; birch tree line, equilibrium line of the maritime glaciers such as Jostedalsbreen), 400 / 900 m at 70° N. Follows the page's light/dark theme for its text.",
+   "options": [
+    {
+     "option": "data-lat",
+     "example": null,
+     "doc": "latitude at the start, 0 to 70 (default 1: Chimborazo)"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
    "name": "arctic-routes",
    "field": "geopolitics",
    "file": "src/sims/geopolitics/arctic-routes.js",
@@ -1363,7 +1378,7 @@
    "name": "sun-future",
    "field": "cosmology",
    "file": "src/sims/cosmology/sun-future.js",
-   "description": "the Sun's future, from today to a red giant, a planetary nebula and a white dwarf. The inner planets' orbits to scale (they widen as the Sun loses mass; Mercury and Venus are swallowed), the Sun's size next to today's, its track on a small Hertzsprung–Russell diagram, and a timeline (not to scale) to drag or play. Model values after Sackmann et al. (1993) and Schröder & Smith (2008). Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, sunlife()). Uses GeoRes.stars from hr-diagram.js.",
+   "description": "the Sun's future, from today to a red giant, a planetary nebula and a white dwarf. The inner planets' orbits to scale (they widen as the Sun loses mass; Mercury and Venus are swallowed), the Sun's size next to today's, its track on a small Hertzsprung–Russell diagram, and a timeline (not to scale) to drag or play. Model values after Sackmann et al. (1993) and Schröder & Smith (2008); the planetary nebula shines for about 20 000 years (Jacob, Schönberner & Steffen 2013); the white dwarf (0.54 Sun) cools as the Montréal models of a 0.6 Sun white dwarf: 0.25 L☉ after 5 million years, 0.004 after 300 million, 0.0007 after 1 billion, 0.00007 after 7.7 billion (Bergeron et al.; Montréal White Dwarf Database). Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, sunlife()). Uses GeoRes.stars from hr-diagram.js.",
    "options": [
     {
      "option": "data-age",

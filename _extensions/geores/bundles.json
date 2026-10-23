@@ -39,6 +39,7 @@
   },
   "images": {
     "swiss-grid": [["bernmap", "jpg"]],
+    "atmosphere-skin": [["earthdisc", "png"]],
     "map-scales": [["nemap17", "jpg"], ["nemap15", "jpg"], ["nemap13", "jpg"], ["nemap11", "jpg"]]
   }
 }

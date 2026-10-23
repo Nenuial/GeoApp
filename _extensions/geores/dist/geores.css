@@ -127,6 +127,10 @@
 .geores:not(.reveal .geores) .geores-controls input[type="range"] {
   width: clamp(4rem, 11cqw, 9rem);
 }
+/* sun-angle: two sliders, two readouts and four buttons on one row, also with a 20 px root font in a 990 px box */
+.geores[data-sim="sun-angle"]:not(.reveal .geores) .geores-controls input[type="range"] {
+  width: clamp(3.5rem, 7.5cqw, 9rem);
+}
 
 /* a year shown next to its slider: four digits, not the room of a rate (keeps the controls on one line) */
 .reveal .sim-controls .rate.year {
@@ -444,6 +448,14 @@
   left: auto;
   right: 0;
   max-width: 380px;
+}
+
+/* altitude-belts in a keynote's .sim box: the controls below the drawing, clear of the temperatures at sea level */
+.reveal .sim [data-sim="altitude-belts"] .sim-controls {
+  position: static;
+  max-width: none;
+  margin-top: 4px;
+  padding: 6px 14px;
 }
 
 /* Geology sims in a keynote's .sim box: on the slide's background, in the palette's colours (_geology.js) */

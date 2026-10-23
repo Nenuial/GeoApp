@@ -79,7 +79,11 @@ local function add_bundles(sim, diagram, get)
       if ok then quarto.doc.add_html_dependency({ name = "geores-" .. id, version = "1.0.0", scripts = { "dist/" .. b.script } }) end
     end
   end
-  for _, img in ipairs(sim and BUNDLES.images[sim] or {}) do
+  -- large pictures of one figure (sim or diagram)
+  local own = {}
+  for _, img in ipairs(sim and BUNDLES.images[sim] or {}) do table.insert(own, img) end
+  for _, img in ipairs(diagram and BUNDLES.images[diagram] or {}) do table.insert(own, img) end
+  for _, img in ipairs(own) do
     quarto.doc.add_html_dependency({ name = "geores-" .. img[1], version = "1.0.0", scripts = { "dist/" .. img[1] .. ".js" },
       resources = { { name = img[1] .. "." .. img[2], path = "dist/" .. img[1] .. "." .. img[2] } } })
   end

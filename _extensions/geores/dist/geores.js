@@ -155,6 +155,9 @@
   // in French also the space before ; : ! ? » and after «, between a number (or a {placeholder}) and its unit, and
   // between the groups of digits of a number (1 568 032). Applied to the strings when they are added (texts, lists
   // and the texts that functions return); GeoRes.typo(lang, s) for a text put together in the code.
+  // In French, a ; : ! ? written straight after a word ("nord: printemps", from a template built the English way)
+  // gets its space; only in the text, outside HTML tags (style="min-width: 6em" stays), and only when a space or the
+  // end follows (12:00, https:// and ?embed stay). Canvas text (ctxText) and the controls go through it too.
   const NB = "\u00a0";
   const UNIT = "(?:%|‰|°C|°|km²|km³|km|m²|m³|m|cm|mm|kg|g/kg|g|t|Mt|Gt|h|min|s|ha|ppm|hPa|mm/j|W/m²|CHF|€|\\$|millions?|milliards?)(?![\\p{L}\\d])";
   const RE_UNIT = new RegExp(`(\\d|\\}) (?=${UNIT})`, "gu");
@@ -162,6 +165,7 @@
     if (typeof s !== "string") return s;
     s = s.replace(/(\d|\}) (?=[%‰])/g, "$1" + NB);
     if (lang(l) !== "fr") return s;
+    s = s.replace(/(<\/?[a-zA-Z][^>]*>)|([^<]+)/g, (m, tag, t) => tag || t.replace(/(?<=[\p{L}\d)\]}"'*])([;:!?])(?=\s|$)/gu, NB + "$1"));
     return s.replace(/ (?=[;:!?»])/g, NB).replace(/« /g, "«" + NB).replace(RE_UNIT, "$1" + NB)
       .replace(/(?<!\d)\d{1,3}(?: \d{3})+(?!\d)/g, m => m.replace(/ /g, NB));
   }
@@ -277,6 +281,11 @@
     panel.className = "geores-controls";
     panel.innerHTML = html;
     container.appendChild(panel);
+    // French typography for labels written in the code ("Région: <select>"): the text only, not the attributes
+    if (pageLang(container) === "fr") {
+      const walk = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT);
+      for (let n = walk.nextNode(); n; n = walk.nextNode()) n.nodeValue = typo("fr", n.nodeValue);
+    }
     // A button whose label changes (▶ Play / ❚❚ Pause) gives its other label in data-alt: it is as wide as the wider
     // of the two from the start, so that nothing after it moves (measured with the button's font, in em, so that it
     // also works on a slide that is hidden while the sim starts)
@@ -336,6 +345,10 @@
 
   // Canvas drawing helpers
   function ctxText(ctx, th, s, x, y, { size = 18, weight = 400, color = th.text, align = "left", base = "alphabetic", italic = false } = {}) {
+    // French typography also for the texts put together in the code (the language of the canvas, once it is on the page)
+    const c = ctx.canvas;
+    if (c.isConnected && !c.georesLang) c.georesLang = pageLang(c);
+    if (c.georesLang === "fr") s = typo("fr", s);
     ctx.font = `${italic ? "italic " : ""}${weight} ${size}px ${th.font}`;
     ctx.fillStyle = color;
     ctx.textAlign = align;
@@ -2974,7 +2987,7 @@
     const compact = opts.compact && opts.compact !== "false";
     const W = compact ? 820 : list.length > 1 ? 1280 : 1100, H = 520, w = W / list.length;
     const body = list.map((s, i) => draw(s, { x: i * w + 6, y: 6, w: w - 18, h: H - 30 }, th, L, { key: anon ? false : opts.key, cd: opts.cd })).join("");
-    return svgDoc(`0 0 ${W} ${H}`, body, th, { title: `${tr("cgTitle")}: ${list.map(s => s.name).join(", ")}` });
+    return svgDoc(`0 0 ${W} ${H}`, body, th, { title: R_.typo(L, `${tr("cgTitle")}: ${list.map(s => s.name).join(", ")}`) });
   };
 
   R_.climate = { stations, all, station, addStations, nameOf, countryOf, input, draw, pUnits };
@@ -3271,7 +3284,7 @@
     const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
     const s = R_.climate.input(opts.station || "ch-ber", L);
     if (!s) return svgDoc("0 0 800 100", text(20, 50, "?", { "font-size": 20 }), th);
-    return svgDoc("0 0 1280 700", draw(s, { x: 20, y: 6, w: 1240, h: 690 }, th, L, opts), th, { title: `${tr("kkTitle")}: ${s.name}` });
+    return svgDoc("0 0 1280 700", draw(s, { x: 20, y: 6, w: 1240, h: 690 }, th, L, opts), th, { title: R_.typo(L, `${tr("kkTitle")}: ${s.name}`) });
   };
 
   R_.koppenKey = { draw };
@@ -9361,6 +9374,35 @@
   R_.addStrings({ en: { atmosphereTitle: "The layers of the atmosphere" }, fr: { atmosphereTitle: "Les couches de l'atmosphère" } });
 })(globalThis);
 
+// ---- src/diagrams/meteorology/atmosphere-skin.js ----
+// Earth's thin skin: a picture of Earth with its atmosphere drawn to scale around it (100 km on a radius of 6 371 km:
+// a ring 1.6 % of the radius thick), as the skin of an apple. From GeoKey DF-Climatology/1-Atmosphere (atmo.html).
+//   <div class="geores" data-diagram="atmosphere-skin"></div>
+//   images  { earthdisc }: href of the picture of Earth (a disc on transparency)
+(function (G) {
+  const R_ = G.GeoRes, { r1, svgDoc, text, esc, image } = R_.lib;
+
+  R_.addStrings({
+    en: { skinTitle: "Earth and its atmosphere, to scale", skinLabel: "the atmosphere: 100 km, to scale" },
+    fr: { skinTitle: "La Terre et son atmosphère, à l'échelle", skinLabel: "l'atmosphère : 100 km, à l'échelle" },
+  });
+
+  R_.diagrams["atmosphere-skin"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
+    const R = 290, cx = 320, cy = 320, ra = R * (1 + 100 / 6371);
+    const sky = th.name === "dark" ? "#bfe6ff" : "#2f7fc4";
+    const pic = image(opts.images, "earthdisc", { x: r1(cx - R * 1.02), y: r1(cy - R * 1.02), width: r1(R * 2.04), height: r1(R * 2.04), "clip-path": "url(#skin-disc)" });
+    const body = `<defs><clipPath id="skin-disc"><circle cx="${cx}" cy="${cy}" r="${R}"/></clipPath>
+        <filter id="skin-glow"><feGaussianBlur stdDeviation="3"/></filter></defs>
+      <circle cx="${cx}" cy="${cy}" r="${r1(ra)}" fill="none" stroke="#7fc7ff" stroke-width="${r1(ra - R + 2)}" filter="url(#skin-glow)" opacity=".9"/>
+      ${pic || `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#2d5f99"/>`}
+      <circle cx="${cx}" cy="${cy}" r="${r1((R + ra) / 2)}" fill="none" stroke="#bfe6ff" stroke-width="${r1(ra - R)}"/>
+      <path d="M ${r1(cx - ra * 0.71)},${r1(cy - ra * 0.71)} L 40,40" stroke="${sky}" stroke-width="1.5"/>` +
+      text(10, 28, esc(tr("skinLabel")), { "font-size": 18, "font-weight": 600, fill: sky });
+    return svgDoc("0 0 640 640", body, th, { title: tr("skinTitle"), cls: "geores-skin" });
+  };
+})(globalThis);
+
 // ---- src/diagrams/meteorology/cloud-types.js ----
 // The ten cloud types by altitude: the illustration of GeoBook DF (pictures/5-climato/diagrams/
 // clouds.pdf) with the names and the levels (port of the TikZ figure fig-meteo-clouds).
@@ -9734,14 +9776,15 @@
       return `<rect x="${r1(bx)}" y="${r1(y)}" width="${w}" height="${h}" rx="8" fill="${C.box}" stroke="${C.grid}"/>` +
         lines.map((l, i) => text(bx + 12, y + 28 + i * 24, l, { "font-size": i ? 16 : 18, "font-weight": i ? 400 : 700, fill: C.text })).join("");
     };
-    const meas = (t, rh) => `${esc(tr("fzMeasured"))}: <tspan font-weight="700">${n(t)} °C</tspan>${rh ? ` · ${esc(tr("fzHum").replace("{n}", rh))}` : ""}`;
-    const model = (t, w = 6) => `${esc(tr("fzModel"))}: ${answers ? `<tspan font-weight="700" fill="${C.blank}">${n(t)} °C</tspan>` : blank(w) + " °C"}`;
+    const meas = (t, rh) => R_.typo(L, `${esc(tr("fzMeasured"))}: <tspan font-weight="700">${n(t)} °C</tspan>${rh ? ` · ${esc(tr("fzHum").replace("{n}", rh))}` : ""}`);
+    const model = (t, w = 6) => R_.typo(L, `${esc(tr("fzModel"))}: ${answers ? `<tspan font-weight="700" fill="${C.blank}">${n(t)} °C</tspan>` : blank(w) + " °C"}`);
     out += dot(XL, LUG.z) + dot(XG, GUE.z) + dot(XA, ALT.z);
     out += `<line x1="${XL}" y1="${r1(Y(LUG.z))}" x2="${XL}" y2="${r1(Y(1250) + 66)}" stroke="${C.text}" stroke-width="1.2"/>` + card(64, Y(1250), [`Lugano · ${m(LUG.z)} m`, esc(tr("fzGiven").replace("{t}", n(LUG.t)).replace("{d}", n(LUG.td)))], "start", 330);
     out += card(XG + 34, Y(GUE.z) - 70, [`Gütsch · ${m(GUE.z)} m`, model(T_GUE), ...(answers ? [meas(GUE.t, GUE.rh)] : [])], "start", 300);
     out += card(XA + 40, Y(ALT.z) - (answers ? 200 : 160), [`Altdorf · ${m(ALT.z)} m`, model(T_ALT), ...(answers ? [meas(ALT.t, ALT.rh)] : [])], "end", 300);
-    out += text(64, yb - 10, `${esc(tr("fzBase"))}: ${answers ? `<tspan font-weight="700" fill="${C.blank}">≈ ${m(Math.round(BASE / 10) * 10)} m · ${n(T_BASE)} °C</tspan>` : blank(6) + " m"}`,
-      { "font-size": 17, fill: C.text });
+    // with a halo: the label crosses the rising curve
+    out += R_.meteo.halo(64, yb - 10, R_.typo(L, `${esc(tr("fzBase"))}: ${answers ? `<tspan font-weight="700" fill="${C.blank}">≈ ${m(Math.round(BASE / 10) * 10)} m · ${n(T_BASE)} °C</tspan>` : blank(6) + " m"}`),
+      { "font-size": 17, fill: C.text, stroke: th.bg, "stroke-width": 5 });
 
     // the rates
     [C.up, C.wet, C.down].forEach((col, i) => {
@@ -10003,6 +10046,71 @@
     out += M.step(opts, 3, wind(45, [1, 0.5], "west") + wind(-45, [1, -0.5], "west") + wind(72, [-1, -0.4], "east", 2) + wind(-72, [-1, 0.4], "east", 2) +
       legend(280, "west", tr("gcWest"), tr("gcWestSub")) + legend(360, "east", tr("gcEast"), tr("gcEastSub"), true));
     return svgDoc("0 0 1280 600", out, th, { title: tr("gcTitle") });
+  };
+})(globalThis);
+
+// ---- src/diagrams/meteorology/heat-wind-cycle.js ----
+// From heat to wind: the cycle temperature differences → density differences → pressure differences → wind, started
+// by the Sun's uneven heating, with the physics behind each arrow. From GeoKey DF-Climatology/1-Atmosphere (atmo.html).
+// In a keynote, the colours follow the deck (--panel, --r-main-color, --accent, --muted).
+//   <div class="geores" data-diagram="heat-wind-cycle" data-fragments="true"></div>
+//   data-fragments="true": in a keynote, the arrows (and the next stage) appear one by one
+(function (G) {
+  const R_ = G.GeoRes, { r1, svgDoc, text, esc } = R_.lib;
+
+  R_.addStrings({
+    en: {
+      hwcTitle: "From heat to wind", hwcSun: "The Sun heats unevenly",
+      hwcNodes: ["Temperature differences", "Density differences", "Pressure differences", "Wind"],
+      hwcWhy: ["Warm air expands: lighter", "Light air column: low pressure", "Air flows from high to low", "Wind moves heat, rising air cools"],
+      hwcLaw: ["perfect gas law", "hydrostatic law", "pressure gradient, Coriolis", "advection, expansion"],
+    },
+    fr: {
+      hwcTitle: "De la chaleur au vent", hwcSun: "Le Soleil chauffe inégalement",
+      hwcNodes: ["Différences de température", "Différences de densité", "Différences de pression", "Vent"],
+      hwcWhy: ["L'air chaud se dilate : plus léger", "Colonne d'air légère : basse pression", "L'air va des hautes vers les basses pressions", "Le vent déplace la chaleur, l'air qui monte se refroidit"],
+      hwcLaw: ["loi des gaz parfaits", "loi hydrostatique", "gradient de pression, Coriolis", "advection, détente"],
+    },
+  });
+
+  const rad = d => d * Math.PI / 180;
+
+  R_.diagrams["heat-wind-cycle"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
+    const frag = opts.fragments === true || opts.fragments === "true";
+    const step = (i, s) => (frag ? `<g class="fragment" data-fragment-index="${i}">${s}</g>` : `<g>${s}</g>`);
+    // the deck's colours where there are some (CSS variables), else the theme's
+    const main = `var(--r-main-color, ${th.text})`, panel = `var(--panel, ${th.panel})`, accent = `var(--accent, ${th.equator})`;
+    const muted = `var(--muted, ${th.muted})`, sun = th.name === "dark" ? "#ffd84a" : "#c98a00";
+    const C = [640, 300], RX = 330, RY = 200;
+    const at = (a, sx = RX, sy = RY) => [C[0] + sx * Math.cos(rad(a)), C[1] - sy * Math.sin(rad(a))];
+    const ANG = [90, 0, 270, 180];
+    const node = i => {
+      const s = tr("hwcNodes")[i], [x, y] = at(ANG[i]), w = Math.max(200, s.length * 11 + 40), parts = s.split(" ");
+      const t = (yy, str) => text(x, yy, esc(str), { "font-size": 24, "font-weight": 600, "text-anchor": "middle", style: `fill: ${main}` });
+      return `<ellipse cx="${r1(x)}" cy="${r1(y)}" rx="${w / 2}" ry="44" style="fill: ${panel}; stroke: ${main}" stroke-width="2.5"/>` +
+        (parts.length > 1 ? t(y - 4, parts[0]) + t(y + 22, parts.slice(1).join(" ")) : t(y + 8, s));
+    };
+    const ARROWS = [[72, 18, "start"], [-18, -72, "start"], [252, 198, "end"], [162, 108, "end"]];
+    const arc = (a0, a1) => {
+      const p0 = at(a0, RX * 1.02, RY * 1.12), p1 = at(a1, RX * 1.02, RY * 1.12);
+      return `M ${r1(p0[0])},${r1(p0[1])} A ${RX * 1.02} ${RY * 1.12} 0 0 1 ${r1(p1[0])},${r1(p1[1])}`;
+    };
+    let out = `<defs><marker id="hwc-head" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" style="fill: ${accent}"/></marker></defs>`;
+    // the Sun, which starts the cycle
+    const [nx, ny] = at(90);
+    out += `<path d="M 990,40 C 920,40 880,60 ${r1(nx + 120)},${r1(ny - 30)}" fill="none" stroke="${sun}" stroke-width="4"/>` +
+      `<circle cx="1000" cy="40" r="11" fill="${sun}"/>` +
+      text(1270, 46, esc(tr("hwcSun")), { "font-size": 20, "font-weight": 600, fill: sun, "text-anchor": "end" });
+    out += node(0);
+    ARROWS.forEach(([a0, a1, anchor], i) => {
+      const [lx, ly] = at((a0 + a1) / 2, RX * 1.12, RY * 1.3);
+      out += step(i, `<path d="${arc(a0, a1)}" fill="none" style="stroke: ${accent}" stroke-width="5" marker-end="url(#hwc-head)"/>` +
+        text(lx, ly, esc(tr("hwcWhy")[i]), { "font-size": 19, "text-anchor": anchor, style: `fill: ${main}` }) +
+        text(lx, ly + 24, esc(tr("hwcLaw")[i]), { "font-size": 15, "font-style": "italic", "text-anchor": anchor, style: `fill: ${muted}` }) +
+        (i < 3 ? node(i + 1) : ""));
+    });
+    return svgDoc("0 0 1280 600", out, th, { title: tr("hwcTitle"), cls: "geores-hwc" });
   };
 })(globalThis);
 
@@ -12657,12 +12765,15 @@
     if (answers) {
       const all = [...pop.keys()], parts = [all.filter(i => city.has(i)), all.filter(i => town.has(i)), all.filter(i => !city.has(i) && !town.has(i))];
       const tot = sum(all);
+      // each entry after the previous one (its text estimated at 0.52 em a character): "bourgs et banlieues" is long
+      let x = X0;
       parts.forEach((p, k) => {
-        const x = X0 + k * 300;
+        const s = R_.typo(L, `${tr("deKey")[k]}: ${n(sum(p))} (${R_.num(L, 100 * sum(p) / tot, 0)} %)`);
         out += `<rect x="${x}" y="${h + 6}" width="26" height="22" fill="${COL[k]}" stroke="${th.text}"/>` +
-          text(x + 36, h + 24, `${esc(tr("deKey")[k])}: ${n(sum(p))} (${R_.num(L, 100 * sum(p) / tot, 0)} %)`, { "font-size": 18, fill: th.text });
+          text(x + 36, h + 24, esc(s), { "font-size": 18, fill: th.text });
+        x += 36 + Math.round(s.length * 18 * 0.52) + 40;
       });
-      out += text(X0, h + 58, `${tr("deTotal")}: ${n(tot)} ${tr("dePeople")}`, { "font-size": 18, "font-weight": 700, fill: th.text });
+      out += text(X0, h + 58, R_.typo(L, `${tr("deTotal")}: ${n(tot)} ${tr("dePeople")}`), { "font-size": 18, "font-weight": 700, fill: th.text });
       h += 72;
     }
     return svgDoc(`0 0 ${X0 * 2 + NX * S} ${h}`, out, th, { title: tr("deTitle"), width: opts.width });
@@ -16152,6 +16263,204 @@
   }
 })(globalThis);
 
+// ---- src/sims/climatology/altitude-belts.js ----
+// Sim "altitude-belts": Humboldt's mountain. The vegetation belts, the tree line and the snow line on a mountain at
+// the chosen latitude, with the mean temperature by altitude (−6.5 °C per 1 000 m): towards the poles the belts slide
+// down, as they do going up the mountain. Values are approximate (they also depend on rain and on the side of the
+// mountain): tree and snow lines from about 3 800 / 4 900 m on Chimborazo to 2 000 / 2 900 m in the Alps and
+// 900 / 1 450 m in southern Norway (62° N; birch tree line, equilibrium line of the maritime glaciers such as
+// Jostedalsbreen), 400 / 900 m at 70° N. Follows the page's light/dark theme for its text.
+//   <div class="geores" data-sim="altitude-belts" data-lat="46"></div>
+//   data-lat: latitude at the start, 0 to 70 (default 1: Chimborazo)
+// Ported from GeoKey DF-Introduction/1-Introduction (sims.js, altitude()).
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  R_.addStrings({
+    en: {
+      albLatitude: "Latitude", albTreeLine: n => `tree line ${n} m`, albSnowLine: n => `snow line ${n} m`,
+      albMeanT: "mean temperature", albSeaLevel: t => `${t} °C at sea level (mean)`, albTop: "top",
+      albIdea: "Humboldt's idea: climbing a mountain is like travelling towards a pole.",
+      albCool: "Every 1 000 m, the air cools by about 6.5 °C: like going more than 1 000 km closer to a pole.",
+      albTropForest: "Tropical forest · cocoa, bananas", albMountForest: "Mountain forest · coffee, maize",
+      albCloudForest: "Cloud forest · potatoes, wheat", albParamo: "Páramo grassland", albRock: "Rock and scree",
+      albSnowIce: "Snow and ice", albFields: "Fields, vineyards", albDeciduous: "Deciduous forest",
+      albConifer: "Conifer forest", albMeadows: "Alpine meadows", albBirch: "Fields, birch woods",
+      albTaiga: "Conifer forest (taiga)", albTundra: "Tundra",
+      albChimborazo: "Chimborazo, Ecuador", albAlps: "The Alps, Switzerland", albNorway: "Norway",
+    },
+    fr: {
+      albLatitude: "Latitude", albTreeLine: n => `limite des arbres ${n} m`, albSnowLine: n => `limite des neiges ${n} m`,
+      albMeanT: "température moyenne", albSeaLevel: t => `${t} °C au niveau de la mer (moyenne)`, albTop: "sommet",
+      albIdea: "L'idée de Humboldt : gravir une montagne, c'est comme voyager vers un pôle.",
+      albCool: "Tous les 1 000 m, l'air se refroidit d'environ 6,5 °C : comme se rapprocher d'un pôle de plus de 1 000 km.",
+      albTropForest: "Forêt tropicale · cacao, bananes", albMountForest: "Forêt de montagne · café, maïs",
+      albCloudForest: "Forêt de nuages · pommes de terre, blé", albParamo: "Páramo (prairie d'altitude)",
+      albRock: "Rochers et éboulis", albSnowIce: "Neige et glace", albFields: "Champs, vignes",
+      albDeciduous: "Forêt de feuillus", albConifer: "Forêt de conifères", albMeadows: "Alpages",
+      albBirch: "Champs, bois de bouleaux", albTaiga: "Forêt de conifères (taïga)", albTundra: "Toundra",
+      albChimborazo: "Chimborazo, Équateur", albAlps: "Les Alpes, Suisse", albNorway: "Norvège",
+    },
+  });
+
+  // latitude (°) -> tree line, snow line (m), mean temperature at sea level (°C): approximate
+  const LATS = [0, 10, 20, 30, 40, 46, 50, 60, 70];
+  const TREE = [3800, 3800, 3700, 3300, 2400, 2000, 1700, 1050, 400];
+  const SNOW = [4900, 5000, 5300, 4800, 3700, 2900, 2600, 1600, 900];
+  const TSEA = [27, 26, 24, 19, 14, 11, 9, 3, -3];
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const interp = (arr, lat) => {
+    let i = 0;
+    while (i < LATS.length - 2 && LATS[i + 1] < lat) i++;
+    const f = clamp((lat - LATS[i]) / (LATS[i + 1] - LATS[i]), 0, 1);
+    return arr[i] + f * (arr[i + 1] - arr[i]);
+  };
+  // [latitude, place, hemisphere]: Chimborazo is at 1° S
+  const PLACES = [[1, "albChimborazo", "S"], [46, "albAlps", "N"], [62, "albNorway", "N"]];
+  // the mountain: [x, altitude]
+  const PEAK = [[100, 0], [150, 400], [200, 1200], [250, 2300], [295, 3400], [340, 4700], [365, 5700], [385, 6263],
+    [405, 5900], [445, 5000], [500, 3900], [550, 2700], [605, 1500], [655, 500], [690, 0]];
+
+  R_.sims["altitude-belts"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    const W = 1280, H = 610;
+    const ctx = pg.makeCanvas(container, W, H);
+    let th;
+    const theme = () => { th = R_.theme(pg.markTheme(container)); };
+    theme();
+    const GROUND = 545, SC = 0.075;
+    const Y = alt => GROUND - alt * SC;
+    let lat = clamp(Math.round(+opts.lat || 1), 0, 70);
+
+    const panel = pg.controls(container, `
+      <label>${tr("albLatitude")} <input type="range" min="0" max="70" step="1"></label>
+      ${PLACES.map(([l, , h]) => `<button data-lat="${l}">${l}° ${h}</button>`).join("")}`);
+    // in a keynote's .sim box, the controls take the theme's overlay
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const slider = panel.querySelector("input");
+    slider.value = lat;
+    slider.addEventListener("input", () => { lat = +slider.value; draw(); });
+    panel.querySelectorAll("[data-lat]").forEach(b => b.addEventListener("click", () => { lat = +b.dataset.lat; slider.value = lat; draw(); }));
+
+    const text = (s, x, y, o = {}) => {
+      if (o.halo) {
+        ctx.font = `${o.italic ? "italic " : ""}${o.weight || 400} ${o.size || 18}px ${th.font}`;
+        ctx.textAlign = o.align || "left"; ctx.textBaseline = o.base || "alphabetic";
+        ctx.strokeStyle = o.halo; ctx.lineWidth = 4; ctx.lineJoin = "round";
+        ctx.strokeText(s, x, y);
+      }
+      pg.ctxText(ctx, th, s, x, y, o);
+    };
+    // lines of text broken to fit a width (no-break spaces hold)
+    const wrap = (s, x, y, maxW, lh, o) => {
+      ctx.font = `${o.weight || 400} ${o.size || 18}px ${th.font}`;
+      let line = "";
+      s.split(" ").forEach(w => {
+        const t = line ? line + " " + w : w;
+        if (ctx.measureText(t).width > maxW && line) { text(line, x, y, o); line = w; y += lh; } else line = t;
+      });
+      if (line) text(line, x, y, o);
+    };
+    const minus = n => `${n < 0 ? "−" : ""}${Math.abs(Math.round(n))}`;
+    const metres = a => R_.typo(L, String(a).replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+
+    function belts(tree, snow) {
+      const rock = Math.max(tree, snow - 400), top = 6400;
+      if (lat < 23.5) return [
+        [0, 0.3 * tree, "albTropForest", "#3f7f3a"],
+        [0.3 * tree, 0.6 * tree, "albMountForest", "#5f9a45"],
+        [0.6 * tree, tree, "albCloudForest", "#7fae5a"],
+        [tree, rock, "albParamo", "#c3cf86"],
+        [rock, snow, "albRock", "#a39885"],
+        [snow, top, "albSnowIce", "#f4f7fa"]];
+      if (lat < 55) return [
+        [0, 0.35 * tree, "albFields", "#cfc36e"],
+        [0.35 * tree, 0.7 * tree, "albDeciduous", "#7fae5a"],
+        [0.7 * tree, tree, "albConifer", "#3e6b44"],
+        [tree, rock, "albMeadows", "#c3cf86"],
+        [rock, snow, "albRock", "#a39885"],
+        [snow, top, "albSnowIce", "#f4f7fa"]];
+      return [
+        [0, 0.5 * tree, "albBirch", "#a9bd6a"],
+        [0.5 * tree, tree, "albTaiga", "#3e6b44"],
+        [tree, rock, "albTundra", "#b7b892"],
+        [rock, snow, "albRock", "#a39885"],
+        [snow, top, "albSnowIce", "#f4f7fa"]];
+    }
+
+    function draw() {
+      const dark = th.name === "dark";
+      const tree = interp(TREE, lat), snow = interp(SNOW, lat), t0 = interp(TSEA, lat);
+      const B = belts(tree, snow);
+      const accent = dark ? "#f08a5d" : "#c03728", cold = dark ? "#8cb8e0" : "#4a7aa8";
+      const halo = dark ? "rgba(16, 20, 32, 0.8)" : "rgba(255, 255, 255, 0.8)";
+      ctx.clearRect(0, 0, W, H);
+
+      // sky
+      const sky = ctx.createLinearGradient(0, Y(6400), 0, GROUND);
+      sky.addColorStop(0, dark ? "#2a4560" : "#b9d3e6"); sky.addColorStop(1, dark ? "#3c5163" : "#eef3ea");
+      ctx.fillStyle = sky; ctx.fillRect(90, Y(6600), 620, GROUND - Y(6600));
+
+      // mountain, coloured by belts
+      const outline = new Path2D();
+      PEAK.forEach(([x, a], i) => (i ? outline.lineTo(x, Y(a)) : outline.moveTo(x, Y(a))));
+      outline.closePath();
+      ctx.save(); ctx.clip(outline);
+      B.forEach(([a0, a1, , color]) => { ctx.fillStyle = color; ctx.fillRect(90, Y(a1), 620, Y(a0) - Y(a1)); });
+      ctx.restore();
+      ctx.strokeStyle = th.text; ctx.lineWidth = 2; ctx.stroke(outline);
+      ctx.fillStyle = th.text; ctx.fillRect(90, GROUND, 620, 3);
+
+      // tree line, snow line
+      [[tree, dark ? "#7fc08a" : "#3e6b44", "albTreeLine"], [snow, cold, "albSnowLine"]].forEach(([a, col, k]) => {
+        ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.setLineDash([7, 6]);
+        ctx.beginPath(); ctx.moveTo(90, Y(a)); ctx.lineTo(710, Y(a)); ctx.stroke(); ctx.setLineDash([]);
+        text(tr(k)(metres(Math.round(a / 50) * 50)), 100, Y(a) - 7, { size: 15, weight: 700, color: col, halo });
+      });
+
+      // altitude axis with temperatures (−6.5 °C per 1 000 m)
+      ctx.strokeStyle = th.text; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(80, GROUND); ctx.lineTo(80, Y(6400)); ctx.stroke();
+      for (let a = 0; a <= 6000; a += 1000) {
+        ctx.beginPath(); ctx.moveTo(74, Y(a)); ctx.lineTo(80, Y(a)); ctx.stroke();
+        text(`${metres(a)} m`, 70, Y(a) + 1, { size: 14, align: "right", base: "middle" });
+        const T = t0 - 6.5 * a / 1000;
+        text(`${minus(T)} °C`, 70, Y(a) + 17, { size: 13, color: Math.round(T) < 0 ? cold : accent, align: "right", base: "middle" });
+      }
+      text(tr("albMeanT"), 10, Y(6400) - 22, { size: 13, color: th.muted, italic: true });
+
+      // belt labels, kept apart, with a leader line; the place and Humboldt's idea from px
+      const LX = 735, px = 1000;
+      let lastY = Infinity;
+      const labels = B.map(([a0, a1, k]) => ({ k, a0, a1, y: (Y(Math.min(a1, 6263)) + Y(a0)) / 2 })).filter(l => l.a1 > l.a0 + 10);
+      labels.forEach(l => { l.ly = Math.min(l.y, lastY - 34); lastY = l.ly; });
+      labels.forEach(l => {
+        ctx.strokeStyle = th.muted; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(712, l.y); ctx.lineTo(LX - 6, l.ly); ctx.stroke();
+        // a long name (French) gets a smaller font rather than running into the panel of the place
+        ctx.font = `600 16px ${th.font}`;
+        const w = ctx.measureText(tr(l.k)).width, room = px - 12 - LX - 10;
+        text(tr(l.k), LX, l.ly - 3, { size: w > room ? Math.floor(160 * room / w) / 10 : 16, weight: 600 });
+        const hi = l.a1 >= 6400 ? tr("albTop") : `${metres(Math.round(l.a1 / 50) * 50)} m`;
+        text(`${metres(Math.round(l.a0 / 50) * 50)} – ${hi}`, LX, l.ly + 15, { size: 13, color: th.muted });
+      });
+
+      // the place and Humboldt's idea
+      const place = PLACES.find(([l]) => l === lat);
+      text(place ? tr(place[1]) : tr("albLatitude"), px, 60, { size: 24, weight: 700, color: accent });
+      text(`${lat}° ${place ? place[2] : "N"}`, px, 92, { size: 20, weight: 600 });
+      text(tr("albSeaLevel")(minus(t0)), px, 120, { size: 16, color: th.muted });
+      ctx.fillStyle = dark ? "rgba(240, 138, 93, 0.12)" : "rgba(192, 55, 40, 0.08)";
+      ctx.fillRect(px - 12, 160, 290, 190);
+      wrap(tr("albIdea"), px, 190, 266, 24, { size: 18, weight: 600 });
+      wrap(tr("albCool"), px, 270, 266, 22, { size: 16 });
+    }
+    draw();
+    pg.onThemeChange(() => { theme(); draw(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);   // the canvas text in the page font
+  };
+})(globalThis);
+
 // ---- src/sims/climatology/climogram.js ----
 // Sim "climogram": choose a station (grouped by Köppen-Geiger group, Swiss stations first) and see its
 // climogram, Köppen code and key numbers; "Compare" shows a second station next to it.
@@ -17740,6 +18049,21 @@
   const SUN = { id: "sun", T: 5772, L: 1, R: 1, side: null, M: 1, type: "MainSeq", cls: "G" };
   const key = id => "hrd" + id[0].toUpperCase() + id.slice(1);
 
+  // Main-sequence lifetime (billion years) of a star of mass M (Sun = 1): from 0.8 Sun up, the non-rotating Geneva
+  // models of Ekström et al. (2012, Table 2) scaled so that the Sun lives 10 billion years (×1.17, which lands between
+  // their non-rotating and rotating models); below, red dwarfs that mix all their hydrogen: 0.1 Sun lives about
+  // 10 000 billion years (Laughlin, Bodenheimer & Adams 1997), a power law in between. Interpolated in log–log.
+  const LIFE = [[0.1, 10000], [0.25, 717], [0.5, 97.4], [0.8, 25.2], [0.9, 15.8], [1, 10], [1.1, 6.4], [1.25, 5.1],
+    [1.5, 2.63], [1.7, 1.91], [2, 1.18], [2.5, 0.63], [3, 0.375], [4, 0.178], [5, 0.103], [7, 0.0489], [9, 0.0308],
+    [12, 0.018], [15, 0.0129], [20, 0.0091], [25, 0.0074], [32, 0.0061], [40, 0.0052]];
+  function lifetime(M) {
+    let i = 0;
+    while (i < LIFE.length - 2 && LIFE[i + 1][0] < M) i++;
+    const [m0, t0] = LIFE[i], [m1, t1] = LIFE[i + 1];
+    const f = (Math.log(M) - Math.log(m0)) / (Math.log(m1) - Math.log(m0));
+    return Math.exp(Math.log(t0) + f * (Math.log(t1) - Math.log(t0)));
+  }
+
   // How a star of mass M ends (main sequence or later): a string key
   function fate(M, type) {
     if (type === "WhiteDwarf") return "hrdEndDead";
@@ -17944,7 +18268,7 @@
         wrap(tr(key(picked.id) + "Fact"), px, 510, pw, 20, { size: 15, color: th.text, italic: true });
         return;
       }
-      const life = Math.max(0.003, 10 * mass / s.L);
+      const life = lifetime(mass);
       const nl = life >= 1 ? n(life) : n(life * 1000), one = nl === "1";
       rowsOf([
         ["hrdMass", times(mass)],
@@ -19569,7 +19893,10 @@
 // Sim "sun-future": the Sun's future, from today to a red giant, a planetary nebula and a white dwarf.
 // The inner planets' orbits to scale (they widen as the Sun loses mass; Mercury and Venus are swallowed),
 // the Sun's size next to today's, its track on a small Hertzsprung–Russell diagram, and a timeline (not to
-// scale) to drag or play. Model values after Sackmann et al. (1993) and Schröder & Smith (2008).
+// scale) to drag or play. Model values after Sackmann et al. (1993) and Schröder & Smith (2008); the planetary nebula
+// shines for about 20 000 years (Jacob, Schönberner & Steffen 2013); the white dwarf (0.54 Sun) cools as the
+// Montréal models of a 0.6 Sun white dwarf: 0.25 L☉ after 5 million years, 0.004 after 300 million, 0.0007 after
+// 1 billion, 0.00007 after 7.7 billion (Bergeron et al.; Montréal White Dwarf Database).
 // Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, sunlife()). Uses GeoRes.stars from hr-diagram.js.
 //   <div class="geores" data-sim="sun-future" data-age="4.57"></div>
 //   data-age: age of the Sun at the start, in billion years, 0 to 20 (default 4.57: today)
@@ -19621,13 +19948,17 @@
     },
   });
 
-  // age (billion years), luminosity, radius and mass (Sun today = 1)
+  // age (billion years), luminosity, radius and mass (Sun today = 1); WD: the white dwarf is left alone (12.335 billion
+  // years: end of the giant stage, + 30 000 years of planetary nebula)
+  const WD = 12.33503;
   const SUN_LIFE = [
     [0, 0.70, 0.89, 1], [4.57, 1, 1, 1], [7, 1.33, 1.12, 1], [9, 1.67, 1.27, 1],
     [10.9, 2.2, 1.58, 1], [11.6, 2.7, 2.3, 1], [12.0, 34, 10, 0.97], [12.12, 400, 60, 0.9],
     [12.167, 2600, 250, 0.67], [12.17, 44, 10, 0.67], [12.27, 50, 11, 0.66], [12.31, 600, 60, 0.62],
-    [12.335, 4500, 200, 0.55], [12.3355, 4000, 1.5, 0.54], [12.336, 3000, 0.1, 0.54],
-    [12.4, 1, 0.014, 0.54], [13.5, 0.01, 0.0125, 0.54], [20, 0.0005, 0.012, 0.54],
+    [12.335, 4500, 200, 0.55], [12.33501, 4000, 1.5, 0.54], [12.33503, 3000, 0.1, 0.54],
+    // the white dwarf from WD (12.33503): cooling ages 0.1 and 1 Myr, 5.5 Myr, 300 Myr, 1, 3 and 7.7 billion years
+    [12.33513, 50, 0.02, 0.54], [12.33603, 3, 0.016, 0.54], [12.3405, 0.25, 0.0145, 0.54], [12.635, 0.004, 0.013, 0.54],
+    [13.335, 0.00068, 0.0125, 0.54], [15.335, 0.00015, 0.0125, 0.54], [20, 0.00007, 0.0125, 0.54],
   ];
   function sunAt(age) {
     let i = 0;
@@ -19641,7 +19972,7 @@
   // The timeline is not to scale: the last stages take a few million years only.
   // [from, to (billion years), share of the timeline]
   const SEGS = [[0, 4.57, 0.16], [4.57, 10.9, 0.2], [10.9, 12.0, 0.14], [12.0, 12.167, 0.16],
-    [12.167, 12.335, 0.14], [12.335, 12.4, 0.08], [12.4, 20, 0.12]];
+    [12.167, 12.335, 0.14], [12.335, WD, 0.08], [WD, 12.3405, 0.05], [12.3405, 20, 0.07]];
   function ageAt(u) {
     for (const [a, b, w] of SEGS) {
       if (u <= w) return a + (b - a) * u / w;
@@ -19660,7 +19991,7 @@
   // from, to (billion years), string key (name; + "Text": what happens)
   const STAGES = [
     [0, 10.9, "sfuMainSeq"], [10.9, 11.6, "sfuSubgiant"], [11.6, 12.167, "sfuRedGiant"], [12.167, 12.27, "sfuHelium"],
-    [12.27, 12.335, "sfuGiant"], [12.335, 12.4, "sfuNebula"], [12.4, 20, "sfuWhiteDwarf"],
+    [12.27, 12.335, "sfuGiant"], [12.335, WD, "sfuNebula"], [WD, 20, "sfuWhiteDwarf"],
   ];
   // semi-major axis (AU), angle on the drawing (degrees), colour
   const INNER = [
@@ -19703,7 +20034,7 @@
     const SXu = u => SX0 + u * (SX1 - SX0);
     // mini HR diagram
     const hx0 = 800, hx1 = 1190, hy0 = 20, hy1 = 236;      // clear of the enlarge button (top right)
-    const hT0 = Math.log10(150000), hT1 = Math.log10(2000), hL0 = 4.5, hL1 = -4;
+    const hT0 = Math.log10(150000), hT1 = Math.log10(2000), hL0 = 4.5, hL1 = -4.5;
     const HX = T => hx0 + (hT0 - Math.log10(T)) / (hT0 - hT1) * (hx1 - hx0);
     const HY = L => hy0 + (hL0 - Math.log10(L)) / (hL0 - hL1) * (hy1 - hy0);
     const goneAt = swallowed();
@@ -19766,9 +20097,9 @@
 
     function orbits(age, s) {
       sky(ctx, mode, OX, OY, OW, OH);
-      // planetary nebula
-      if (age > 12.335 && age < 12.47) {
-        const r = K * (0.93 + (age - 12.335) * 30), fade = 1 - (age - 12.335) / 0.135;
+      // planetary nebula: it expands and fades over the 30 000 years of the stage (drawn far smaller than it is)
+      if (age > 12.335 && age < WD) {
+        const p = (age - 12.335) / (WD - 12.335), r = K * (0.93 + 4 * p), fade = 1 - p;
         const g = ctx.createRadialGradient(...C, r * 0.55, ...C, r);
         g.addColorStop(0, "rgba(90, 200, 160, 0)");
         g.addColorStop(0.6, `rgba(90, 200, 160, ${0.35 * fade})`);
@@ -19794,7 +20125,7 @@
         if (isGone) { label = tr(p.key + "Gone"); color = "#ef5b4c"; }
         else {
           let pc = p.color;
-          if (p.key === "sfuEarth" && age > OCEANS) { pc = "#b08a5a"; label = tr(age > 12.4 ? "sfuFrozen" : "sfuNoOceans"); }
+          if (p.key === "sfuEarth" && age > OCEANS) { pc = "#b08a5a"; label = tr(age > WD ? "sfuFrozen" : "sfuNoOceans"); }
           ctx.fillStyle = pc; ctx.beginPath(); ctx.arc(px, py, 6, 0, 2 * Math.PI); ctx.fill();
         }
         text(label, px + (c >= 0 ? 10 : -10), py + (sn >= 0 ? -10 : 22), { size: 15, weight: 600, color, align: c >= 0 ? "left" : "right" });
@@ -30895,7 +31226,7 @@
 (function () {
   const script = document.currentScript;
   const base = script ? script.src.replace(/[^/]*$/, "") : "";
-  GeoRes.images = Object.assign({"bluemarble":"bluemarble.jpg","blackmarble":"blackmarble.jpg","atmosphere":"atmosphere.jpg","helicopter":"helicopter.png","cloud":"cloud.png","watercycle":"watercycle.jpg","cloudtypes":"cloudtypes.jpg","nemap1880":"nemap1880.png","nemap1950":"nemap1950.png","nemaptoday":"nemaptoday.png","vrmap1960":"vrmap1960.png","vrmap1990":"vrmap1990.png","vrmaptoday":"vrmaptoday.png","bernmap":"bernmap.jpg","nemap17":"nemap17.jpg","nemap15":"nemap15.jpg","nemap13":"nemap13.jpg","nemap11":"nemap11.jpg","cdvmap":"cdvmap.jpg"}, GeoRes.images || {});
+  GeoRes.images = Object.assign({"bluemarble":"bluemarble.jpg","blackmarble":"blackmarble.jpg","atmosphere":"atmosphere.jpg","helicopter":"helicopter.png","cloud":"cloud.png","watercycle":"watercycle.jpg","cloudtypes":"cloudtypes.jpg","earthdisc":"earthdisc.png","nemap1880":"nemap1880.png","nemap1950":"nemap1950.png","nemaptoday":"nemaptoday.png","vrmap1960":"vrmap1960.png","vrmap1990":"vrmap1990.png","vrmaptoday":"vrmaptoday.png","bernmap":"bernmap.jpg","nemap17":"nemap17.jpg","nemap15":"nemap15.jpg","nemap13":"nemap13.jpg","nemap11":"nemap11.jpg","cdvmap":"cdvmap.jpg"}, GeoRes.images || {});
   Object.keys(GeoRes.images).forEach(k => {
     if (!/^(data:|https?:|\/)/.test(GeoRes.images[k])) GeoRes.images[k] = base + GeoRes.images[k];
   });

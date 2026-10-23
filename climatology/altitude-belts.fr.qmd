@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/altitude-belts.jpg
+title: "La montagne de Humboldt"
+description: "Étages de végétation, limite des arbres et limite des neiges sur une montagne à n'importe quelle latitude : monter, c'est comme voyager vers un pôle."
+categories: [Climatologie]
+---
+
+La montagne montre ses étages de végétation, la limite des arbres et la limite des neiges, avec la température moyenne à chaque altitude. Faites glisser le curseur *Latitude* de l'équateur (0°) à 70°, ou sautez au Chimborazo en Équateur (1° S), dans les Alpes (46° N) ou en Norvège (62° N) : les étages descendent le long de la montagne quand on va vers le pôle.
+
+::: {.column-page}
+{{< geores sim="altitude-belts" presets="lat" >}}
+:::
+
+## À observer
+
+- Au Chimborazo, à quelle altitude sont la limite des arbres et la limite des neiges ? Et dans les Alpes, et en Norvège ?
+- De combien fait-il plus froid 1 000 m plus haut ? Jusqu'où faudrait-il voyager vers un pôle pour le même refroidissement ?
+- Quels étages des Alpes n'ont pas d'équivalent au Chimborazo, et inversement ? Quelles sont les cultures de chaque étage ?
+- Trouvez une latitude où la limite des neiges atteint la mer : qu'est-ce que cela dit du climat de cet endroit ?
+
+## Fonctionnement
+
+L'air se refroidit d'environ 6,5 °C tous les 1 000 m : gravir une montagne change le climat comme aller vers un pôle. Alexander von Humboldt l'a dessiné après être monté très haut sur le Chimborazo en 1802. Les étages suivent la température moyenne ; leurs limites sont approximatives, car elles dépendent aussi de la pluie et du versant, à l'ombre ou au soleil.
+
+## Sources
+
+Modèle schématique aux valeurs approximatives ; d'après Alexander von Humboldt, *Essai sur la géographie des plantes* (1807).

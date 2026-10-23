@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/altitude-belts.jpg
+title: "Humboldt's mountain"
+description: "Vegetation belts, tree line and snow line on a mountain at any latitude: climbing is like travelling towards a pole."
+categories: [Climatology]
+---
+
+The mountain shows its vegetation belts, the tree line and the snow line, with the mean temperature at each altitude. Move the *Latitude* slider from the equator (0°) to 70°, or jump to Chimborazo in Ecuador (1° S), the Alps (46° N) or Norway (62° N): the belts slide down the mountain as you go towards the pole.
+
+::: {.column-page}
+{{< geores sim="altitude-belts" presets="lat" >}}
+:::
+
+## What to look for
+
+- On Chimborazo, at which altitude are the tree line and the snow line? And in the Alps, and in Norway?
+- How much colder is it 1 000 m higher? How far would you have to travel towards a pole for the same cooling?
+- Which belts of the Alps have no equivalent on Chimborazo, and the other way round? What are the crops of each belt?
+- Find a latitude where the snow line reaches the sea: what does that tell you about the climate there?
+
+## How it works
+
+The air cools by about 6.5 °C per 1 000 m, so climbing a mountain changes the climate as going towards a pole does: Alexander von Humboldt drew this after climbing high up Chimborazo in 1802. The belts follow the mean temperature; their limits are approximate, as they also depend on rain and on the side of the mountain facing the Sun.
+
+## Sources
+
+Schematic model with approximate values; after Alexander von Humboldt, *Essai sur la géographie des plantes* (1807).
