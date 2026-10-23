@@ -1,7 +1,7 @@
 GEORES := ../GeoResources
 PORT ?= 4321
 
-.PHONY: all render serve check test sync new-oc-chapter
+.PHONY: all render serve check test sweep sync new-oc-chapter
 
 all: check render test
 
@@ -21,9 +21,14 @@ check:
 test:
 	cd tests && npx playwright test
 
+# Steady controls: every slider of every sim moved through its range at 1280, 1000, 800 and 390 px, one layout each
+# (needs make serve; after each GeoResources sync)
+sweep:
+	cd tests && node sweep.mjs
+
 # GeoResources: copy dist/ and the shortcode into _extensions/geores (commit the copy with its VERSION)
 sync:
-	$(GEORES)/tools/sync.sh "$(CURDIR)"
+	$(GEORES)/tools/sync.sh --no-svg "$(CURDIR)"
 	cat _extensions/geores/VERSION
 
 # A new OC chapter: make new-oc-chapter NAME=chine TITLE="Chine"

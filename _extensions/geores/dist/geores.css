@@ -119,6 +119,15 @@
   accent-color: var(--geores-accent);
 }
 
+/* outside a keynote (whose slides are always 1280 px wide), the sliders get narrower with the figure, before the
+   controls wrap onto a second row: 9rem in a figure 1280 px wide, down to 4rem */
+.geores:not(.reveal .geores) {
+  container-type: inline-size;
+}
+.geores:not(.reveal .geores) .geores-controls input[type="range"] {
+  width: clamp(4rem, 11cqw, 9rem);
+}
+
 /* a year shown next to its slider: four digits, not the room of a rate (keeps the controls on one line) */
 .reveal .sim-controls .rate.year {
   min-width: 3.2em;
@@ -129,6 +138,17 @@
 .geores-controls .date {
   color: var(--geores-muted);
   font-variant-numeric: tabular-nums;
+}
+
+/* a value next to its slider keeps its width while the slider moves, so that nothing after it moves: on one line,
+   and as wide as its widest value (min-width in the sim, measured by sweeping the slider). A .readout may be a
+   sentence (atmosphere-profile): it wraps, on a row of its own */
+.geores-controls .rate {
+  display: inline-block;
+  white-space: nowrap;
+}
+.geores-controls .readout {
+  display: inline-block;
 }
 
 .geores-controls .readout b,

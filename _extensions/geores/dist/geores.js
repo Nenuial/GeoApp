@@ -277,6 +277,17 @@
     panel.className = "geores-controls";
     panel.innerHTML = html;
     container.appendChild(panel);
+    // A button whose label changes (▶ Play / ❚❚ Pause) gives its other label in data-alt: it is as wide as the wider
+    // of the two from the start, so that nothing after it moves (measured with the button's font, in em, so that it
+    // also works on a slide that is hidden while the sim starts)
+    panel.querySelectorAll("button[data-alt]").forEach(b => {
+      const cs = G.getComputedStyle(b), size = parseFloat(cs.fontSize) || 16;
+      const ctx = document.createElement("canvas").getContext("2d");
+      ctx.font = `${cs.fontWeight} ${size}px ${cs.fontFamily}`;
+      const w = Math.max(...[b.textContent, b.dataset.alt].map(t => ctx.measureText(t).width));
+      const pad = ["paddingLeft", "paddingRight", "borderLeftWidth", "borderRightWidth"].reduce((a, k) => a + (parseFloat(cs[k]) || 0), 0);
+      b.style.minWidth = `${((w + pad) / size + 0.1).toFixed(2)}em`;
+    });
     // In a keynote, buttons keep no focus so that the space bar still drives the slides
     if (container.closest(".reveal")) {
       panel.querySelectorAll("button, input[type=checkbox]").forEach(b =>
@@ -14155,8 +14166,8 @@
     const P = tr("cnxPresets");
     const panel = pg.controls(container,
       `<label>${tr("cnxLevel")} <input class="cnx-level" type="range" min="${LMIN}" max="${LMAX}" step="${STEP}" value="${level}"></label>` +
-      `<span class="readout"><b class="cnx-val">${big(level)} m</b></span>` +
-      `<button class="cnx-play">${tr("cnxRaise")}</button>` +
+      `<span class="readout" style="min-width: 3.7em"><b class="cnx-val">${big(level)} m</b></span>` +
+      `<button class="cnx-play" data-alt="${tr("cnxStop")}">${tr("cnxRaise")}</button>` +
       `<label>${tr("cnxProfile")} <select class="cnx-prof">${["cliff", "steep", "gentle", "custom"].map(k => `<option value="${k}">${P[k]}</option>`).join("")}</select></label>` +
       `<label><input type="checkbox" class="cnx-names" checked> ${tr("cnxNames")}</label>`);
     if (host) panel.classList.add("sim-controls");
@@ -15035,7 +15046,7 @@
     const panel = pg.controls(container, list.map(n => `<button class="proj" data-name="${n}">${tr(n)}</button>`).join("") +
       `<label><input type="checkbox" class="tissot" checked> ${tr("peTissot")}</label>` +
       `<label>${tr("peLon0")} <input type="range" class="lon0" min="-180" max="180" step="5" value="0"></label>` +
-      `<span class="rate lon0-out"></span>`);
+      `<span class="rate lon0-out" style="min-width: 3.5em"></span>`);
     const caption = document.createElement("p");
     caption.className = "geores-steps-text";
     container.appendChild(caption);
@@ -16698,11 +16709,11 @@
     let day = 120, speed = 12, playing = true, spin = 0;
     const KEYS = [[78, "mar20"], [171, "jun21"], [265, "sep23"], [354, "dec21"]];
     const panel = pg.controls(container, `
-      <button class="play" aria-label="${tr("pause")}">❚❚</button>
+      <button class="play" aria-label="${tr("pause")}" data-alt="▶">❚❚</button>
       <label>${tr("speed")} <input type="range" min="0" max="1000"></label>
-      <span class="rate"></span>
+      <span class="rate" style="min-width: 6.2em"></span>
       ${KEYS.map(([d, k]) => `<button data-day="${d}">${tr(k)}</button>`).join("")}
-      <span class="date"></span>`);
+      <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
     const slider = panel.querySelector("input[type=range]"), lo = 0.3, hi = 1.8;
     slider.value = pg.logPos(speed, lo, hi);
     const rate = panel.querySelector(".rate"), readout = panel.querySelector(".date");
@@ -16908,9 +16919,9 @@
     const panel = pg.controls(container, `
       <button class="mode" data-mode="sound">${tr("rsSound")}</button>
       <button class="mode" data-mode="light">${tr("rsLight")}</button>
+      <button class="play" data-alt="▶">❚❚</button>
       <label>${tr("rsSpeed")} <input type="range" min="-60" max="60" step="5"></label>
-      <span class="rate speed"></span>
-      <button class="play">❚❚</button>`);
+      <span class="rate speed" style="min-width: 25em"></span>`);   // last, and as wide as its longest sentence: nothing moves
     const slider = panel.querySelector("input"), out = panel.querySelector(".speed");
     const play = panel.querySelector(".play");
     const setMode = m => {
@@ -17175,9 +17186,9 @@
     let day = 171, lat = 47;
     const panel = pg.controls(container, `
       <label>${tr("date")} <input type="range" class="day" min="0" max="364" step="1"></label>
-      <span class="rate day-out"></span>
+      <span class="rate day-out" style="min-width: 6.5em"></span>
       <label>${tr("latitude")} <input type="range" class="lat" min="-80" max="80" step="1"></label>
-      <span class="rate lat-out"></span>
+      <span class="rate lat-out" style="min-width: 8.3em"></span>
       <button data-day="171">${tr("jun21")}</button><button data-day="78">${tr("mar20")}</button><button data-day="354">${tr("dec21")}</button>
       <button data-lat="47">${tr("neuchatel")}</button>`);
     const sDay = panel.querySelector(".day"), sLat = panel.querySelector(".lat");
@@ -18057,7 +18068,7 @@
     const GE = R_.geology, K = R_.blockKit, { smooth } = K, TODAY = R_.alpsToday;
     let pos = opts.stage !== undefined ? +opts.stage : 0, playing = false;
     const { tr, th, ctx, text, wrap, panel } = GE.stage(container, opts, tr => `
-      <button class="ac-play">${tr("acPlay")}</button>
+      <button class="ac-play" data-alt="${tr("acPause")}">${tr("acPlay")}</button>
       <label>${tr("acTime")} <input type="range" class="ac-t" min="0" max="4" step="0.005" value="${pos}"></label>`);
     const W = GE.W, H = GE.H, lab = tr("acL");
     const slider = panel.querySelector(".ac-t"), play = panel.querySelector(".ac-play");
@@ -18474,7 +18485,7 @@
   R_.sims["continents-drift"] = function (container, opts = {}) {
     const GE = R_.geology, P = R_.data && R_.data.paleo;
     const { tr, th, ctx, text, wrap, panel } = GE.stage(container, opts, tr => `
-      <button class="play">${tr("cdPlay")}</button>
+      <button class="play" data-alt="${tr("cdPause")}">${tr("cdPlay")}</button>
       <label>${tr("cdTime")} <input type="range" class="age" min="0" max="250" step="1" value="250"></label>`);
     const W = GE.W, H = GE.H, BOX = { x: 150, y: 96, w: 1120, h: 508 };
     if (!P) { text("…", W / 2, H / 2, { align: "center" }); return; }
@@ -19146,7 +19157,7 @@
   R_.sims.hotspot = function (container, opts = {}) {
     const GE = R_.geology, K = R_.blockKit;
     const { L, tr, th, ctx, text, wrap, measure, panel } = GE.stage(container, opts, tr => `
-      <button class="play">${tr("hpPause")}</button><button class="again">${tr("hpAgain")}</button>`);
+      <button class="play" data-alt="${tr("hpPlay")}">${tr("hpPause")}</button><button class="again">${tr("hpAgain")}</button>`);
     const W = GE.W, H = GE.H, lab = tr("hpL");
     const B = R_.block({ W, H, x: 40, y: 330, w: 880, top: 160, bottom: 260, kx: 290, ky: 118, nx: 176, nz: 30 });
     const DW = B.DW, w = B.w, XP = 760, ZC = 0.03, V = 26, EVERY = 2.5, MAX = 30;   // the plume, the chain, px per Ma
@@ -20150,7 +20161,7 @@
     let stage = opts.stage !== undefined ? +opts.stage : opts.case === "ridge" ? 3 : opts.case === "rift" ? 1.3 : 0;
     const { tr, th, ctx, text, wrap, measure, panel } = GE.stage(container, opts, tr =>
       CASES.map(k => `<button data-case="${k}">${tr("pbCases")[k]}</button>`).join("") +
-      `<span class="pb-stage" style="display: inline-flex; gap: 10px; align-items: center;"><button class="play">${tr("pbPlay")}</button>
+      `<span class="pb-stage" style="display: inline-flex; gap: 10px; align-items: center;"><button class="play" data-alt="${tr("pbPause")}">${tr("pbPlay")}</button>
        <label>${tr("pbStage")} <input type="range" class="stage" min="0" max="3" step="0.01" value="${stage}"></label></span>`);
     const W = GE.W, H = GE.H, lab = tr("pbL");
     const B = R_.block({ W, H, x: 40, y: 376, w: 880, top: 160, bottom: 214, kx: 290, ky: 118, nx: 176, nz: 30 });
@@ -20842,7 +20853,7 @@
   R_.sims["rock-cycle"] = function (container, opts = {}) {
     const GE = R_.geology, K = R_.blockKit, { smooth, fbm, hash, mixc, land, ROCKS, SAND } = K;
     const { tr, th, ctx, text, wrap, panel } = GE.stage(container, opts, tr => `
-      <button class="rc-play">${tr("rcPlay")}</button><button class="rc-next">${tr("rcNext")}</button>`);
+      <button class="rc-play" data-alt="${tr("rcPause")}">${tr("rcPlay")}</button><button class="rc-next">${tr("rcNext")}</button>`);
     const W = GE.W, H = GE.H, lab = tr("rcL");
     const B = R_.block({ W, H, x: 40, y: 330, w: 700, top: 150, bottom: 222, kx: 150, ky: 92, nx: 175, nz: 36 });
     const w = B.w, DW = B.DW;
@@ -21097,7 +21108,7 @@
   R_.sims["seafloor-spreading"] = function (container, opts = {}) {
     const GE = R_.geology;
     const { L, tr, th, ctx, text, measure, panel } = GE.stage(container, opts, tr => `
-      <button class="pause">${tr("ssPause")}</button><button class="again">${tr("ssAgain")}</button>
+      <button class="pause" data-alt="${tr("ssPlay")}">${tr("ssPause")}</button><button class="again">${tr("ssAgain")}</button>
       <label><input type="radio" name="ss-rate" value="2.5" checked> ${tr("ssSlow")}</label>
       <label><input type="radio" name="ss-rate" value="15"> ${tr("ssFast")}</label>`);
     panel.querySelectorAll("input[type=radio]").forEach(r => { r.name = "ss-rate-" + Math.random().toString(36).slice(2); });
@@ -21636,7 +21647,7 @@
   R_.sims.tsunami = function (container, opts = {}) {
     const GE = R_.geology;
     const { L, tr, th, ctx, text, wrap, panel } = GE.stage(container, opts, tr => `
-      <button class="quake">${tr("tsQuake")}</button><button class="pause">${tr("tsPause")}</button>`);
+      <button class="quake">${tr("tsQuake")}</button><button class="pause" data-alt="${tr("tsPlay")}">${tr("tsPause")}</button>`);
     const W = GE.W, H = GE.H;
     // screen: the near part (−130..200 km) wide, the open ocean compressed
     const X0 = -220, K1 = 1.15, XB = 200, PB = 40 + (XB - X0) * K1, K2 = (1240 - PB) / (XF + 80 - XB);
@@ -24067,8 +24078,8 @@
 
   R_.sims["cyclone-life"] = function (container, opts = {}) {
     const { tr, th, ctx, text, wrap, panel } = X.stage(container, opts, tr => `
-      <button class="pause">${tr("clPause")}</button><button class="restart">${tr("clRestart")}</button>
-      <label>${tr("clDay")} <input type="range" min="0" max="6" step="0.02" value="0"></label> <span class="rate"></span>
+      <button class="pause" data-alt="${tr("clPlay")}">${tr("clPause")}</button><button class="restart">${tr("clRestart")}</button>
+      <label>${tr("clDay")} <input type="range" min="0" max="6" step="0.02" value="0"></label> <span class="rate" style="min-width: 3.6em"></span>
       <label><input type="checkbox" class="iso" checked> ${tr("clIsobars")}</label>
       <label><input type="checkbox" class="wind" checked> ${tr("clWinds")}</label>
       <label><input type="checkbox" class="cloud" checked> ${tr("clClouds")}</label>`);
@@ -24558,8 +24569,8 @@
 
   R_.sims["front-passage"] = function (container, opts = {}) {
     const { tr, th, ctx, text, panel } = X.stage(container, opts, tr => `
-      <button class="pause">${tr("fpPause")}</button><button class="restart">${tr("fpRestart")}</button>
-      <label>${tr("fpHour")} <input type="range" min="0" max="52" step="0.25" value="0"></label> <span class="rate"></span>`);
+      <button class="pause" data-alt="${tr("fpPlay")}">${tr("fpPause")}</button><button class="restart">${tr("fpRestart")}</button>
+      <label>${tr("fpHour")} <input type="range" min="0" max="52" step="0.25" value="0"></label> <span class="rate" style="min-width: 3.5em"></span>`);
     const W = X.W, GROUND = 340, TOP = 80, KM = 0.64, VKM = 26;   // px per km across, px per km of height
     const XC = 300, XW = 590;                                   // the cold and the warm front at the ground
     const SPEED = 40 * KM;                                      // the town moves 40 km/h to the left
@@ -25171,7 +25182,7 @@
 
   R_.sims["hurricane"] = function (container, opts = {}) {
     const { tr, th, ctx, text, wrap, panel } = X.stage(container, opts, tr => `
-      <label>${tr("hcSst")} <input type="range" min="24" max="31" step="0.5" value="29"></label> <span class="rate"></span>
+      <label>${tr("hcSst")} <input type="range" min="24" max="31" step="0.5" value="29"></label> <span class="rate" style="min-width: 3.5em"></span>
       <button class="land">${tr("hcLand")}</button><button class="restart">${tr("hcRestart")}</button>
       <button class="nh">${tr("hcNorth")}</button><button class="sh">${tr("hcSouth")}</button>`);
     const W = X.W, MAPW = 820, TOP = 70, BOT = 556, COAST = 700;
@@ -25281,7 +25292,7 @@
 
   R_.sims["jet-stream"] = function (container, opts = {}) {
     const { tr, th, ctx, text, wrap, panel } = X.stage(container, opts, tr => `
-      <button class="pause">${tr("jsPause")}</button>
+      <button class="pause" data-alt="${tr("jsPlay")}">${tr("jsPause")}</button>
       <label>${tr("jsAmp")} <input type="range" class="amp" min="2" max="22" step="0.5" value="10"></label>
       <label>${tr("jsWaves")} <input type="range" class="k" min="3" max="7" step="1" value="5"></label>`);
     const CX = 380, CY = 316, R = 236, LON0 = 8, RAD = Math.PI / 180;
@@ -25576,8 +25587,8 @@
   R_.sims["precipitation-map"] = function (container, opts = {}) {
     const D = R_.data && R_.data.precip;
     const { L, tr, th, ctx, text, panel } = X.stage(container, opts, tr => `
-      <button class="play">${tr("pmPlay")}</button>
-      <label>${tr("pmMonth")} <input type="range" min="0" max="11" step="1" value="0"></label> <span class="rate"></span>
+      <button class="play" data-alt="${tr("pmPause")}">${tr("pmPlay")}</button>
+      <label>${tr("pmMonth")} <input type="range" min="0" max="11" step="1" value="0"></label> <span class="rate" style="min-width: 5.1em"></span>
       <button data-mode="year">${tr("pmYear")}</button>
       ${tr("pmSeasons").map((s, i) => `<button data-mode="s${i}">${s}</button>`).join("")}
       <label><input type="checkbox" class="belt"> ${tr("pmBelt")}</label>
@@ -25735,7 +25746,7 @@
 
   R_.sims["raindrops"] = function (container, opts = {}) {
     const { tr, th, ctx, text, wrap, panel } = X.stage(container, opts, tr => `
-      <button class="pause">${tr("rdPause")}</button><button class="restart">${tr("rdRestart")}</button>`);
+      <button class="pause" data-alt="${tr("rdPlay")}">${tr("rdPause")}</button><button class="restart">${tr("rdRestart")}</button>`);
     const TOP = 84, BASE = 370, GROUND = 470;
     const A = [20, 620], B = [660, 1260], FREEZE = 270;
     let playing = true, drops, big, rain, crystals, cdrops, vapour, melt;
@@ -25880,7 +25891,7 @@
 
   R_.sims["saturation"] = function (container, opts = {}) {
     const { tr, th, ctx, text, wrap, panel } = X.stage(container, opts, tr => `
-      <label>${tr("saTemp")} <input type="range" min="0" max="40" step="1" value="20"></label> <span class="rate"></span>
+      <label>${tr("saTemp")} <input type="range" min="0" max="40" step="1" value="20"></label> <span class="rate" style="min-width: 2.7em"></span>
       <button class="dry">${tr("saDry")}</button><button data-t="30">${tr("saWarm")}</button><button data-t="5">${tr("saCold")}</button>`);
     const JX0 = 110, JX1 = 610, JY0 = 70, SURF = 420, JY1 = 540, HB = SURF - JY0;
     const NSAT30 = 230, nsat = T => NSAT30 * Hu.es(T) / Hu.es(30);
@@ -26122,8 +26133,8 @@
 
   R_.sims["sea-of-fog"] = function (container, opts = {}) {
     const { L, tr, th, ctx, text, wrap, panel } = X.stage(container, opts, tr => `
-      <button class="play">${tr("sfPlay")}</button>
-      <label>${tr("sfTime")} <input type="range" min="18" max="40" step="0.1" value="18"></label> <span class="rate"></span>
+      <button class="play" data-alt="${tr("sfPause")}">${tr("sfPlay")}</button>
+      <label>${tr("sfTime")} <input type="range" min="18" max="40" step="0.1" value="18"></label> <span class="rate" style="min-width: 2.7em"></span>
       <button data-s="autumn">${tr("sfAutumn")}</button><button data-s="winter">${tr("sfWinter")}</button>
       <label><input type="checkbox" class="cloudy"> ${tr("sfCloudy")}</label>`);
     const Y = z => 560 - (z - 300) * 0.3;

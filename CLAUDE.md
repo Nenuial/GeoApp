@@ -93,4 +93,6 @@ the other sessions and the shared folders). Plan: `~/.claude/plans/you-are-geoap
 - `make check`: every English page has its French twin, OC pages are French only (`tools/check-pairs.mjs`).
 - `make test`: Playwright (`tests/`) at phone, phone landscape, 1280×800 and 1920×1080, dark and light.
   `node tests/screens.mjs <dir>` takes review screenshots (with `make serve` running).
+- `make sweep` (with `make serve` running): every slider of every sim through its range at 1280, 1000, 800 and 390 px;
+  the controls must keep one layout (house rule: moving a slider moves nothing else). After each GeoResources sync.
 - Before a commit: `find . -name "*onflit*"`. Git dir: `/Users/pascalburkhard/git/GeoApp.git` (outside Dropbox).
