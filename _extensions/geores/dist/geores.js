@@ -16560,6 +16560,186 @@
   };
 })(globalThis);
 
+// ---- src/sims/cosmology/comet-orbit.js ----
+// Sim "comet-orbit": a comet on an elongated orbit (Kepler's laws) next to a planet on a circular orbit: fast near
+// the Sun, slow far from it; the coma and the two tails (blue ion tail, curved dust tail) grow near the Sun and
+// always point away from it.
+//   <div class="geores" data-sim="comet-orbit"></div>
+//   data-steps: true to start with the dots at equal time steps on both orbits
+// Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, cometOrbit()).
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  R_.addStrings({
+    en: {
+      comSpeed: "Speed", comSteps: "Equal time steps", comPlanet: "Planet", comComet: "Comet",
+      comInfo: (r, v) => `Comet: <b>${r}</b> × the planet's distance · speed <b>${v}</b> × the planet's`,
+      comPlay: "Play", comPause: "Pause",
+    },
+    fr: {
+      comSpeed: "Vitesse", comSteps: "Intervalles de temps égaux", comPlanet: "Planète", comComet: "Comète",
+      comInfo: (r, v) => `Comète : <b>${r}</b> × la distance de la planète · vitesse <b>${v}</b> × celle de la planète`,
+      comPlay: "Lecture", comPause: "Pause",
+    },
+  });
+
+  // The Sun of the Solar System deck: more orange than GeoRes.page.glowSun
+  function glowSun(ctx, x, y, r) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
+    g.addColorStop(0, "rgba(255, 220, 140, 1)");
+    g.addColorStop(0.3, "rgba(245, 166, 35, 0.9)");
+    g.addColorStop(0.36, "rgba(245, 120, 35, 0.35)");
+    g.addColorStop(1, "rgba(245, 120, 35, 0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 3, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  R_.sims["comet-orbit"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    // space: a dark stage in both page themes, as the other cosmology sims
+    const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    container.classList.add("geores-stage", "geores-space");
+    // as in the deck: the band at the bottom is where the tails go when the comet passes below the Sun
+    const W = 1280, H = 610;
+    const ctx = pg.makeCanvas(container, W, H);
+    // units: planet orbit radius = 1, planet period = 1 year
+    const A = 2.5, E = 0.85, B = A * Math.sqrt(1 - E * E), T = Math.pow(A, 1.5);
+    const S = 170, sx = 300, sy = 320;   // scale and Sun position
+    const TILT = -0.15;                  // ellipse rotation (rad)
+    let t = 0, speed = 0.25, playing = true, steps = opts.steps === "true";
+
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("comPause")}" data-alt="▶">❚❚</button>
+      <label>${tr("comSpeed")} <input type="range" min="0" max="1000"></label>
+      <label><input type="checkbox" class="steps"${steps ? " checked" : ""}> ${tr("comSteps")}</label>
+      <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
+    // in a keynote's .sim box, the controls take the theme's overlay (as the weather sims)
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const slider = panel.querySelector("input[type=range]"), lo = -1.5, hi = 0.3;
+    slider.value = pg.logPos(speed, lo, hi);
+    slider.addEventListener("input", () => { speed = pg.logValue(slider.value, lo, hi); });
+    const play = panel.querySelector(".play");
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "comPause" : "comPlay"));
+    };
+    play.addEventListener("click", () => setPlaying(!playing));
+    panel.querySelector(".steps").addEventListener("change", e => { steps = e.target.checked; });
+    const info = panel.querySelector(".date");
+    // Respect "reduce motion": start paused
+    if (G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+
+    // Comet position relative to the Sun, from Kepler's equation
+    function comet(time) {
+      const M = 2 * Math.PI * (((time / T) % 1) + 1) % (2 * Math.PI);
+      let En = M;
+      for (let k = 0; k < 12; k++) En -= (En - E * Math.sin(En) - M) / (1 - E * Math.cos(En));
+      // perihelion on the left of the Sun
+      const x = -A * (Math.cos(En) - E), y = B * Math.sin(En);
+      return [x * Math.cos(TILT) - y * Math.sin(TILT), x * Math.sin(TILT) + y * Math.cos(TILT)];
+    }
+    const planet = time => [Math.cos(2 * Math.PI * time + 1), -Math.sin(2 * Math.PI * time + 1)];
+    const px = ([x, y]) => [sx + x * S, sy + y * S];
+    const label = (s, x, y, color) => text(s, x, y, { size: 18, weight: 600, color, align: "center" });
+
+    function step(dt) {
+      if (playing) t += speed * dt;
+      ctx.clearRect(0, 0, W, H);
+
+      // orbits
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "rgba(90, 167, 230, 0.5)";
+      ctx.beginPath();
+      ctx.arc(sx, sy, S, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(134, 216, 248, 0.45)";
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      for (let k = 0; k <= 400; k++) {
+        const [x, y] = px(comet(T * k / 400));
+        k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // equal time steps: same time between two dots, on both orbits
+      if (steps) {
+        const n = 40;
+        ctx.fillStyle = "rgba(134, 216, 248, 0.8)";
+        for (let k = 0; k < n; k++) {
+          const [x, y] = px(comet(T * k / n));
+          ctx.beginPath(); ctx.arc(x, y, 3, 0, 2 * Math.PI); ctx.fill();
+        }
+        ctx.fillStyle = "rgba(90, 167, 230, 0.8)";
+        for (let k = 0; k < Math.round(n / T); k++) {
+          const [x, y] = px(planet(k * T / n));
+          ctx.beginPath(); ctx.arc(x, y, 3, 0, 2 * Math.PI); ctx.fill();
+        }
+      }
+
+      glowSun(ctx, sx, sy, 16);
+      label(tr("sun"), sx, sy + 46, "#f5a623");
+
+      // planet
+      const [qx, qy] = px(planet(t));
+      ctx.fillStyle = "#5aa7e6";
+      ctx.beginPath(); ctx.arc(qx, qy, 9, 0, 2 * Math.PI); ctx.fill();
+      label(tr("comPlanet"), qx, qy - 18, "#5aa7e6");
+
+      // comet: coma and tails grow near the Sun and point away from it
+      const c = comet(t);
+      const r = Math.hypot(c[0], c[1]);
+      const [kx, ky] = px(c);
+      const ux = c[0] / r, uy = c[1] / r;
+      const activity = Math.min(1, 0.9 / (r * r));
+      if (activity > 0.03) {
+        const len = 40 + 360 * activity;
+        // dust tail: wider, yellowish, slightly bent backwards along the orbit
+        const v = comet(t + 0.002), vx = v[0] - c[0], vy = v[1] - c[1], vn = Math.hypot(vx, vy) || 1;
+        const bend = 0.35;
+        const ex = kx + (ux - bend * vx / vn) * len, ey = ky + (uy - bend * vy / vn) * len;
+        const dust = ctx.createLinearGradient(kx, ky, ex, ey);
+        dust.addColorStop(0, `rgba(255, 236, 190, ${0.7 * activity + 0.1})`);
+        dust.addColorStop(1, "rgba(255, 236, 190, 0)");
+        ctx.fillStyle = dust;
+        ctx.beginPath();
+        ctx.moveTo(kx - uy * 5, ky + ux * 5);
+        ctx.quadraticCurveTo(kx + ux * len * 0.5 - uy * 30, ky + uy * len * 0.5 + ux * 30, ex - uy * 40 * activity, ey + ux * 40 * activity);
+        ctx.lineTo(ex + uy * 20 * activity, ey - ux * 20 * activity);
+        ctx.lineTo(kx + uy * 5, ky - ux * 5);
+        ctx.fill();
+        // ion tail: thin, blue, straight away from the Sun
+        const ion = ctx.createLinearGradient(kx, ky, kx + ux * len * 1.2, ky + uy * len * 1.2);
+        ion.addColorStop(0, `rgba(134, 216, 248, ${0.9 * activity + 0.1})`);
+        ion.addColorStop(1, "rgba(134, 216, 248, 0)");
+        ctx.fillStyle = ion;
+        ctx.beginPath();
+        ctx.moveTo(kx - uy * 3, ky + ux * 3);
+        ctx.lineTo(kx + ux * len * 1.2 - uy * 8, ky + uy * len * 1.2 + ux * 8);
+        ctx.lineTo(kx + ux * len * 1.2 + uy * 8, ky + uy * len * 1.2 - ux * 8);
+        ctx.lineTo(kx + uy * 3, ky - ux * 3);
+        ctx.fill();
+      }
+      const coma = 6 + 18 * activity;
+      const g = ctx.createRadialGradient(kx, ky, 0, kx, ky, coma);
+      g.addColorStop(0, "rgba(255, 255, 255, 1)");
+      g.addColorStop(0.25, "rgba(200, 240, 255, 0.9)");
+      g.addColorStop(1, "rgba(134, 216, 248, 0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(kx, ky, coma, 0, 2 * Math.PI); ctx.fill();
+      label(tr("comComet"), kx - ux * 30, ky - uy * 30 + 6, "#86d8f8");
+
+      // vis-viva: speed relative to the planet's orbital speed
+      const vel = Math.sqrt(2 / r - 1 / A);
+      info.innerHTML = tr("comInfo")(R_.num(L, r, 1), R_.num(L, vel, 1));
+    }
+    pg.loop(container, step);
+  };
+})(globalThis);
+
 // ---- src/sims/cosmology/earth-year.js ----
 // Sim "earth-year": Earth around the Sun with its fixed axis, and the same moment seen
 // "from the side" (the solstice drawing). Ported from GeoKey DF-Cosmology/3-Earth (sims.js, year()).
@@ -16876,6 +17056,972 @@
       const north = ["summer", "autumn", "winter", "spring"][Math.floor((((deg(t) % 360) + 360) % 360) / 90)];
       const south = { summer: "winter", autumn: "spring", winter: "summer", spring: "autumn" }[north];
       readout.innerHTML = `<b>${R_.dateText(L, day)}</b> · ${tr("north")}: ${tr(north)}, ${tr("south")}: ${tr(south)} · ${tr("notToScale")}`;
+    }
+    pg.loop(container, step);
+  };
+})(globalThis);
+
+// ---- src/sims/cosmology/hr-diagram.js ----
+// Sim "hr-diagram": the Sun among the stars, on a Hertzsprung–Russell diagram (surface temperature and
+// brightness). A mass slider places a main-sequence star of any mass, with its class, brightness, lifetime
+// and end; a click on one of 20 named stars (giants, supergiants, white dwarfs) gives its data and a fact.
+// Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, hr()). Shares GeoRes.stars with sun-future.js.
+//   <div class="geores" data-sim="hr-diagram" data-mass="1"></div>
+//   data-mass: mass of the main-sequence star at the start, in Suns, 0.1 to 40 (default 1: the Sun)
+//   data-star: a named star shown at the start instead, e.g. betelgeuse, sirius, siriusB, proxima (ids in STARS)
+//   data-sizes: false to hide the dashed lines of equal size
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  R_.addStrings({
+    en: {
+      hrdMass: "Mass", hrdRedDwarfBtn: "Red dwarf", hrdMassiveBtn: "Massive star", hrdSizes: "Sizes",
+      hrdSupergiants: "SUPERGIANTS", hrdGiants: "GIANTS", hrdWhiteDwarfs: "WHITE DWARFS", hrdMainSeqUp: "MAIN SEQUENCE",
+      hrdSizeSun: "size of the Sun", hrdTimesSun: "{n} × the Sun", hrdBrightAxis: "brightness (Sun = 1)",
+      hrdTempAxis: "← hotter        surface temperature (K)        cooler →",
+      hrdMsStar: "A STAR ON THE MAIN SEQUENCE", hrdOrClick: "or click a star in the diagram",
+      hrdDashed: "dashed: the Sun", hrdTooBig: "far too big to draw to scale",
+      hrdClass: "Class", hrdBrightness: "Brightness", hrdSize: "Size", hrdLifetime: "Lifetime", hrdEnd: "End",
+      hrdGyr: "{n} billion years", hrdGyr1: "{n} billion years", hrdMyr: "{n} million years", hrdMyr1: "{n} million years",
+      hrdUniverse: "Lifetime: longer than the age of the Universe!",
+      // types and ends
+      hrdMainSeq: "Main sequence", hrdRedDwarf: "Red dwarf", hrdBlueSG: "Blue supergiant", hrdWhiteSG: "White supergiant",
+      hrdBrightGiant: "Bright giant", hrdYellowSG: "Yellow supergiant", hrdOrangeGiant: "Orange giant",
+      hrdRedGiant: "Red giant", hrdRedSG: "Red supergiant", hrdWhiteDwarf: "White dwarf",
+      hrdEndDead: "already dead: slowly cooling", hrdEndOneDay: "white dwarf, one day", hrdEndWd: "→ white dwarf",
+      hrdEndRgWd: "red giant → white dwarf", hrdEndNs: "supernova → neutron star", hrdEndBh: "supernova → black hole",
+      hrdEndBorder: "white dwarf or supernova: borderline",
+      // the stars
+      hrdSun: "Sun", hrdSunFact: "Our star: an ordinary yellow dwarf, halfway through its life.",
+      hrdProxima: "Proxima Centauri", hrdProximaFact: "The closest star to the Sun: 4.2 light-years away.",
+      hrdBarnard: "Barnard's Star", hrdBarnardFact: "The star that moves fastest across our sky.",
+      hrdAlphaCenB: "α Centauri B", hrdAlphaCenBFact: "With α Centauri A and Proxima: the closest star system to us.",
+      hrdProcyon: "Procyon", hrdProcyonFact: "Its small companion, Procyon B, is a white dwarf.",
+      hrdAltair: "Altair", hrdAltairFact: "It spins once every 9 hours, so fast that it is flattened.",
+      hrdSirius: "Sirius", hrdSiriusFact: "The brightest star in our night sky.",
+      hrdVega: "Vega", hrdVegaFact: "The North Star 14 000 years ago, and again in 12 000 years.",
+      hrdAchernar: "Achernar", hrdAchernarFact: "One of the flattest stars known: it spins very fast.",
+      hrdSpica: "Spica", hrdSpicaFact: "In fact two hot stars that orbit each other in 4 days.",
+      hrdRigel: "Rigel", hrdRigelFact: "The foot of Orion: 120 000 times brighter than the Sun.",
+      hrdDeneb: "Deneb", hrdDenebFact: "One of the most luminous stars we can see with the naked eye.",
+      hrdCanopus: "Canopus", hrdCanopusFact: "The second brightest star of the night sky.",
+      hrdPolaris: "Polaris", hrdPolarisFact: "The North Star: it shows where north is.",
+      hrdPollux: "Pollux", hrdPolluxFact: "The closest giant star to the Sun. It has a planet.",
+      hrdArcturus: "Arcturus", hrdArcturusFact: "Almost the Sun's mass: the Sun will look like this in 7 billion years.",
+      hrdAldebaran: "Aldebaran", hrdAldebaranFact: "The red eye of the Bull (Taurus).",
+      hrdBetelgeuse: "Betelgeuse", hrdBetelgeuseFact: "In the Sun's place, it would reach beyond Mars. One day it will explode.",
+      hrdSiriusB: "Sirius B", hrdSiriusBFact: "The Sun's mass packed into a ball the size of Earth.",
+      hrdProcyonB: "Procyon B", hrdProcyonBFact: "A dead star: what the Sun will become.",
+    },
+    fr: {
+      hrdMass: "Masse", hrdRedDwarfBtn: "Naine rouge", hrdMassiveBtn: "Étoile massive", hrdSizes: "Tailles",
+      hrdSupergiants: "SUPERGÉANTES", hrdGiants: "GÉANTES", hrdWhiteDwarfs: "NAINES BLANCHES", hrdMainSeqUp: "SÉQUENCE PRINCIPALE",
+      hrdSizeSun: "taille du Soleil", hrdTimesSun: "{n} × le Soleil", hrdBrightAxis: "luminosité (Soleil = 1)",
+      hrdTempAxis: "← plus chaude        température de surface (K)        plus froide →",
+      hrdMsStar: "UNE ÉTOILE DE LA SÉQUENCE PRINCIPALE", hrdOrClick: "ou cliquez sur une étoile du diagramme",
+      hrdDashed: "en pointillé : le Soleil", hrdTooBig: "bien trop grande pour être dessinée à l'échelle",
+      hrdClass: "Classe", hrdBrightness: "Luminosité", hrdSize: "Taille", hrdLifetime: "Durée de vie", hrdEnd: "Fin",
+      hrdGyr: "{n} milliards d'années", hrdGyr1: "{n} milliard d'années", hrdMyr: "{n} millions d'années", hrdMyr1: "{n} million d'années",
+      hrdUniverse: "Durée de vie : plus longue que l'âge de l'Univers !",
+      hrdMainSeq: "Séquence principale", hrdRedDwarf: "Naine rouge", hrdBlueSG: "Supergéante bleue", hrdWhiteSG: "Supergéante blanche",
+      hrdBrightGiant: "Géante lumineuse", hrdYellowSG: "Supergéante jaune", hrdOrangeGiant: "Géante orange",
+      hrdRedGiant: "Géante rouge", hrdRedSG: "Supergéante rouge", hrdWhiteDwarf: "Naine blanche",
+      hrdEndDead: "déjà morte : se refroidit lentement", hrdEndOneDay: "naine blanche, un jour", hrdEndWd: "→ naine blanche",
+      hrdEndRgWd: "géante rouge → naine blanche", hrdEndNs: "supernova → étoile à neutrons", hrdEndBh: "supernova → trou noir",
+      hrdEndBorder: "naine blanche ou supernova : à la limite",
+      hrdSun: "Soleil", hrdSunFact: "Notre étoile : une naine jaune ordinaire, à la moitié de sa vie.",
+      hrdProxima: "Proxima du Centaure", hrdProximaFact: "L'étoile la plus proche du Soleil : à 4,2 années-lumière.",
+      hrdBarnard: "Étoile de Barnard", hrdBarnardFact: "L'étoile qui se déplace le plus vite dans notre ciel.",
+      hrdAlphaCenB: "α du Centaure B", hrdAlphaCenBFact: "Avec α du Centaure A et Proxima : le système d'étoiles le plus proche de nous.",
+      hrdProcyon: "Procyon", hrdProcyonFact: "Sa petite compagne, Procyon B, est une naine blanche.",
+      hrdAltair: "Altaïr", hrdAltairFact: "Elle tourne sur elle-même en 9 heures, si vite qu'elle est aplatie.",
+      hrdSirius: "Sirius", hrdSiriusFact: "L'étoile la plus brillante de notre ciel nocturne.",
+      hrdVega: "Véga", hrdVegaFact: "L'étoile polaire il y a 14 000 ans, et de nouveau dans 12 000 ans.",
+      hrdAchernar: "Achernar", hrdAchernarFact: "L'une des étoiles les plus aplaties connues : elle tourne très vite sur elle-même.",
+      hrdSpica: "Spica", hrdSpicaFact: "En fait deux étoiles chaudes qui tournent l'une autour de l'autre en 4 jours.",
+      hrdRigel: "Rigel", hrdRigelFact: "Le pied d'Orion : 120 000 fois plus lumineuse que le Soleil.",
+      hrdDeneb: "Deneb", hrdDenebFact: "L'une des étoiles les plus lumineuses visibles à l'œil nu.",
+      hrdCanopus: "Canopus", hrdCanopusFact: "La deuxième étoile la plus brillante du ciel nocturne.",
+      hrdPolaris: "Étoile polaire", hrdPolarisFact: "Presque à la verticale du pôle Nord : elle indique le nord.",
+      hrdPollux: "Pollux", hrdPolluxFact: "L'étoile géante la plus proche du Soleil. Elle a une planète.",
+      hrdArcturus: "Arcturus", hrdArcturusFact: "Presque la masse du Soleil : le Soleil ressemblera à cela dans 7 milliards d'années.",
+      hrdAldebaran: "Aldébaran", hrdAldebaranFact: "L'œil rouge du Taureau.",
+      hrdBetelgeuse: "Bételgeuse", hrdBetelgeuseFact: "À la place du Soleil, elle dépasserait l'orbite de Mars. Un jour, elle explosera.",
+      hrdSiriusB: "Sirius B", hrdSiriusBFact: "La masse du Soleil dans une boule de la taille de la Terre.",
+      hrdProcyonB: "Procyon B", hrdProcyonBFact: "Une étoile morte : ce que deviendra le Soleil.",
+    },
+  });
+
+  /* ---------------- Stars: shared helpers (also used by sun-future.js) ---------------- */
+
+  // Colour of a star from its surface temperature (blackbody approximation)
+  function starColor(T, alpha = 1) {
+    const t = T / 100;
+    const r = t <= 66 ? 255 : 329.7 * Math.pow(t - 60, -0.1332);
+    const g = t <= 66 ? 99.47 * Math.log(t) - 161.12 : 288.12 * Math.pow(t - 60, -0.0755);
+    const b = t >= 66 ? 255 : t <= 19 ? 0 : 138.52 * Math.log(t - 10) - 305.04;
+    const c = v => Math.round(Math.max(0, Math.min(255, v)));
+    return `rgba(${c(r)}, ${c(g)}, ${c(b)}, ${alpha})`;
+  }
+  // Surface temperature from luminosity and radius (Sun = 1)
+  const tempOf = (L, R) => 5772 * Math.pow(L / (R * R), 0.25);
+  const CLASSES = [["O", 30000], ["B", 10000], ["A", 7500], ["F", 6000], ["G", 5200], ["K", 3700], ["M", 0]];
+  const spectral = T => CLASSES.find(([, t]) => T >= t)[0];
+  // A rounded number: 1 300, 25, 2.4, 0.0017 (decimal comma and non-breaking spaces in French)
+  function nice(lang, x) {
+    let s;
+    if (x >= 1000) {
+      const p = Math.pow(10, Math.floor(Math.log10(x)) - 1);
+      s = String(Math.round(x / p) * p).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    } else if (x >= 10) s = String(Math.round(x));
+    else if (x >= 1) s = x.toFixed(1).replace(/\.0$/, "");
+    else s = String(Number(x.toPrecision(2)));
+    return R_.typo(lang, R_.lang(lang) === "fr" ? s.replace(".", ",") : s);
+  }
+
+  // A glowing star: white-hot centre, coloured edge, soft halo
+  function drawStar(ctx, x, y, r, T, halo = 2.2) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * halo);
+    g.addColorStop(0, "rgba(255, 255, 255, 1)");
+    g.addColorStop(0.25 / halo, starColor(T));
+    g.addColorStop(1 / halo, starColor(T, 0.85));
+    g.addColorStop(Math.min(1, 1.15 / halo), starColor(T, 0.25));
+    g.addColorStop(1, starColor(T, 0));
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r * halo, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  // Main-sequence star of mass M (Sun = 1): luminosity and radius (Sun = 1)
+  function mainSequence(M) {
+    const L = M < 0.43 ? 0.23 * Math.pow(M, 2.3) : M < 2 ? Math.pow(M, 4) : 1.4 * Math.pow(M, 3.5);
+    const R = M < 1 ? Math.pow(M, 0.8) : M < 10 ? Math.pow(M, 0.57) : 3.72 * Math.pow(M / 10, 0.8);
+    return { L, R, T: tempOf(L, R) };
+  }
+
+  // Canvas text helpers bound to a context and a theme: text(s, x, y, opts), wrap(s, x, y, maxW, lh, opts) returns
+  // the y after the last line, lines(s, maxW, opts) the lines without drawing, width(s, opts)
+  function writer(ctx, getTheme) {
+    const font = o => `${o.italic ? "italic " : ""}${o.weight || 400} ${o.size || 16}px ${getTheme().font}`;
+    const text = (s, x, y, o = {}) => pg.ctxText(ctx, getTheme(), s, x, y, Object.assign({ size: 16 }, o));
+    const width = (s, o = {}) => { ctx.font = font(o); return ctx.measureText(s).width; };
+    const lines = (s, maxW, o = {}) => {
+      ctx.font = font(o);
+      const out = [];
+      let line = "";
+      s.split(" ").forEach(w => {
+        const t = line ? line + " " + w : w;
+        if (ctx.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t;
+      });
+      if (line) out.push(line);
+      return out;
+    };
+    const wrap = (s, x, y, maxW, lh, o = {}) => {
+      lines(s, maxW, o).forEach(l => { text(l, x, y, o); y += lh; });
+      return y;
+    };
+    return { text, width, lines, wrap };
+  }
+
+  // A dark sky behind the stars on a light page (on a dark page, the page itself)
+  function sky(ctx, mode, x, y, w, h, r = 10) {
+    if (mode !== "light") return;
+    const g = ctx.createLinearGradient(0, y, 0, y + h);
+    g.addColorStop(0, "#161b2e");
+    g.addColorStop(1, "#0e1220");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill();
+  }
+
+  R_.stars = { starColor, tempOf, spectral, nice, drawStar, mainSequence, writer, sky };
+
+  /* ---------------- The Sun among the stars (HR diagram) ---------------- */
+
+  // id (string keys hrd<Id> and hrd<Id>Fact), surface temperature (K), luminosity, radius and mass (Sun = 1),
+  // label side, type (key hrd<type>), spectral class of a main-sequence star, special end
+  const STARS = [
+    { id: "proxima", T: 3042, L: 0.0017, R: 0.15, side: "l", M: 0.12, type: "RedDwarf" },
+    { id: "barnard", T: 3134, L: 0.0035, R: 0.19, side: "l", M: 0.16, type: "RedDwarf" },
+    { id: "alphaCenB", T: 5260, L: 0.5, R: 0.86, side: "r", M: 0.91, type: "MainSeq", cls: "K" },
+    { id: "procyon", T: 6530, L: 6.9, R: 2.05, side: "r", M: 1.5, type: "MainSeq", cls: "F" },
+    { id: "altair", T: 7700, L: 10.6, R: 1.8, side: "l", M: 1.8, type: "MainSeq", cls: "A" },
+    { id: "sirius", T: 9940, L: 25.4, R: 1.71, side: "r", M: 2.06, type: "MainSeq", cls: "A" },
+    { id: "vega", T: 9602, L: 40, R: 2.36, side: "l", M: 2.1, type: "MainSeq", cls: "A" },
+    { id: "achernar", T: 15000, L: 3150, R: 7, side: "r", M: 6.7, type: "MainSeq", cls: "B" },
+    { id: "spica", T: 25300, L: 20500, R: 7.5, side: "r", M: 11, type: "MainSeq", cls: "B" },
+    { id: "rigel", T: 12100, L: 120000, R: 79, side: "l", M: 21, type: "BlueSG" },
+    { id: "deneb", T: 8525, L: 196000, R: 203, side: "r", M: 19, type: "WhiteSG" },
+    { id: "canopus", T: 7350, L: 10700, R: 71, side: "r", M: 8, type: "BrightGiant", end: "hrdEndBorder" },
+    { id: "polaris", T: 6015, L: 1260, R: 46, side: "r", M: 5.4, type: "YellowSG" },
+    { id: "pollux", T: 4586, L: 43, R: 9, side: "l", M: 1.9, type: "OrangeGiant" },
+    { id: "arcturus", T: 4286, L: 170, R: 25, side: "l", M: 1.1, type: "RedGiant" },
+    { id: "aldebaran", T: 3910, L: 439, R: 45, side: "r", M: 1.2, type: "RedGiant" },
+    { id: "betelgeuse", T: 3600, L: 126000, R: 764, side: "l", M: 17, type: "RedSG" },
+    { id: "siriusB", T: 25000, L: 0.056, R: 0.0084, side: "r", M: 1.02, type: "WhiteDwarf" },
+    { id: "procyonB", T: 7740, L: 0.00049, R: 0.012, side: "r", M: 0.6, type: "WhiteDwarf" },
+  ];
+  const SUN = { id: "sun", T: 5772, L: 1, R: 1, side: null, M: 1, type: "MainSeq", cls: "G" };
+  const key = id => "hrd" + id[0].toUpperCase() + id.slice(1);
+
+  // How a star of mass M ends (main sequence or later): a string key
+  function fate(M, type) {
+    if (type === "WhiteDwarf") return "hrdEndDead";
+    if (M < 0.5) return "hrdEndOneDay";
+    if (M < 8) return /Giant|SG/.test(type) ? "hrdEndWd" : "hrdEndRgWd";
+    return M < 25 ? "hrdEndNs" : "hrdEndBh";
+  }
+
+  R_.sims["hr-diagram"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k), n = x => nice(L, x);
+    const W = 1280, H = 590;
+    const ctx = pg.makeCanvas(container, W, H);
+    // on the dark stage in both page themes, as the other cosmology canvas sims (earth-year, orrery, planet-spin)
+    container.classList.add("geores-stage", "geores-space");
+    let mode = "dark", th = R_.theme(mode);
+    const dk = R_.theme("dark");                          // colours on the dark sky
+    const { text, width, wrap } = writer(ctx, () => th);
+    const x0 = 110, x1 = 860, y0 = 24, y1 = 500;
+    const lT0 = Math.log10(50000), lT1 = Math.log10(2400), lL0 = 6, lL1 = -5;
+    const sx = (x1 - x0) / (lT0 - lT1), sy = (y1 - y0) / (lL0 - lL1);
+    const X = T => x0 + (lT0 - Math.log10(T)) * sx;
+    const Y = L => y0 + (lL0 - Math.log10(L)) * sy;
+    const size = R => Math.max(2.5, Math.min(20, 4 + 5 * Math.log10(R)));
+    const lo = -1, hi = Math.log10(40);
+
+    let mass = Math.max(0.1, Math.min(40, +opts.mass || 1)), sizes = opts.sizes !== "false", dirty = true;
+    let picked = STARS.find(s => s.id.toLowerCase() === String(opts.star || "").toLowerCase()) ||
+      (String(opts.star || "").toLowerCase() === "sun" ? SUN : null);   // a named star, or null
+    const panel = pg.controls(container, `
+      <label>${tr("hrdMass")} <input type="range" min="0" max="1000"></label>
+      <button data-m="0.2">${tr("hrdRedDwarfBtn")}</button><button data-m="1">${tr("hrdSun")}</button><button data-m="2.06">${tr("hrdSirius")}</button><button data-m="20">${tr("hrdMassiveBtn")}</button>
+      <label><input type="checkbox" class="sizes"${sizes ? " checked" : ""}> ${tr("hrdSizes")}</label>`);
+    // in a keynote's .sim box, the controls take the theme's overlay (as the weather sims)
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const slider = panel.querySelector("input[type=range]");
+    const setMass = m => { mass = m; picked = null; slider.value = pg.logPos(m, lo, hi); dirty = true; };
+    slider.value = pg.logPos(mass, lo, hi);
+    slider.addEventListener("input", () => { mass = pg.logValue(slider.value, lo, hi); picked = null; dirty = true; });
+    panel.querySelectorAll("[data-m]").forEach(b => b.addEventListener("click", () => setMass(+b.dataset.m)));
+    panel.querySelector(".sizes").addEventListener("change", e => { sizes = e.target.checked; dirty = true; });
+
+    // click a star in the diagram to read about it
+    const canvas = ctx.canvas;
+    const starAt = e => {
+      const r = canvas.getBoundingClientRect();
+      const x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
+      let best = null, bestD = Infinity;
+      [...STARS, SUN].forEach(st => {
+        const d = Math.hypot(X(st.T) - x, Y(st.L) - y);
+        if (d < Math.max(size(st.R) + 8, 14) && d < bestD) { best = st; bestD = d; }
+      });
+      return best;
+    };
+    canvas.addEventListener("pointerdown", e => { const st = starAt(e); if (st) { picked = st; dirty = true; } });
+    canvas.addEventListener("pointermove", e => { canvas.style.cursor = starAt(e) ? "pointer" : "default"; });
+
+    function glow(cx, cy, rx, ry, rot, color, alpha) {
+      ctx.save();
+      ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(rx, ry);
+      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+      g.addColorStop(0, color.replace("ALPHA", alpha));
+      g.addColorStop(1, color.replace("ALPHA", 0));
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(0, 0, 1, 0, 2 * Math.PI); ctx.fill();
+      ctx.restore();
+    }
+    // a text that fits in maxW: smaller if needed
+    function fit(s, x, y, maxW, o) {
+      let size = o.size;
+      while (size > 11 && width(s, Object.assign({}, o, { size })) > maxW) size -= 0.5;
+      text(s, x, y, Object.assign({}, o, { size }));
+    }
+
+    function diagram() {
+      sky(ctx, mode, x0, y0, x1 - x0, y1 - y0, 0);
+      ctx.save();
+      ctx.beginPath(); ctx.rect(x0, y0, x1 - x0, y1 - y0); ctx.clip();
+
+      // regions
+      glow(X(8000), Y(1e5), 330, 46, 0, "rgba(255, 210, 150, ALPHA)", 0.16);
+      glow(X(4300), Y(150), 95, 50, 0, "rgba(255, 160, 90, ALPHA)", 0.2);
+      glow(X(13000), Y(0.004), 175, 38, 0.3, "rgba(170, 200, 255, ALPHA)", 0.2);
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      [[44, 0.05], [22, 0.06]].forEach(([w, a]) => {
+        ctx.strokeStyle = `rgba(255, 255, 255, ${a})`; ctx.lineWidth = w;
+        ctx.beginPath();
+        for (let lm = -1; lm <= hi + 0.001; lm += 0.02) {
+          const s = mainSequence(Math.pow(10, lm));
+          lm === -1 ? ctx.moveTo(X(s.T), Y(s.L)) : ctx.lineTo(X(s.T), Y(s.L));
+        }
+        ctx.stroke();
+      });
+
+      // lines of equal size: L = R² (T / 5772)⁴
+      if (sizes) {
+        ctx.setLineDash([4, 6]); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+        [0.01, 0.1, 1, 10, 100, 1000].forEach(R => {
+          const Lr = T => R * R * Math.pow(T / 5772, 4);
+          ctx.beginPath(); ctx.moveTo(X(50000), Y(Lr(50000))); ctx.lineTo(X(2400), Y(Lr(2400))); ctx.stroke();
+          if (R > 100) return;     // Betelgeuse sits on the last line: no room for its label
+          // label where the line enters the plot, moved along it away from the stars
+          let T = 50000;
+          while (Y(Lr(T)) < y0 + 16 && T > 2500) T *= 0.98;
+          const busy = T => STARS.some(s => Math.abs(X(s.T) - X(T) - 50) < 80 && Math.abs(Y(s.L) - Y(Lr(T))) < 28);
+          while (busy(T) && T > 2500) T *= 0.97;
+          T = Math.max(T, Math.pow(10, lT0 - (x1 - 115 - x0) / sx));
+          const ang = Math.atan2(Y(Lr(T / 1.1)) - Y(Lr(T)), X(T / 1.1) - X(T));
+          ctx.save(); ctx.translate(X(T) + 8, Y(Lr(T)) - 4); ctx.rotate(ang);
+          text(R === 1 ? tr("hrdSizeSun") : tr("hrdTimesSun").replace("{n}", n(R)), 0, 0, { size: 13, color: "rgba(255, 255, 255, 0.4)", italic: true });
+          ctx.restore();
+        });
+        ctx.setLineDash([]);
+      }
+
+      text(tr("hrdSupergiants"), X(20000), Y(4e5) + 6, { size: 20, weight: 600, color: "rgba(255, 220, 170, 0.55)", align: "center" });
+      text(tr("hrdGiants"), X(3300), Y(25), { size: 18, weight: 600, color: "rgba(255, 180, 120, 0.6)", align: "center" });
+      text(tr("hrdWhiteDwarfs"), X(13000), Y(0.004) + 6, { size: 18, weight: 600, color: "rgba(180, 205, 255, 0.6)", align: "center" });
+      const ms = mainSequence(5);
+      ctx.save(); ctx.translate(X(ms.T) - 10, Y(ms.L) + 26); ctx.rotate(0.36);
+      text(tr("hrdMainSeqUp"), 0, 0, { size: 18, weight: 600, color: "rgba(255, 255, 255, 0.5)", align: "center" });
+      ctx.restore();
+
+      // named stars, then the Sun on top
+      STARS.forEach(st => {
+        const x = X(st.T), y = Y(st.L), r = size(st.R);
+        drawStar(ctx, x, y, r, st.T);
+        text(tr(key(st.id)), x + (st.side === "r" ? r + 6 : -r - 6), y + 5, { size: 14, color: "rgba(255, 255, 255, 0.75)", align: st.side === "r" ? "left" : "right" });
+      });
+      drawStar(ctx, X(5772), Y(1), size(1), 5772);
+      ctx.strokeStyle = dk.accent; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(X(5772), Y(1), size(1) + 5, 0, 2 * Math.PI); ctx.stroke();
+      text(tr("hrdSun"), X(5772) - 14, Y(1) - 10, { size: 17, weight: 700, color: dk.accent, align: "right" });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      diagram();
+      // your star: the one clicked, or the main-sequence star of the slider
+      const s = picked || mainSequence(mass), sxp = X(s.T), syp = Y(s.L);
+      ctx.setLineDash([3, 5]); ctx.strokeStyle = "rgba(255, 255, 255, 0.5)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(sxp, syp); ctx.lineTo(sxp, y1); ctx.moveTo(sxp, syp); ctx.lineTo(x0, syp); ctx.stroke();
+      ctx.setLineDash([]);
+      drawStar(ctx, sxp, syp, size(s.R) + 2, s.T);
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(sxp, syp, size(s.R) + 9, 0, 2 * Math.PI); ctx.stroke();
+      ctx.restore();
+
+      // axes
+      ctx.strokeStyle = th.muted; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+      [-4, -2, 0, 2, 4, 6].forEach(e => {
+        text(n(Math.pow(10, e)), x0 - 8, Y(Math.pow(10, e)) + 5, { size: 14, color: th.muted, align: "right" });
+        ctx.beginPath(); ctx.moveTo(x0 - 4, Y(Math.pow(10, e))); ctx.lineTo(x0, Y(Math.pow(10, e))); ctx.stroke();
+      });
+      ctx.save(); ctx.translate(22, (y0 + y1) / 2); ctx.rotate(-Math.PI / 2);
+      text(tr("hrdBrightAxis"), 0, 0, { size: 15, color: th.muted, align: "center" });
+      ctx.restore();
+      // spectral classes
+      const bounds = [50000, 30000, 10000, 7500, 6000, 5200, 3700, 2400];
+      for (let i = 0; i < 7; i++) {
+        const a = X(bounds[i]), b = X(bounds[i + 1]), mid = Math.sqrt(bounds[i] * bounds[i + 1]);
+        ctx.fillStyle = R_.stars.starColor(mid, 0.85);
+        ctx.fillRect(a + 1, y1 + 6, b - a - 2, 22);
+        if (mode === "light") { ctx.strokeStyle = th.grid; ctx.lineWidth = 1; ctx.strokeRect(a + 1.5, y1 + 6.5, b - a - 3, 21); }
+        text(CLASSES[i][0], (a + b) / 2, y1 + 23, { size: 16, weight: 700, color: "#1a1d2a", align: "center" });
+      }
+      [40000, 20000, 10000, 6000, 4000, 3000].forEach(T => {
+        text(n(T), X(T), y1 + 48, { size: 14, color: th.muted, align: "center" });
+      });
+      text(tr("hrdTempAxis"), (x0 + x1) / 2, y1 + 72, { size: 15, color: th.muted, align: "center" });
+
+      // your star, in numbers
+      const px = 905, pw = W - px - 8;
+      text(picked ? tr("hrd" + picked.type).toUpperCase() + (picked.cls ? " · " + picked.cls : "") : tr("hrdMsStar"), px, 40, { size: 14, weight: 600, color: th.muted });
+      if (!picked) text(tr("hrdOrClick"), px, 60, { size: 13, color: th.muted, italic: true });
+      const bx = 900, by = 72, bw = W - bx - 4, bh = 196, cx = bx + bw / 2, cy = by + bh / 2;
+      const rs = Math.min(90, 30 * Math.sqrt(s.R));
+      sky(ctx, mode, bx, by, bw, bh);
+      ctx.save(); ctx.beginPath(); ctx.rect(bx, by, bw, bh); ctx.clip();
+      drawStar(ctx, cx, cy, Math.max(rs, 1.5), s.T, 1.5);
+      ctx.setLineDash([5, 5]); ctx.strokeStyle = "rgba(255, 255, 255, 0.6)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 2 * Math.PI); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      const note = { size: 13, color: th.muted, align: "center", italic: true };
+      text(tr("hrdDashed"), cx, 288, note);
+      if (30 * Math.sqrt(s.R) > 90) text(tr("hrdTooBig"), cx, 305, note);
+
+      const rowsOf = list => {
+        const vx = px + Math.max(...list.map(([k]) => width(tr(k), { size: 16 }))) + 18;
+        return (y, dy, size) => list.forEach(([k, v], i) => {
+          text(tr(k), px, y + i * dy, { size: 16, color: th.muted });
+          fit(v, vx, y + i * dy, W - 6 - vx, { size, weight: 600, color: i === list.length - 1 ? th.accent : th.text });
+        });
+      };
+      const times = x => tr("hrdTimesSun").replace("{n}", n(x));
+      const cls = T => `${spectral(T)} · ${n(T)} K`;
+      if (picked) {
+        text(tr(key(picked.id)), px, 342, { size: 26, weight: 700, color: th.accent });
+        rowsOf([["hrdClass", cls(picked.T)], ["hrdBrightness", times(picked.L)], ["hrdSize", times(picked.R)],
+          ["hrdMass", times(picked.M)], ["hrdEnd", tr(picked.end || fate(picked.M, picked.type))]])(374, 27, 18);
+        wrap(tr(key(picked.id) + "Fact"), px, 510, pw, 20, { size: 15, color: th.text, italic: true });
+        return;
+      }
+      const life = Math.max(0.003, 10 * mass / s.L);
+      const nl = life >= 1 ? n(life) : n(life * 1000), one = nl === "1";
+      rowsOf([
+        ["hrdMass", times(mass)],
+        ["hrdClass", cls(s.T)],
+        ["hrdBrightness", times(s.L)],
+        ["hrdLifetime", tr(life >= 1 ? (one ? "hrdGyr1" : "hrdGyr") : (one ? "hrdMyr1" : "hrdMyr")).replace("{n}", nl)],
+        ["hrdEnd", tr(fate(mass, "MainSeq"))],
+      ])(336, 32, 19);
+      if (life > 13.8) wrap(tr("hrdUniverse"), px, 336 + 5 * 32 - 4, pw, 18, { size: 14, color: th.muted, italic: true });
+    }
+
+    // redraw once the web font is there, and when the page theme changes
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dirty = true; });
+    pg.loop(container, () => { if (dirty) { draw(); dirty = false; } });
+  };
+})(globalThis);
+
+// ---- src/sims/cosmology/orrery.js ----
+// Sim "orrery": the eight planets orbiting the Sun, starting at their real positions of today, with a time slider,
+// compressed or real distances and a count of the orbits each planet has completed.
+//   <div class="geores" data-sim="orrery"></div>
+//   data-real: true to start with the real distances (default: compressed, so that all the orbits fit)
+// Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, orrery()). Circular orbits at the mean motion.
+// Needs GeoRes.data.planets (dist/planets.js) for the pictures of the planets; coloured discs without it.
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  // Time per second of the speed slider: d days -> "3 weeks", "1.5 months", "2.7 years"
+  const duration = {
+    en: d => d < 1.5 ? `${d < 0.95 ? d.toFixed(1) : "1"} day`
+      : d < 10 ? `${Math.round(d)} days`
+        : d < 45 ? `${Math.round(d / 7)} week${d < 10.5 ? "" : "s"}`
+          : d < 365 ? `${(d / 30.44).toFixed(d < 300 ? 1 : 0)} months`
+            : `${(d / 365.25).toFixed(1)} years`,
+    fr: d => d < 1.5 ? `${d < 0.95 ? d.toFixed(1).replace(".", ",") : "1"} jour`
+      : d < 10 ? `${Math.round(d)} jours`
+        : d < 45 ? `${Math.round(d / 7)} semaine${d < 10.5 ? "" : "s"}`
+          : d < 365 ? `${(d / 30.44).toFixed(d < 300 ? 1 : 0).replace(".", ",")} mois`
+            : (y => `${y.toFixed(1).replace(".", ",")} an${y < 1.95 ? "" : "s"}`)(d / 365.25),
+  };
+
+  R_.addStrings({
+    en: {
+      orrSpeed: "Speed", orrPerSecond: d => `1 s = ${duration.en(d)}`, orrToday: "Today",
+      orrReal: "Real distances", orrNames: "Names", orrLaps: "Orbits completed",
+      orrLater: y => `${y.toFixed(1)} Earth years later`, orrPlay: "Play", orrPause: "Pause",
+      orrMercury: "Mercury", orrVenus: "Venus", orrEarth: "Earth", orrMars: "Mars",
+      orrJupiter: "Jupiter", orrSaturn: "Saturn", orrUranus: "Uranus", orrNeptune: "Neptune",
+    },
+    fr: {
+      orrSpeed: "Vitesse", orrPerSecond: d => `1 s = ${duration.fr(d)}`, orrToday: "Aujourd'hui",
+      orrReal: "Distances réelles", orrNames: "Noms", orrLaps: "Tours du Soleil",
+      orrLater: y => `${y.toFixed(1).replace(".", ",")} année${y < 1.95 ? "" : "s"} terrestre${y < 1.95 ? "" : "s"} plus tard`,
+      orrPlay: "Lecture", orrPause: "Pause",
+      orrMercury: "Mercure", orrVenus: "Vénus", orrEarth: "Terre", orrMars: "Mars",
+      orrJupiter: "Jupiter", orrSaturn: "Saturne", orrUranus: "Uranus", orrNeptune: "Neptune",
+    },
+  });
+
+  // a: semi-major axis (AU), P: period (days), L0: mean longitude at J2000 (deg), size: drawn size (px, not to scale)
+  const PLANETS = [
+    { key: "mercury", a: 0.387, P: 87.969, L0: 252.25, size: 8, color: "#c2b2a1" },
+    { key: "venus", a: 0.723, P: 224.701, L0: 181.98, size: 13, color: "#e8c27a" },
+    { key: "earth", a: 1.0, P: 365.256, L0: 100.46, size: 14, color: "#5aa7e6" },
+    { key: "mars", a: 1.524, P: 686.98, L0: 355.45, size: 10, color: "#e5774a" },
+    { key: "jupiter", a: 5.203, P: 4332.59, L0: 34.4, size: 34, color: "#dcaa74" },
+    { key: "saturn", a: 9.537, P: 10759.22, L0: 49.94, size: 29, color: "#ead392", ring: 2.2 },
+    { key: "uranus", a: 19.19, P: 30688.5, L0: 313.23, size: 20, color: "#93dbe3" },
+    { key: "neptune", a: 30.07, P: 60182, L0: 304.88, size: 20, color: "#6f8ff0" },
+  ];
+  const J2000 = Date.UTC(2000, 0, 1, 12), DAY = 86400000;
+  const nameKey = p => "orr" + p.key[0].toUpperCase() + p.key.slice(1);
+
+  // The Sun of the Solar System deck: more orange than GeoRes.page.glowSun
+  function glowSun(ctx, x, y, r) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
+    g.addColorStop(0, "rgba(255, 220, 140, 1)");
+    g.addColorStop(0.3, "rgba(245, 166, 35, 0.9)");
+    g.addColorStop(0.36, "rgba(245, 120, 35, 0.35)");
+    g.addColorStop(1, "rgba(245, 120, 35, 0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 3, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  R_.sims["orrery"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    // space: a dark stage in both page themes, as the other cosmology sims
+    const th = R_.theme("dark"), text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    container.classList.add("geores-stage", "geores-space");
+    const W = 1280, H = 610;
+    const ctx = pg.makeCanvas(container, W, H);
+    const icons = (R_.data && R_.data.planets && R_.data.planets.icons) || {};
+    const imgs = Object.fromEntries(PLANETS.filter(p => icons[p.key]).map(p => {
+      const img = new Image();
+      img.src = icons[p.key];
+      return [p.key, img];
+    }));
+    const cx = W / 2 + 30, cy = H / 2 - 10, RMAX = 535, TILT = 0.42;
+    const today = Date.now();
+    const real0 = opts.real === "true" ? 1 : 0;
+    let days = 0, speed = 30, playing = true, real = real0, realTarget = real0, names = true;
+
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("orrPause")}" data-alt="▶">❚❚</button>
+      <label>${tr("orrSpeed")} <input type="range" min="0" max="1000"></label>
+      <span class="rate" style="min-width: ${L === "fr" ? 8.2 : 8.1}em"></span>
+      <button class="today">${tr("orrToday")}</button>
+      <label><input type="checkbox" class="real"${real0 ? " checked" : ""}> ${tr("orrReal")}</label>
+      <label><input type="checkbox" class="names" checked> ${tr("orrNames")}</label>
+      <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
+    // in a keynote's .sim box, the controls take the theme's overlay (as the weather sims)
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const slider = panel.querySelector("input[type=range]"), lo = -1, hi = 4;
+    slider.value = pg.logPos(speed, lo, hi);
+    const rate = panel.querySelector(".rate"), readout = panel.querySelector(".date");
+    const showRate = () => { rate.textContent = tr("orrPerSecond")(speed); };
+    showRate();
+    slider.addEventListener("input", () => { speed = pg.logValue(slider.value, lo, hi); showRate(); });
+    const play = panel.querySelector(".play");
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "orrPause" : "orrPlay"));
+    };
+    play.addEventListener("click", () => setPlaying(!playing));
+    panel.querySelector(".today").addEventListener("click", () => { days = 0; });
+    panel.querySelector(".real").addEventListener("change", e => { realTarget = e.target.checked ? 1 : 0; });
+    panel.querySelector(".names").addEventListener("change", e => { names = e.target.checked; });
+    // Respect "reduce motion": start paused
+    if (G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+
+    // Compressed distances (square root of the distance, so that Mercury and Neptune both fit), or real
+    const sq = Math.sqrt, a0 = sq(PLANETS[0].a), a1 = sq(PLANETS[7].a);
+    const radius = a => {
+      const compressed = 75 + (sq(a) - a0) / (a1 - a0) * (RMAX - 75);
+      const linear = a / 30.07 * RMAX;
+      return compressed + (linear - compressed) * real;
+    };
+
+    // The count of orbits completed, in a box at the bottom right
+    function laps() {
+      const BW = 210, PAD = 16, ROW = 23.2, HEAD = 21, BH = 10 + HEAD + PLANETS.length * ROW + 8;
+      const x = W - BW, y = H - BH;
+      ctx.fillStyle = th.overlay;
+      ctx.beginPath(); ctx.roundRect(x, y, BW, BH, 8); ctx.fill();
+      // the heading in small capitals, spaced out (narrower spacing if the text is long)
+      const head = tr("orrLaps").toUpperCase();
+      ctx.font = `400 13px ${th.font}`;
+      const spacing = "letterSpacing" in ctx ? Math.max(0, Math.min(2, (BW - 2 * PAD - ctx.measureText(head).width) / head.length)) : 0;
+      if (spacing) ctx.letterSpacing = `${spacing}px`;
+      text(head, x + PAD, y + 10 + 13, { size: 13, color: th.muted });
+      if (spacing) ctx.letterSpacing = "0px";
+      PLANETS.forEach((p, i) => {
+        const yy = y + 10 + HEAD + i * ROW + 16;
+        text(tr(nameKey(p)), x + PAD, yy, { size: 16, color: p.color });
+        text(String(Math.max(0, Math.floor(days / p.P))), x + BW - PAD, yy, { size: 16, weight: 600, align: "right" });
+      });
+    }
+
+    function step(dt) {
+      if (playing) days += speed * dt;
+      real += (realTarget - real) * Math.min(1, dt * 3);
+      if (Math.abs(real - realTarget) < 0.001) real = realTarget;
+
+      const now = new Date(today + days * DAY);
+      const date = `${now.getDate()} ${tr("monthsShort")[now.getMonth()]} ${now.getFullYear()}`;
+      readout.textContent = date + (days > 1 ? ` · ${tr("orrLater")(days / 365.256)}` : "");
+      const d = (today + days * DAY - J2000) / DAY;
+
+      ctx.clearRect(0, 0, W, H);
+      // orbits
+      PLANETS.forEach(p => {
+        const r = radius(p.a);
+        ctx.strokeStyle = p.key === "earth" ? "rgba(90, 167, 230, 0.45)" : "rgba(237, 218, 235, 0.16)";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, r, r * TILT, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+      });
+      // positions: mean longitude, anticlockwise seen from the north
+      const pos = PLANETS.map(p => {
+        const theta = ((p.L0 + 360 / p.P * d) % 360) * Math.PI / 180;
+        const r = radius(p.a);
+        return { p, x: cx + r * Math.cos(theta), y: cy - r * Math.sin(theta) * TILT };
+      });
+      const draw = ({ p, x, y }) => {
+        const s = p.size * (1 - 0.55 * real);
+        const img = imgs[p.key];
+        if (img && img.complete && img.naturalWidth) {
+          const w = p.ring ? s * p.ring : s;
+          const h = w * img.naturalHeight / img.naturalWidth;
+          ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+        } else {
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(x, y, s / 2, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        if (names) text(tr(nameKey(p)), x, y - s / 2 - 7, { size: 15, color: p.color, align: "center" });
+      };
+      // the planets behind the Sun first, then the Sun, then the planets in front of it
+      pos.filter(o => o.y < cy).forEach(draw);
+      glowSun(ctx, cx, cy, 22 * (1 - 0.8 * real));
+      pos.filter(o => o.y >= cy).forEach(draw);
+      laps();
+    }
+    pg.loop(container, step);
+  };
+})(globalThis);
+
+// ---- src/sims/cosmology/planet-spin.js ----
+// Sim "planet-spin": the axial tilt and the rotation of the eight planets, side by side: textured globes that turn
+// at their true relative speeds (Jupiter fastest, Venus barely moving), each with its spin axis, the line
+// perpendicular to its orbit and the tilt between them (Venus upside down, Uranus on its side). Sizes not to scale.
+// On the dark stage in both page themes, as the other cosmology canvas sims.
+//   <div class="geores" data-sim="planet-spin" data-speed="2"></div>
+//   data-speed: hours of rotation per second at the start (0.05 to 25, default 2)
+//   data-grid="false": start without the grid of meridians and the equator
+// Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, spin()). Textures: GeoRes.data.planets (dist/planets.js,
+// Solar System Scope, CC BY 4.0); without them, the pictures of the planets (still), or plain discs.
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+  const DPR = 2;
+
+  R_.addStrings({
+    en: {
+      pspMercury: "Mercury", pspVenus: "Venus", pspEarth: "Earth", pspMars: "Mars",
+      pspJupiter: "Jupiter", pspSaturn: "Saturn", pspUranus: "Uranus", pspNeptune: "Neptune",
+      pspTilt: "tilt {v}", pspDay: "day {v}", pspUpsideDown: "upside down", pspOnSide: "on its side",
+      pspDays: "{n} days", pspSpeed: "Speed", pspGrid: "Grid", pspPerSecond: "1 s = {v}",
+      pspLater: "{t} later", pspD: "d", pspPlay: "Play", pspPause: "Pause", pspCredit: "Textures: Solar System Scope (CC BY 4.0)",
+    },
+    fr: {
+      pspMercury: "Mercure", pspVenus: "Vénus", pspEarth: "Terre", pspMars: "Mars",
+      pspJupiter: "Jupiter", pspSaturn: "Saturne", pspUranus: "Uranus", pspNeptune: "Neptune",
+      pspTilt: "inclinaison {v}", pspDay: "jour {v}", pspUpsideDown: "à l'envers", pspOnSide: "sur le côté",
+      pspDays: "{n} jours", pspSpeed: "Vitesse", pspGrid: "Grille", pspPerSecond: "1 s = {v}",
+      pspLater: "{t} plus tard", pspD: "j", pspPlay: "Lecture", pspPause: "Pause", pspCredit: "Textures : Solar System Scope (CC BY 4.0)",
+    },
+  });
+
+  // tilt: obliquity (deg), day: sidereal rotation (hours), r: drawn radius (not to scale).
+  // Venus and Uranus turn "backwards" (retrograde): their tilt above 90° puts their north pole down.
+  const SPINNERS = [
+    { id: "mercury", color: "#c2b2a1", tilt: 0.03, day: 1407.6, r: 26, tiltText: [0, 0], dayDays: [58.6, 1] },
+    { id: "venus", color: "#e8c27a", tilt: 177.4, day: 5832.5, r: 40, tiltText: [177, 0], note: "pspUpsideDown", dayDays: [243, 0] },
+    { id: "earth", color: "#5aa7e6", tilt: 23.4, day: 23.93, r: 41, tiltText: [23.4, 1], dayText: "23 h 56 min" },
+    { id: "mars", color: "#e5774a", tilt: 25.2, day: 24.62, r: 32, tiltText: [25, 0], dayText: "24 h 37 min" },
+    { id: "jupiter", color: "#dcaa74", tilt: 3.1, day: 9.93, r: 64, tiltText: [3, 0], dayText: "9 h 56 min" },
+    { id: "saturn", color: "#ead392", tilt: 26.7, day: 10.66, r: 50, ring: 2.27, tiltText: [27, 0], dayText: "10 h 33 min" },
+    { id: "uranus", color: "#93dbe3", tilt: 97.8, day: 17.24, r: 44, tiltText: [98, 0], note: "pspOnSide", dayText: "17 h 14 min" },
+    { id: "neptune", color: "#6f8ff0", tilt: 28.3, day: 16.11, r: 43, tiltText: [28, 0], dayText: "16 h 6 min" },
+  ];
+  const nameKey = id => "psp" + id[0].toUpperCase() + id.slice(1);
+
+  // We look at the planets from slightly above their equator, so that the
+  // north pole and Saturn's rings are visible
+  const ELEV = 15 * Math.PI / 180, CE = Math.cos(ELEV), SE = Math.sin(ELEV);
+  const RING_IN = 1.24, RING_OUT = 2.27;   // Saturn's C ring to A ring, in Saturn radii
+
+  // the keynote's colours, on the dark stage
+  const PALETTE = {
+    dark: {
+      normal: "rgba(237, 218, 235, 0.3)", arc: "rgba(245, 166, 35, 0.8)", dot: "#f5a623", axis: "#7aa7ff",
+      name: "#eddaeb", tilt: "#f5a623", day: "rgba(237, 218, 235, 0.7)", grid: "rgba(255, 255, 255, 0.35)",
+    },
+  };
+
+  // Pixels of a texture (data URI), read once per page and shared by every instance
+  const pixelCache = {};
+  function loadPixels(src) {
+    if (!pixelCache[src]) {
+      pixelCache[src] = new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const c = document.createElement("canvas");
+            c.width = img.naturalWidth;
+            c.height = img.naturalHeight;
+            const x = c.getContext("2d");
+            x.drawImage(img, 0, 0);
+            resolve({ w: c.width, h: c.height, data: x.getImageData(0, 0, c.width, c.height).data });
+          } catch (e) {
+            resolve(null);   // unreadable image: keep the picture instead
+          }
+        };
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+    return pixelCache[src];
+  }
+
+  // Textured sphere: pixel -> texture lookup tables, computed once; render(phase) only copies pixels
+  function makeGlobe(r, tex) {
+    const S = Math.ceil(2 * r * DPR), n = S * S;
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = S;
+    const cx = canvas.getContext("2d");
+    const out = cx.createImageData(S, S);
+    const row = new Int32Array(n).fill(-1), lon = new Int32Array(n), alpha = new Uint8ClampedArray(n);
+    for (let j = 0; j < S; j++) {
+      for (let i = 0; i < S; i++) {
+        const x = (i + 0.5) / S * 2 - 1, y = (j + 0.5) / S * 2 - 1, d2 = x * x + y * y;
+        const d = Math.sqrt(d2), cover = Math.min(1, (1 - d) * S / 2 + 0.5);
+        if (cover <= 0) continue;
+        const z = Math.sqrt(Math.max(0, 1 - d2));
+        // north = (0, -cos e, sin e), front = (0, sin e, cos e), east = (1, 0, 0)
+        const lat = Math.asin(Math.max(-1, Math.min(1, -y * CE + z * SE)));
+        const lo = Math.atan2(x, y * SE + z * CE);
+        const k = j * S + i;
+        row[k] = Math.min(tex.h - 1, Math.floor((0.5 - lat / Math.PI) * tex.h)) * tex.w;
+        lon[k] = Math.min(tex.w - 1, Math.floor((lo / (2 * Math.PI) + 0.5) * tex.w));
+        alpha[k] = cover * 255;
+      }
+    }
+    let last = -1;
+    return {
+      canvas,
+      render(phase) {
+        const W2 = tex.w, src = tex.data, dst = out.data;
+        const shift = ((Math.round(-phase / (2 * Math.PI) * W2) % W2) + W2) % W2;
+        if (shift === last) return;   // not turned by a texture pixel since the last frame (Venus, Mercury, paused)
+        last = shift;
+        for (let k = 0; k < n; k++) {
+          if (row[k] < 0) continue;
+          let t = lon[k] + shift;
+          if (t >= W2) t -= W2;
+          const s = (row[k] + t) * 4, o = k * 4;
+          dst[o] = src[s]; dst[o + 1] = src[s + 1]; dst[o + 2] = src[s + 2]; dst[o + 3] = alpha[k];
+        }
+        cx.putImageData(out, 0, 0);
+      },
+    };
+  }
+
+  // Saturn's rings, seen from slightly above: back half (behind the planet) and front half
+  function makeRings(r, tex) {
+    const R2 = r * RING_OUT, Wd = Math.ceil(2 * R2 * DPR), Hd = Math.ceil(2 * R2 * SE * DPR) + 2;
+    const halves = [0, 1].map(() => {
+      const c = document.createElement("canvas");
+      c.width = Wd; c.height = Hd;
+      return c;
+    });
+    const imgs = halves.map(c => c.getContext("2d").createImageData(Wd, Hd));
+    for (let j = 0; j < Hd; j++) {
+      for (let i = 0; i < Wd; i++) {
+        const a = ((i + 0.5) / DPR - R2) / r, yy = ((j + 0.5) / DPR - Hd / DPR / 2) / r;
+        const b = yy / SE, rr = Math.hypot(a, b);
+        if (rr < RING_IN || rr > RING_OUT) continue;
+        const t = Math.min(tex.w - 1, Math.floor((rr - RING_IN) / (RING_OUT - RING_IN) * tex.w)) * 4;
+        const img = imgs[yy < 0 ? 0 : 1], o = (j * Wd + i) * 4;
+        img.data[o] = tex.data[t]; img.data[o + 1] = tex.data[t + 1]; img.data[o + 2] = tex.data[t + 2];
+        img.data[o + 3] = tex.data[t + 3];
+      }
+    }
+    halves.forEach((c, k) => c.getContext("2d").putImageData(imgs[k], 0, 0));
+    return { back: halves[0], front: halves[1], w: Wd / DPR, h: Hd / DPR };
+  }
+
+  R_.sims["planet-spin"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    // a space scene: on the dark stage in both page themes, as the other canvas sims of cosmology (earth-year, orrery)
+    container.classList.add("geores-stage", "geores-space");
+    const th = R_.theme("dark"), P = PALETTE.dark;
+    const W = 1280, HS = 400, CY = 180;
+    const ctx = pg.makeCanvas(container, W, HS);
+
+    // column widths follow the drawn size (Saturn needs room for its rings)
+    const widths = SPINNERS.map(p => Math.max(118, p.r * (p.ring ? 2 * p.ring : 2.6)));
+    const scale = (W - 20) / widths.reduce((a, b) => a + b, 0);
+    let x0 = 10;
+    const xs = widths.map(w => { const x = x0 + w * scale / 2; x0 += w * scale; return x; });
+
+    // the labels, in the page's language
+    const labels = SPINNERS.map(p => {
+      const tilt = tr("pspTilt").replace("{v}", R_.num(L, ...p.tiltText) + "°");
+      const day = p.dayText || tr("pspDays").replace("{n}", R_.num(L, ...p.dayDays));
+      return {
+        name: tr(nameKey(p.id)), tilt, note: p.note ? tr(p.note) : "",
+        day: R_.typo(L, tr("pspDay").replace("{v}", day)),
+      };
+    });
+
+    // Textures; without them, the pictures of the planets
+    const data = (R_.data && R_.data.planets) || {}, TEX = data.textures || {}, icons = data.icons || {};
+    const globes = {};
+    let rings = null;
+    SPINNERS.forEach(p => {
+      if (TEX[p.id]) loadPixels(TEX[p.id]).then(t => { if (t) globes[p.id] = makeGlobe(p.r, t); });
+    });
+    if (TEX.saturnRing) loadPixels(TEX.saturnRing).then(t => { if (t) rings = makeRings(SPINNERS[5].r, t); });
+    const pictures = {};
+    SPINNERS.forEach(p => {
+      if (TEX[p.id] || !icons[p.id]) return;
+      const img = new Image();
+      img.src = icons[p.id];
+      pictures[p.id] = img;
+    });
+
+    const lo = -1.3, hi = 1.4;   // 3 minutes to 25 hours per second
+    let hours = 0, playing = true, grid = opts.grid !== "false";
+    let speed = Math.max(Math.pow(10, lo), Math.min(Math.pow(10, hi), +opts.speed || 2));
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("pspPause")}" data-alt="▶">❚❚</button>
+      <label>${tr("pspSpeed")} <input type="range" min="0" max="1000"></label>
+      <span class="rate" style="min-width: 5.6em"></span>
+      <label><input type="checkbox" class="grid"${grid ? " checked" : ""}> ${tr("pspGrid")}</label>
+      <span class="date" style="min-width: 8.4em"></span>`);
+    // in a keynote's .sim box, the controls take the theme's overlay (as the weather sims)
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const slider = panel.querySelector("input[type=range]");
+    slider.value = pg.logPos(speed, lo, hi);
+    const rate = panel.querySelector(".rate"), elapsed = panel.querySelector(".date");
+    const describeHours = h => h < 1 ? `${Math.round(h * 60)} min` : `${h < 10 ? R_.num(L, h, 1) : Math.round(h)} h`;
+    const showRate = () => { rate.textContent = R_.typo(L, tr("pspPerSecond").replace("{v}", describeHours(speed))); };
+    showRate();
+    slider.addEventListener("input", () => { speed = pg.logValue(slider.value, lo, hi); showRate(); });
+    const play = panel.querySelector(".play");
+    const setPlaying = on => {
+      playing = on;
+      play.textContent = on ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(on ? "pspPause" : "pspPlay"));
+    };
+    play.addEventListener("click", () => setPlaying(!playing));
+    panel.querySelector(".grid").addEventListener("change", e => { grid = e.target.checked; });
+    // Respect "reduce motion": start paused
+    if (G.matchMedia && G.matchMedia("(prefers-reduced-motion: reduce)").matches) setPlaying(false);
+
+    // point of the sphere (latitude f, longitude l) in the view: [x, y, visible]
+    const view = (f, l) => [Math.cos(f) * Math.sin(l), -Math.sin(f) * CE + Math.cos(f) * Math.cos(l) * SE,
+      Math.sin(f) * SE + Math.cos(f) * Math.cos(l) * CE > 0];
+
+    function gridLines(R, phase) {
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = P.grid;
+      const curve = pts => {
+        ctx.beginPath();
+        let on = false;
+        pts.forEach(([x, y, v]) => {
+          if (v && on) ctx.lineTo(x * R, y * R);
+          else if (v) ctx.moveTo(x * R, y * R);
+          on = v;
+        });
+        ctx.stroke();
+      };
+      for (let k = 0; k < 12; k++) {
+        const l = phase + k * Math.PI / 6;
+        curve(Array.from({ length: 37 }, (_, i) => view(-Math.PI / 2 + i * Math.PI / 36, l)));
+      }
+      curve(Array.from({ length: 73 }, (_, i) => view(0, i * Math.PI / 36)));
+    }
+
+    function planet(p, x) {
+      const R = p.r, tilt = p.tilt * Math.PI / 180;
+      const phase = 2 * Math.PI * hours / p.day;
+
+      // orbit normal (dashed) and tilt arc
+      ctx.save();
+      ctx.translate(x, CY);
+      ctx.strokeStyle = P.normal;
+      ctx.setLineDash([4, 5]);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(0, -R - 46); ctx.lineTo(0, R + 46); ctx.stroke();
+      ctx.setLineDash([]);
+      if (p.tilt > 1) {
+        ctx.strokeStyle = P.arc;
+        ctx.beginPath(); ctx.arc(0, 0, R + 30, -Math.PI / 2, -Math.PI / 2 + tilt); ctx.stroke();
+      }
+
+      // planet frame: tilted by the obliquity
+      ctx.rotate(tilt);
+      const globe = globes[p.id];
+      if (globe && p.ring && rings) ctx.drawImage(rings.back, -rings.w / 2, -rings.h / 2, rings.w, rings.h);
+      if (globe) {
+        globe.render(phase);
+        ctx.drawImage(globe.canvas, -R, -R, 2 * R, 2 * R);
+        // light from the upper left, whatever the tilt
+        const hx = -0.4 * R * Math.cos(tilt) - 0.4 * R * Math.sin(tilt);
+        const hy = 0.4 * R * Math.sin(tilt) - 0.4 * R * Math.cos(tilt);
+        const shade = ctx.createRadialGradient(hx, hy, R * 0.1, hx * 0.5, hy * 0.5, R * 1.25);
+        shade.addColorStop(0, "rgba(255, 255, 255, 0.12)");
+        shade.addColorStop(0.45, "rgba(0, 0, 0, 0)");
+        shade.addColorStop(1, "rgba(0, 0, 0, 0.7)");
+        ctx.fillStyle = shade;
+        ctx.beginPath(); ctx.arc(0, 0, R, 0, 2 * Math.PI); ctx.fill();
+        if (p.ring && rings) ctx.drawImage(rings.front, -rings.w / 2, -rings.h / 2, rings.w, rings.h);
+      } else {
+        const img = pictures[p.id];
+        if (img && img.complete && img.naturalWidth) {
+          const w = p.ring ? 2 * R * 2.2 : 2 * R;
+          const h = w * img.naturalHeight / img.naturalWidth;
+          ctx.drawImage(img, -w / 2, -h / 2, w, h);
+        } else {   // no data bundle: a plain disc in the planet's colour
+          ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.arc(0, 0, R, 0, 2 * Math.PI); ctx.fill();
+        }
+      }
+
+      // grid turning with the planet's day, and a marker on the equator
+      ctx.save();
+      ctx.beginPath(); ctx.arc(0, 0, R, 0, 2 * Math.PI); ctx.clip();
+      if (grid) gridLines(R, phase);
+      const [mx, my, mv] = view(0, phase);
+      if (mv) {
+        ctx.fillStyle = P.dot;
+        ctx.beginPath(); ctx.arc(mx * R, my * R, Math.max(3, R / 9), 0, 2 * Math.PI); ctx.fill();
+      }
+      ctx.restore();
+
+      // spin axis with a turning arrow at the north pole
+      ctx.strokeStyle = P.axis;
+      ctx.fillStyle = P.axis;
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(0, -R - 34); ctx.lineTo(0, -R * CE); ctx.moveTo(0, R); ctx.lineTo(0, R + 22); ctx.stroke();
+      const ay = -R - 20, ar = Math.max(12, R * 0.35);
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(0, ay, ar, ar * 0.3, 0, 0.15 * Math.PI, 1.85 * Math.PI); ctx.stroke();
+      // arrowhead on the front side, pointing in the direction of rotation (west to east)
+      const hx = ar * Math.cos(0.15 * Math.PI), hy = ay + ar * 0.3 * Math.sin(0.15 * Math.PI);
+      ctx.beginPath(); ctx.moveTo(hx + 7, hy - 1); ctx.lineTo(hx - 3, hy - 6); ctx.lineTo(hx - 2, hy + 5); ctx.fill();
+      ctx.restore();
+    }
+
+    // Labels under each planet: name, tilt (with "upside down" / "on its side"), day. When a tilt line with its note
+    // would run into its neighbour's (French), the note goes on a line of its own, under the day
+    function drawLabels() {
+      const text = (s, x, y, size, weight, color) => pg.ctxText(ctx, th, s, x, y, { size, weight, color, align: "center" });
+      ctx.font = `400 15px ${th.font}`;
+      const full = labels.map(l => (l.note ? `${l.tilt} · ${l.note}` : l.tilt));
+      const wTilt = full.map(s => ctx.measureText(s).width);
+      const split = wTilt.some((w, i) => [i - 1, i + 1].some(j => j >= 0 && j < xs.length &&
+        Math.abs(xs[j] - xs[i]) - w / 2 - wTilt[j] / 2 < 12));
+      const top = split ? HS - 70 : HS - 62;
+      labels.forEach((l, i) => {
+        text(l.name, xs[i], top, 19, 600, P.name);
+        text(split ? l.tilt : full[i], xs[i], top + 22, 15, 400, P.tilt);
+        text(l.day, xs[i], top + 42, 15, 400, P.day);
+        if (split && l.note) text(l.note, xs[i], top + 61, 15, 400, P.tilt);
+      });
+    }
+
+    function step(dt) {
+      if (playing) hours += speed * dt;
+      const d = Math.floor(hours / 24), h = Math.floor(hours % 24);
+      elapsed.textContent = R_.typo(L, tr("pspLater").replace("{t}", `${d ? `${d} ${tr("pspD")} ` : ""}${h} h`));
+      ctx.clearRect(0, 0, W, HS);
+      SPINNERS.forEach((p, i) => planet(p, xs[i]));
+      drawLabels();
+      // the textures' licence asks for the credit (a deck gives it on the slide)
+      if (R_.data && R_.data.planets && !container.closest(".reveal")) pg.ctxText(ctx, th, tr("pspCredit"), 4, 14, { size: 11, weight: 400, color: P.day, align: "left" });   // top left: the enlarge button is top right
     }
     pg.loop(container, step);
   };
@@ -17369,6 +18515,350 @@
       });
     }
     sync();
+  };
+})(globalThis);
+
+// ---- src/sims/cosmology/sun-future.js ----
+// Sim "sun-future": the Sun's future, from today to a red giant, a planetary nebula and a white dwarf.
+// The inner planets' orbits to scale (they widen as the Sun loses mass; Mercury and Venus are swallowed),
+// the Sun's size next to today's, its track on a small Hertzsprung–Russell diagram, and a timeline (not to
+// scale) to drag or play. Model values after Sackmann et al. (1993) and Schröder & Smith (2008).
+// Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, sunlife()). Uses GeoRes.stars from hr-diagram.js.
+//   <div class="geores" data-sim="sun-future" data-age="4.57"></div>
+//   data-age: age of the Sun at the start, in billion years, 0 to 20 (default 4.57: today)
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  R_.addStrings({
+    en: {
+      sfuToday: "Today", sfuRedGiant: "Red giant", sfuWhiteDwarf: "White dwarf", sfuPlay: "Play", sfuPause: "Pause",
+      sfuMainSeq: "Main sequence", sfuSubgiant: "Subgiant", sfuHelium: "Helium", sfuGiant: "Giant", sfuNebula: "Nebula",
+      sfuMainSeqText: "Hydrogen turns into helium in the core. The Sun slowly gets brighter.",
+      sfuSubgiantText: "The core has run out of hydrogen. The Sun starts to swell.",
+      sfuRedGiantText: "Hydrogen burns around the core: the Sun swells to 250 times its size and loses part of its mass.",
+      sfuHeliumText: "Helium flash: the core now turns helium into carbon, and the Sun shrinks again.",
+      sfuGiantText: "The helium runs out: the Sun swells once more and blows away its outer layers.",
+      sfuNebulaText: "The outer layers drift away as a glowing planetary nebula around the hot core.",
+      sfuWhiteDwarfText: "Only the core is left: a white dwarf the size of Earth, slowly cooling for ever.",
+      sfuMercury: "Mercury", sfuVenus: "Venus", sfuEarth: "Earth", sfuMars: "Mars",
+      sfuMercuryGone: "Mercury: swallowed", sfuVenusGone: "Venus: swallowed", sfuEarthGone: "Earth: swallowed", sfuMarsGone: "Mars: swallowed",
+      sfuNoOceans: "Earth: no more oceans", sfuFrozen: "Earth: frozen",
+      sfuScale: "1 AU", sfuOrbits: "orbits to scale", sfuSizeX: "Size × {n}", sfuDashedToday: "dashed: the Sun today",
+      sfuTempAxis: "← hotter      temperature      cooler →", sfuBrightAxis: "brightness", sfuMsLine: "main sequence",
+      sfuBrightness: "Brightness", sfuSize: "Size", sfuSurface: "Surface", sfuXToday: "{n} × today",
+      sfuMarkToday: "today", sfuMarkOceans: "no more oceans", sfuMarkVenus: "Venus swallowed",
+      sfuNotToScale: "Timeline not to scale",
+      sfuAgo: "{t} ago", sfuIn: "In {t}", sfuAgeOf: "age of the Sun: {t}",
+      sfuGyr: "{n} billion years", sfuGyr1: "{n} billion years",
+    },
+    fr: {
+      sfuToday: "Aujourd'hui", sfuRedGiant: "Géante rouge", sfuWhiteDwarf: "Naine blanche", sfuPlay: "Lecture", sfuPause: "Pause",
+      sfuMainSeq: "Séquence principale", sfuSubgiant: "Sous-géante", sfuHelium: "Hélium", sfuGiant: "Géante", sfuNebula: "Nébuleuse",
+      sfuMainSeqText: "Dans le cœur, l'hydrogène se transforme en hélium. Le Soleil devient lentement plus lumineux.",
+      sfuSubgiantText: "Le cœur n'a plus d'hydrogène. Le Soleil commence à gonfler.",
+      sfuRedGiantText: "L'hydrogène brûle autour du cœur : le Soleil gonfle jusqu'à 250 fois sa taille et perd une partie de sa masse.",
+      sfuHeliumText: "Flash de l'hélium : le cœur transforme maintenant l'hélium en carbone, et le Soleil rétrécit à nouveau.",
+      sfuGiantText: "L'hélium s'épuise : le Soleil gonfle une dernière fois et expulse ses couches extérieures.",
+      sfuNebulaText: "Les couches extérieures s'éloignent : une nébuleuse planétaire brillante autour du cœur très chaud.",
+      sfuWhiteDwarfText: "Il ne reste que le cœur : une naine blanche de la taille de la Terre, qui se refroidit lentement pour toujours.",
+      sfuMercury: "Mercure", sfuVenus: "Vénus", sfuEarth: "Terre", sfuMars: "Mars",
+      sfuMercuryGone: "Mercure : englouti", sfuVenusGone: "Vénus : engloutie", sfuEarthGone: "Terre : engloutie", sfuMarsGone: "Mars : englouti",
+      sfuNoOceans: "Terre : plus d'océans", sfuFrozen: "Terre : gelée",
+      sfuScale: "1 ua", sfuOrbits: "orbites à l'échelle", sfuSizeX: "Taille × {n}", sfuDashedToday: "en pointillé : le Soleil actuel",
+      sfuTempAxis: "← plus chaud      température      plus froid →", sfuBrightAxis: "luminosité", sfuMsLine: "séquence principale",
+      sfuBrightness: "Luminosité", sfuSize: "Taille", sfuSurface: "Surface", sfuXToday: "{n} × l'actuelle",
+      sfuMarkToday: "aujourd'hui", sfuMarkOceans: "plus d'océans", sfuMarkVenus: "Vénus engloutie",
+      sfuNotToScale: "Frise chronologique pas à l'échelle",
+      sfuAgo: "Il y a {t}", sfuIn: "Dans {t}", sfuAgeOf: "âge du Soleil : {t}",
+      sfuGyr: "{n} milliards d'années", sfuGyr1: "{n} milliard d'années",
+    },
+  });
+
+  // age (billion years), luminosity, radius and mass (Sun today = 1)
+  const SUN_LIFE = [
+    [0, 0.70, 0.89, 1], [4.57, 1, 1, 1], [7, 1.33, 1.12, 1], [9, 1.67, 1.27, 1],
+    [10.9, 2.2, 1.58, 1], [11.6, 2.7, 2.3, 1], [12.0, 34, 10, 0.97], [12.12, 400, 60, 0.9],
+    [12.167, 2600, 250, 0.67], [12.17, 44, 10, 0.67], [12.27, 50, 11, 0.66], [12.31, 600, 60, 0.62],
+    [12.335, 4500, 200, 0.55], [12.3355, 4000, 1.5, 0.54], [12.336, 3000, 0.1, 0.54],
+    [12.4, 1, 0.014, 0.54], [13.5, 0.01, 0.0125, 0.54], [20, 0.0005, 0.012, 0.54],
+  ];
+  function sunAt(age) {
+    let i = 0;
+    while (i < SUN_LIFE.length - 2 && SUN_LIFE[i + 1][0] < age) i++;
+    const [a0, L0, R0, M0] = SUN_LIFE[i], [a1, L1, R1, M1] = SUN_LIFE[i + 1];
+    const f = Math.max(0, Math.min(1, (age - a0) / (a1 - a0)));
+    const L = Math.pow(10, Math.log10(L0) + f * (Math.log10(L1) - Math.log10(L0)));
+    const R = Math.pow(10, Math.log10(R0) + f * (Math.log10(R1) - Math.log10(R0)));
+    return { L, R, M: M0 + f * (M1 - M0), T: R_.stars.tempOf(L, R) };
+  }
+  // The timeline is not to scale: the last stages take a few million years only.
+  // [from, to (billion years), share of the timeline]
+  const SEGS = [[0, 4.57, 0.16], [4.57, 10.9, 0.2], [10.9, 12.0, 0.14], [12.0, 12.167, 0.16],
+    [12.167, 12.335, 0.14], [12.335, 12.4, 0.08], [12.4, 20, 0.12]];
+  function ageAt(u) {
+    for (const [a, b, w] of SEGS) {
+      if (u <= w) return a + (b - a) * u / w;
+      u -= w;
+    }
+    return 20;
+  }
+  function uAt(age) {
+    let u = 0;
+    for (const [a, b, w] of SEGS) {
+      if (age <= b) return u + w * (age - a) / (b - a);
+      u += w;
+    }
+    return 1;
+  }
+  // from, to (billion years), string key (name; + "Text": what happens)
+  const STAGES = [
+    [0, 10.9, "sfuMainSeq"], [10.9, 11.6, "sfuSubgiant"], [11.6, 12.167, "sfuRedGiant"], [12.167, 12.27, "sfuHelium"],
+    [12.27, 12.335, "sfuGiant"], [12.335, 12.4, "sfuNebula"], [12.4, 20, "sfuWhiteDwarf"],
+  ];
+  // semi-major axis (AU), angle on the drawing (degrees), colour
+  const INNER = [
+    { key: "sfuMercury", a: 0.387, ang: 200, color: "#c2b2a1" },
+    { key: "sfuVenus", a: 0.723, ang: 315, color: "#e8c27a" },
+    { key: "sfuEarth", a: 1.0, ang: 35, color: "#5aa7e6" },
+    { key: "sfuMars", a: 1.524, ang: 112, color: "#e5774a" },
+  ];
+  const NOW = 4.57, OCEANS = 5.6, RSUN = 0.00465;     // ages (billion years), Sun's radius in AU
+
+  // When each planet is swallowed: the Sun grows past its orbit, which widens as the Sun loses mass (once)
+  let gone = null;
+  function swallowed() {
+    if (gone) return gone;
+    gone = INNER.map(p => {
+      for (let u = 0; u <= 1; u += 0.0005) {
+        const age = ageAt(u), s = sunAt(age);
+        if (s.R * RSUN > p.a / s.M) return age;
+      }
+      return null;
+    });
+    return gone;
+  }
+
+  R_.sims["sun-future"] = function (container, opts = {}) {
+    const S = R_.stars;
+    if (!S) return console.warn("GeoRes: sun-future needs hr-diagram.js (GeoRes.stars)");
+    const { starColor, drawStar, mainSequence, sky } = S;
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k), n = x => S.nice(L, x);
+    const W = 1280, H = 540;
+    const ctx = pg.makeCanvas(container, W, H);
+    // on the dark stage in both page themes, as the other cosmology canvas sims (earth-year, orrery, planet-spin)
+    container.classList.add("geores-stage", "geores-space");
+    let mode = "dark", th = R_.theme(mode);
+    const dk = R_.theme("dark");                          // colours on the dark sky
+    const { text, width, lines, wrap } = S.writer(ctx, () => th);
+    const C = [330, 228], K = 76;                         // centre of the orbits, px per AU
+    const OX = 0, OY = 0, OW = 750, OH = 448;             // the sky of the orbits
+    const SX0 = 40, SX1 = 1240, SY = 474;                 // timeline strip
+    const SXu = u => SX0 + u * (SX1 - SX0);
+    // mini HR diagram
+    const hx0 = 800, hx1 = 1190, hy0 = 20, hy1 = 236;      // clear of the enlarge button (top right)
+    const hT0 = Math.log10(150000), hT1 = Math.log10(2000), hL0 = 4.5, hL1 = -4;
+    const HX = T => hx0 + (hT0 - Math.log10(T)) / (hT0 - hT1) * (hx1 - hx0);
+    const HY = L => hy0 + (hL0 - Math.log10(L)) / (hL0 - hL1) * (hy1 - hy0);
+    const goneAt = swallowed();
+    const track = [];
+    for (let u = 0; u <= 1.0001; u += 0.002) track.push(sunAt(ageAt(u)));
+
+    // the stage text: as many lines as the longest one, so the numbers below never move
+    const TX = hx0 - 30, TW = 470;
+    const textLines = Math.max(...STAGES.map(st => lines(tr(st[2] + "Text"), TW, { size: 17 }).length));
+    const rowsY = 324 + textLines * 22 + 22;
+    // the three numbers: columns as wide as their widest values
+    const VAL = { size: 19, weight: 600 };
+    const colW = [n(4500), n(250)].map(v => width(tr("sfuXToday").replace("{n}", v), VAL) + 28);
+    const colX = [TX, TX + Math.max(150, colW[0]), TX + Math.max(150, colW[0]) + Math.max(150, colW[1])];
+
+    const start = Math.max(0, Math.min(20, opts.age !== undefined && opts.age !== "" ? +opts.age : NOW));
+    let u = uAt(isNaN(start) ? NOW : start), playing = false;
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("sfuPlay")}" data-alt="❚❚">▶</button>
+      <button data-age="${NOW}">${tr("sfuToday")}</button><button data-age="12.165">${tr("sfuRedGiant")}</button><button data-age="12.6">${tr("sfuWhiteDwarf")}</button>
+      <span class="date"></span>`);   // a sentence that changes length: last, so nothing after it moves
+    // in a keynote's .sim box, the controls take the theme's overlay (as the weather sims)
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const play = panel.querySelector(".play"), readout = panel.querySelector(".date");
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "sfuPause" : "sfuPlay"));
+    };
+    play.addEventListener("click", () => { if (u >= 1) u = 0; setPlaying(!playing); });
+    panel.querySelectorAll("[data-age]").forEach(b => b.addEventListener("click", () => { u = uAt(+b.dataset.age); setPlaying(false); }));
+
+    // drag along the timeline
+    const canvas = ctx.canvas;
+    let drag = false;
+    const pick = e => {
+      const r = canvas.getBoundingClientRect();
+      const x = (e.clientX - r.left) * W / r.width;
+      u = Math.max(0, Math.min(1, (x - SX0) / (SX1 - SX0)));
+    };
+    const onStrip = e => {
+      const r = canvas.getBoundingClientRect(), y = (e.clientY - r.top) * H / r.height;
+      return Math.abs(y - SY - 14) < 30;
+    };
+    canvas.addEventListener("pointerdown", e => {
+      if (onStrip(e)) { drag = true; canvas.setPointerCapture(e.pointerId); setPlaying(false); pick(e); }
+    });
+    canvas.addEventListener("pointermove", e => {
+      if (drag) pick(e);
+      canvas.style.cursor = drag || onStrip(e) ? "ew-resize" : "default";
+    });
+    canvas.addEventListener("pointerup", () => { drag = false; });
+    canvas.addEventListener("pointercancel", () => { drag = false; });
+
+    // "{n} billion years" with d decimals (null: rounded like nice()); in French, "milliard" below 2
+    const gyr = (x, d) => {
+      const s = d === null ? n(x) : R_.num(L, x, d);
+      return R_.typo(L, tr(L === "fr" && x < 2 ? "sfuGyr1" : "sfuGyr").replace("{n}", s));
+    };
+
+    function orbits(age, s) {
+      sky(ctx, mode, OX, OY, OW, OH);
+      // planetary nebula
+      if (age > 12.335 && age < 12.47) {
+        const r = K * (0.93 + (age - 12.335) * 30), fade = 1 - (age - 12.335) / 0.135;
+        const g = ctx.createRadialGradient(...C, r * 0.55, ...C, r);
+        g.addColorStop(0, "rgba(90, 200, 160, 0)");
+        g.addColorStop(0.6, `rgba(90, 200, 160, ${0.35 * fade})`);
+        g.addColorStop(0.85, `rgba(190, 110, 220, ${0.45 * fade})`);
+        g.addColorStop(1, "rgba(190, 110, 220, 0)");
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(...C, r, 0, 2 * Math.PI); ctx.fill();
+      }
+
+      // orbits and planets (orbits widen as the Sun loses mass)
+      const rs = Math.max(3.5, s.R * RSUN * K);
+      INNER.forEach((p, k) => {
+        const a = p.a / s.M * K, isGone = goneAt[k] !== null && age >= goneAt[k];
+        ctx.strokeStyle = isGone ? "rgba(239, 91, 76, 0.35)" : "rgba(255, 255, 255, 0.22)";
+        ctx.lineWidth = 1.2; ctx.setLineDash(isGone ? [4, 6] : []);
+        ctx.beginPath(); ctx.arc(...C, a, 0, 2 * Math.PI); ctx.stroke();
+        ctx.setLineDash([]);
+        // a swallowed planet keeps its label just outside the Sun
+        const la = isGone ? Math.max(a, rs + 16) : a;
+        const c = Math.cos(p.ang * Math.PI / 180), sn = Math.sin(p.ang * Math.PI / 180);
+        const px = C[0] + la * c, py = C[1] - la * sn;
+        let label = tr(p.key), color = "rgba(255, 255, 255, 0.85)";
+        if (isGone) { label = tr(p.key + "Gone"); color = "#ef5b4c"; }
+        else {
+          let pc = p.color;
+          if (p.key === "sfuEarth" && age > OCEANS) { pc = "#b08a5a"; label = tr(age > 12.4 ? "sfuFrozen" : "sfuNoOceans"); }
+          ctx.fillStyle = pc; ctx.beginPath(); ctx.arc(px, py, 6, 0, 2 * Math.PI); ctx.fill();
+        }
+        text(label, px + (c >= 0 ? 10 : -10), py + (sn >= 0 ? -10 : 22), { size: 15, weight: 600, color, align: c >= 0 ? "left" : "right" });
+      });
+
+      // the Sun, to scale
+      drawStar(ctx, ...C, rs, s.T, rs < 10 ? 2.2 + Math.log10(s.L + 1) * 2 : 1.25);
+      // scale bar: 1 AU
+      const bx = 24, by = OH - 22;
+      ctx.strokeStyle = dk.muted; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(bx, by - 5); ctx.lineTo(bx, by); ctx.lineTo(bx + K, by); ctx.lineTo(bx + K, by - 5); ctx.stroke();
+      text(tr("sfuScale"), bx + K / 2, by - 8, { size: 13, color: dk.muted, align: "center" });
+      text(tr("sfuOrbits"), bx + K + 12, by + 4, { size: 13, color: dk.muted, italic: true });
+
+      // inset: the Sun next to today's Sun
+      const ix = 20, iy = 36, iw = 150, ih = 130, icx = ix + iw / 2, icy = iy + ih / 2;
+      ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; ctx.fillRect(ix, iy, iw, ih);
+      ctx.save(); ctx.beginPath(); ctx.rect(ix, iy, iw, ih); ctx.clip();
+      if (40 * s.R < 70) drawStar(ctx, icx, icy, Math.max(1.5, 40 * s.R), s.T, 1.15);
+      else {
+        ctx.fillStyle = starColor(s.T, 0.9);
+        ctx.beginPath(); ctx.arc(icx, icy, 40 * s.R, 0, 2 * Math.PI); ctx.fill();
+      }
+      ctx.restore();
+      ctx.setLineDash([4, 4]); ctx.strokeStyle = "rgba(255, 255, 255, 0.8)"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(icx, icy, 40, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
+      text(tr("sfuSizeX").replace("{n}", n(s.R)), icx, iy - 10, { size: 16, weight: 600, color: "#fff", align: "center" });
+      text(tr("sfuDashedToday"), icx, iy + ih + 18, { size: 12, color: dk.muted, align: "center", italic: true });
+    }
+
+    // mini HR diagram with the Sun's track
+    function hrMini(s) {
+      sky(ctx, mode, hx0, hy0, hx1 - hx0, hy1 - hy0, 0);
+      ctx.strokeStyle = th.muted; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(hx0, hy0); ctx.lineTo(hx0, hy1); ctx.lineTo(hx1, hy1); ctx.stroke();
+      text(tr("sfuTempAxis"), (hx0 + hx1) / 2, hy1 + 20, { size: 13, color: th.muted, align: "center" });
+      ctx.save(); ctx.translate(hx0 - 10, (hy0 + hy1) / 2); ctx.rotate(-Math.PI / 2);
+      text(tr("sfuBrightAxis"), 0, 0, { size: 13, color: th.muted, align: "center" });
+      ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.rect(hx0, hy0, hx1 - hx0, hy1 - hy0); ctx.clip();
+      ctx.lineWidth = 10; ctx.strokeStyle = "rgba(255, 255, 255, 0.06)"; ctx.lineCap = "round";
+      ctx.beginPath();
+      for (let lm = -1; lm <= 1.6; lm += 0.05) {
+        const m = mainSequence(Math.pow(10, lm));
+        lm === -1 ? ctx.moveTo(HX(m.T), HY(m.L)) : ctx.lineTo(HX(m.T), HY(m.L));
+      }
+      ctx.stroke();
+      text(tr("sfuMsLine"), HX(9000), HY(60), { size: 12, color: "rgba(255, 255, 255, 0.4)", italic: true });
+      const iu = Math.round(u / 0.002);
+      [[0, track.length - 1, "rgba(255, 255, 255, 0.25)", 1.5], [0, iu, dk.accent, 2.5]].forEach(([a, b, col, w]) => {
+        ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineJoin = "round";
+        ctx.beginPath();
+        for (let i = a; i <= Math.min(b, track.length - 1); i++) {
+          const p = track[i];
+          i === a ? ctx.moveTo(HX(p.T), HY(p.L)) : ctx.lineTo(HX(p.T), HY(p.L));
+        }
+        ctx.stroke();
+      });
+      drawStar(ctx, HX(s.T), HY(s.L), 6, s.T);
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(HX(s.T), HY(s.L), 11, 0, 2 * Math.PI); ctx.stroke();
+      ctx.restore();
+    }
+
+    function timeline(age) {
+      STAGES.forEach(([a, b, k]) => {
+        const xa = SXu(uAt(a)), xb = SXu(uAt(b)), mid = sunAt((a + b) / 2);
+        const alpha = mode === "light" ? 1 : 0.7;     // on a white page, the full colours
+        ctx.fillStyle = k === "sfuNebula" ? `rgba(140, 170, 200, ${alpha})` : starColor(mid.T, alpha);
+        ctx.fillRect(xa + 1, SY, xb - xa - 2, 28);
+        if (mode === "light") { ctx.strokeStyle = th.grid; ctx.lineWidth = 1; ctx.strokeRect(xa + 1.5, SY + 0.5, xb - xa - 3, 27); }
+        text(tr(k), (xa + xb) / 2, SY + 19, { size: 14, weight: 600, color: "#1a1d2a", align: "center" });
+      });
+      [[NOW, "sfuMarkToday", "right"], [OCEANS, "sfuMarkOceans", "left"], [goneAt[1], "sfuMarkVenus", "center"]].forEach(([a, k, align]) => {
+        const x = SXu(uAt(a));
+        ctx.fillStyle = th.text; ctx.globalAlpha = 0.8; ctx.fillRect(x - 1, SY - 8, 2, 8); ctx.globalAlpha = 1;
+        text(tr(k), x + (align === "right" ? 3 : align === "left" ? -3 : 0), SY - 12, { size: 13, color: th.muted, align });
+      });
+      text(tr("sfuNotToScale"), SX1, SY + 46, { size: 13, color: th.muted, align: "right", italic: true });
+      const hx = SXu(u);
+      ctx.fillStyle = th.text;
+      ctx.beginPath(); ctx.moveTo(hx, SY + 30); ctx.lineTo(hx - 8, SY + 42); ctx.lineTo(hx + 8, SY + 42); ctx.closePath(); ctx.fill();
+      ctx.fillRect(hx - 1.5, SY - 4, 3, 34);
+    }
+
+    let shown = "";
+    function step(dt) {
+      if (playing) { u += dt / 45; if (u >= 1) { u = 1; setPlaying(false); } }
+      const age = ageAt(u), s = sunAt(age);
+      const stage = STAGES.find(([, b]) => age < b) || STAGES[STAGES.length - 1];
+      ctx.clearRect(0, 0, W, H);
+      orbits(age, s);
+      hrMini(s);
+
+      // the stage, in words and numbers
+      text(tr(stage[2]), TX, 296, { size: 28, weight: 600, color: th.accent });
+      wrap(tr(stage[2] + "Text"), TX, 324, TW, 22, { size: 17, color: th.text });
+      [["sfuBrightness", tr("sfuXToday").replace("{n}", n(s.L))], ["sfuSize", tr("sfuXToday").replace("{n}", n(s.R))],
+        ["sfuSurface", `${n(s.T)} K`]].forEach(([k, v], i) => {
+        text(tr(k), colX[i], rowsY, { size: 14, color: th.muted });
+        text(R_.typo(L, v), colX[i], rowsY + 23, Object.assign({ color: th.text }, VAL));
+      });
+      timeline(age);
+
+      const d = age - NOW;
+      const when = Math.abs(d) < 0.02 ? tr("sfuToday") : d < 0 ? tr("sfuAgo").replace("{t}", gyr(-d, null))
+        : tr("sfuIn").replace("{t}", gyr(d, d > 7 ? 2 : 1));
+      const html = `<b>${R_.typo(L, when)}</b> · ${R_.typo(L, tr("sfuAgeOf").replace("{t}", gyr(age, age > 12 ? 2 : 1)))}`;
+      if (html !== shown) { readout.innerHTML = html; shown = html; }
+    }
+    pg.loop(container, step);
   };
 })(globalThis);
 

@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/comet-orbit.jpg
+title: "A comet's orbit"
+description: "A comet on a long, stretched orbit beside a planet on a circle: fast near the Sun, slow far from it."
+categories: [Cosmology]
+---
+
+The comet and the planet go round the Sun at the same time. The *Speed* slider sets the pace and ❚❚ pauses. *Equal time steps* leaves a dot on both orbits at regular intervals of time, so that you can see where each body goes fast and where it goes slowly. Under the controls, the comet's distance and speed compared with the planet's.
+
+::: {.column-page}
+{{< geores sim="comet-orbit" presets="steps" >}}
+:::
+
+## What to look for
+
+- Tick *Equal time steps*: where are the comet's dots close together, and where far apart? What does that say about its speed?
+- Where does the comet spend most of its time, near the Sun or far from it?
+- Watch the tails as the comet passes the Sun: which way do they point? Do they always trail behind the comet?
+- Why does the comet only grow a coma and tails near the Sun?
+
+## How it works
+
+The comet follows an ellipse with the Sun at one focus, and sweeps equal areas in equal times (Kepler's second law): it speeds up as it falls towards the Sun and slows down far from it. The planet, on a circle, keeps the same speed. Near the Sun the ice of the comet turns to gas: the coma forms, the blue ion tail points straight away from the Sun and the dust tail curves behind. Distances and sizes are not to scale.
+
+## Sources
+
+Schematic model after Kepler's laws, no data.

@@ -278,6 +278,26 @@
    "images": []
   },
   {
+   "name": "comet-orbit",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/comet-orbit.js",
+   "description": "a comet on an elongated orbit (Kepler's laws) next to a planet on a circular orbit: fast near the Sun, slow far from it; the coma and the two tails (blue ion tail, curved dust tail) grow near the Sun and always point away from it.",
+   "options": [
+    {
+     "option": "data-steps",
+     "example": null,
+     "doc": "true to start with the dots at equal time steps on both orbits"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "planets",
+     "script": "planets.js"
+    }
+   ],
+   "images": []
+  },
+  {
    "name": "conflicts",
    "field": "geopolitics",
    "file": "src/sims/geopolitics/conflicts.js",
@@ -567,6 +587,31 @@
    "images": []
   },
   {
+   "name": "hr-diagram",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/hr-diagram.js",
+   "description": "the Sun among the stars, on a Hertzsprung–Russell diagram (surface temperature and brightness). A mass slider places a main-sequence star of any mass, with its class, brightness, lifetime and end; a click on one of 20 named stars (giants, supergiants, white dwarfs) gives its data and a fact. Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, hr()). Shares GeoRes.stars with sun-future.js.",
+   "options": [
+    {
+     "option": "data-mass",
+     "example": null,
+     "doc": "mass of the main-sequence star at the start, in Suns, 0.1 to 40 (default 1: the Sun)"
+    },
+    {
+     "option": "data-star",
+     "example": null,
+     "doc": "a named star shown at the start instead, e.g. betelgeuse, sirius, siriusB, proxima (ids in STARS)"
+    },
+    {
+     "option": "data-sizes",
+     "example": null,
+     "doc": "false to hide the dashed lines of equal size"
+    }
+   ],
+   "bundles": [],
+   "images": []
+  },
+  {
    "name": "humidity",
    "field": "meteorology",
    "file": "src/sims/meteorology/humidity.js",
@@ -732,12 +777,57 @@
    ]
   },
   {
+   "name": "orrery",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/orrery.js",
+   "description": "the eight planets orbiting the Sun, starting at their real positions of today, with a time slider, compressed or real distances and a count of the orbits each planet has completed.",
+   "options": [
+    {
+     "option": "data-real",
+     "example": null,
+     "doc": "true to start with the real distances (default: compressed, so that all the orbits fit)"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "planets",
+     "script": "planets.js"
+    }
+   ],
+   "images": []
+  },
+  {
    "name": "parcel",
    "field": "meteorology",
    "file": "src/sims/meteorology/parcel.js",
    "description": "lift a parcel of air with a helicopter, then let it go. It cools at the dry rate (−10 °C/km) up to the condensation level, then at the saturated rate (−6 °C/km) in the cloud; warmer than the air around (environmental lapse rate, ELR), it rises on its own (unstable), colder, it sinks back (stable). The level of free convection (LFC) is where the lifted parcel becomes warmer than the air around: above it, it rises on its own. Bubble: coral on the dry rate, blue in the cloud.",
    "options": [],
    "bundles": [],
+   "images": []
+  },
+  {
+   "name": "planet-spin",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/planet-spin.js",
+   "description": "the axial tilt and the rotation of the eight planets, side by side: textured globes that turn at their true relative speeds (Jupiter fastest, Venus barely moving), each with its spin axis, the line perpendicular to its orbit and the tilt between them (Venus upside down, Uranus on its side). Sizes not to scale. On the dark stage in both page themes, as the other cosmology canvas sims.",
+   "options": [
+    {
+     "option": "data-speed",
+     "example": null,
+     "doc": "hours of rotation per second at the start (0.05 to 25, default 2)"
+    },
+    {
+     "option": "data-grid",
+     "example": "false",
+     "doc": "start without the grid of meridians and the equator"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "planets",
+     "script": "planets.js"
+    }
+   ],
    "images": []
   },
   {
@@ -1171,6 +1261,21 @@
    "file": "src/sims/cosmology/sun-angle.js",
    "description": "height of the noon Sun, spread of its light on the ground and length of the day, for any date and latitude. Ported from GeoKey DF-Cosmology/3-Earth (sims.js, sunangle()). Uses GeoRes.earth from earth-year.js.",
    "options": [],
+   "bundles": [],
+   "images": []
+  },
+  {
+   "name": "sun-future",
+   "field": "cosmology",
+   "file": "src/sims/cosmology/sun-future.js",
+   "description": "the Sun's future, from today to a red giant, a planetary nebula and a white dwarf. The inner planets' orbits to scale (they widen as the Sun loses mass; Mercury and Venus are swallowed), the Sun's size next to today's, its track on a small Hertzsprung–Russell diagram, and a timeline (not to scale) to drag or play. Model values after Sackmann et al. (1993) and Schröder & Smith (2008). Ported from GeoKey DF-Cosmology/2-Solar_System (sims.js, sunlife()). Uses GeoRes.stars from hr-diagram.js.",
+   "options": [
+    {
+     "option": "data-age",
+     "example": null,
+     "doc": "age of the Sun at the start, in billion years, 0 to 20 (default 4.57: today)"
+    }
+   ],
    "bundles": [],
    "images": []
   },

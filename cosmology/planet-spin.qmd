@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/planet-spin.jpg
+title: "Tilt and spin"
+description: "The eight planets side by side, each turning on its tilted axis at its true relative speed."
+categories: [Cosmology]
+---
+
+The eight planets turn side by side. The *Speed* slider sets how many hours of rotation pass in one second, and ❚❚ pauses. Each globe shows its spin axis, the line perpendicular to its orbit (dashed) and the tilt between them, with the length of its day. *Grid* draws the meridians and the equator, which make the rotation easier to see.
+
+::: {.column-page}
+{{< geores sim="planet-spin" presets="speed,grid" >}}
+:::
+
+## What to look for
+
+- Which planet spins fastest? Which one hardly seems to move?
+- Compare the tilts: which planets have seasons like Earth's? Which one lies on its side?
+- Venus turns "upside down": in which direction does it spin compared with the others?
+- Mars and Earth: compare the length of their days and their tilts. What would the seasons be like on Mars?
+
+## How it works
+
+The globes turn at their real sidereal periods, all sped up by the same factor, and lean by their real axial tilt from the perpendicular to their orbit. A tilt above 90° means the planet spins backwards (Venus, Uranus). The sizes of the planets are not to scale.
+
+## Sources
+
+- Rotation periods and axial tilts of the planets, rounded.
+- Textures: Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

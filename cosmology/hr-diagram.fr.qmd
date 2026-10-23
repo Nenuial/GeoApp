@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/hr-diagram.jpg
+title: "Le Soleil parmi les étoiles"
+description: "Le diagramme de Hertzsprung-Russell : la place du Soleil parmi les naines rouges, les géantes, les supergéantes et les naines blanches."
+categories: [Cosmologie]
+---
+
+Le diagramme place les étoiles selon leur température de surface (chaude à gauche) et leur luminosité (Soleil = 1). Le curseur *Masse*, ou les boutons *Naine rouge*, *Soleil*, *Sirius* et *Étoile massive*, placent une étoile de cette masse sur la séquence principale et donnent sa classe, sa luminosité, sa taille, sa durée de vie et sa fin. Cliquez sur une des étoiles nommées pour ses données. *Tailles* trace les lignes en traitillé le long desquelles les étoiles ont la même taille.
+
+::: {.column-page}
+{{< geores sim="hr-diagram" presets="mass,star,sizes" >}}
+:::
+
+## À observer
+
+- Où est le Soleil sur le diagramme ? Est-ce une grande étoile très lumineuse, ou une étoile ordinaire ?
+- Faites varier la masse de 0,1 à 40 Soleils : comment changent la température, la luminosité et la durée de vie ? Quelles étoiles vivent le plus longtemps ?
+- Cliquez sur Bételgeuse et sur Sirius B : pourquoi sont-elles si loin de la séquence principale ? Comparez leur taille à celle du Soleil.
+- Quelles étoiles finissent en naines blanches, et lesquelles explosent en supernovæ ?
+
+## Fonctionnement
+
+Les étoiles de la séquence principale transforment l'hydrogène en hélium dans leur cœur ; leur masse fixe leur température, leur luminosité et leur durée de vie. Une étoile deux fois plus massive que le Soleil est environ 16 fois plus lumineuse : elle brûle son combustible plus vite et vit environ huit fois moins longtemps. Les géantes et les supergéantes ont quitté la séquence principale ; les naines blanches sont les cœurs d'étoiles mortes qui refroidissent. Luminosités et durées de vie sont des valeurs de modèle arrondies.
+
+## Sources
+
+Modèle schématique avec des relations approchées pour les étoiles de la séquence principale ; valeurs approchées pour les étoiles nommées.

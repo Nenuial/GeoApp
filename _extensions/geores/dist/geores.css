@@ -171,6 +171,8 @@
 
 /* on a slide: the drawing fits the height of the .sim box */
 .reveal .sim .geores-steps-figure { max-width: none; }
+/* a canvas sim in a keynote's .sim box keeps its proportions (the theme makes every canvas 1280 × 610) */
+.reveal .sim canvas.geores-canvas { height: auto; }
 /* the four solstices and equinoxes of season-steps: two by two; one column on a phone, one row of four on a wide
    screen (full screen on a beamer); on a slide, two by two at the height of the .sim box */
 .geores-four {
@@ -245,7 +247,7 @@
 
 .geores-tip {
   position: fixed;
-  z-index: 1000;
+  z-index: 2010;   /* above an enlarged figure (.geores-expanded, 2000): tooltips also in full screen */
   pointer-events: none;
   padding: 6px 10px;
   border: 1px solid #c9ced8;
@@ -361,6 +363,46 @@
 .geores-noscroll,
 .geores-noscroll body {
   overflow: hidden;
+}
+
+/* Space sims (orrery, planet-spin, hr-diagram, sun-future, comet-orbit) in a keynote's .sim box: on the slide's starry
+   background, as the deck drew them */
+.reveal .sim .geores-stage.geores-space {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* planet-spin in a keynote's .sim box: in the flow of the slide (a takeaway may follow), controls below the canvas */
+.reveal .sim:has(> [data-sim="planet-spin"]) {
+  position: relative;
+  top: 0;
+  height: auto;
+  margin-top: 4px;
+}
+.reveal .sim [data-sim="planet-spin"] .sim-controls {
+  position: static;
+  max-width: none;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  padding: 6px 14px;
+}
+/* sun-future in a keynote's .sim box: the controls below the canvas (540 px high), clear of the timeline */
+.reveal .sim [data-sim="sun-future"] .sim-controls {
+  position: static;
+  max-width: none;
+  margin-top: 4px;
+  padding: 6px 14px;
+  flex-wrap: nowrap;
+}
+.reveal .sim [data-sim="sun-future"] .sim-controls .date {
+  flex-basis: auto;   /* on the row of the buttons: canvas and controls within the 610 px of the box */
+}
+/* hr-diagram in a keynote's .sim box: the controls under the panel of the chosen star, clear of the diagram */
+.reveal .sim [data-sim="hr-diagram"] .sim-controls {
+  left: auto;
+  right: 0;
+  max-width: 380px;
 }
 
 /* Geology sims in a keynote's .sim box: on the slide's background, in the palette's colours (_geology.js) */

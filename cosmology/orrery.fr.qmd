@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/orrery.jpg
+title: "Les planètes en mouvement"
+description: "Les huit planètes autour du Soleil, à partir de leur position d'aujourd'hui, à n'importe quelle vitesse."
+categories: [Cosmologie]
+---
+
+Les planètes partent de leur position d'aujourd'hui. Le curseur *Vitesse* règle le temps qui passe en une seconde, ❚❚ met en pause et ▶ relance, et *Aujourd'hui* ramène chaque planète à aujourd'hui. *Distances réelles* dessine les orbites à l'échelle ; sans cette case, les distances sont resserrées pour que les huit orbites tiennent. Sous les commandes, le temps écoulé et le nombre de tours du Soleil de chaque planète.
+
+::: {.column-page}
+{{< geores sim="orrery" presets="real" >}}
+:::
+
+## À observer
+
+- Laissez passer une année terrestre : combien de fois Mercure a-t-elle fait le tour du Soleil ? De combien Neptune a-t-elle avancé ?
+- Quelles planètes avancent le plus vite sur leur orbite, les planètes intérieures ou extérieures ?
+- Cochez *Distances réelles* : où sont maintenant les quatre planètes rocheuses ? Pourquoi les planètes géantes ont-elles besoin de tant de place ?
+- Attendez que la Terre passe entre le Soleil et Mars : pourquoi est-ce le meilleur moment pour voir Mars dans le ciel nocturne ?
+
+## Fonctionnement
+
+Chaque planète avance sur un cercle à sa vitesse moyenne, à partir de sa position moyenne d'aujourd'hui. Les orbites réelles sont un peu elliptiques et inclinées : les positions sont donc approximatives. Les tailles des planètes et du Soleil ne sont pas à l'échelle.
+
+## Sources
+
+- Éléments orbitaux moyens des planètes (distance, période, position au 1^er^ janvier 2000).
+- Images des planètes : Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

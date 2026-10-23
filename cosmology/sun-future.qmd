@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/sun-future.jpg
+title: "The Sun's future"
+description: "From today to a red giant, a planetary nebula and a white dwarf: what happens to the Sun and to the inner planets."
+categories: [Cosmology]
+---
+
+Drag the timeline or press ▶ to age the Sun, or jump with *Today*, *Red giant* and *White dwarf*. The orbits of Mercury, Venus, Earth and Mars are drawn to scale around the Sun, whose size is compared with today's (dashed). A small Hertzsprung–Russell diagram follows the Sun's track, and the text under the controls tells what is happening.
+
+::: {.column-page}
+{{< geores sim="sun-future" presets="age" >}}
+:::
+
+## What to look for
+
+- How old is the Sun today? How much longer will it stay on the main sequence?
+- When will Earth lose its oceans? Long before or after the Sun becomes a red giant?
+- Which planets are swallowed by the red giant? Why do the orbits of the others widen?
+- Follow the Sun's track on the small diagram: where does it end up, and why will it never explode as a supernova?
+
+## How it works
+
+The Sun slowly brightens as it turns hydrogen into helium. When the hydrogen of its core runs out, it swells into a red giant about 250 times its present size and loses much of its mass, so the planets' orbits widen. After the helium flash and a last swelling, it blows off its outer layers as a planetary nebula, leaving a white dwarf the size of Earth. The timeline is not to scale: the late stages are stretched to be visible.
+
+## Sources
+
+Model values after Sackmann, Boothroyd & Kraemer (1993), *Our Sun. III. Present and Future*, and Schröder & Smith (2008), *Distant future of the Sun and Earth revisited*.

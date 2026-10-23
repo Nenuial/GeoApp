@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/planet-spin.jpg
+title: "Inclinaison et rotation"
+description: "Les huit planètes côte à côte, chacune tournant sur son axe incliné à sa vraie vitesse relative."
+categories: [Cosmologie]
+---
+
+Les huit planètes tournent côte à côte. Le curseur *Vitesse* règle combien d'heures de rotation passent en une seconde, et ❚❚ met en pause. Chaque globe montre son axe de rotation, la perpendiculaire à son orbite (en traitillé) et l'inclinaison entre les deux, avec la durée de son jour. *Grille* dessine les méridiens et l'équateur, qui rendent la rotation plus visible.
+
+::: {.column-page}
+{{< geores sim="planet-spin" presets="speed,grid" >}}
+:::
+
+## À observer
+
+- Quelle planète tourne le plus vite ? Laquelle semble à peine bouger ?
+- Comparez les inclinaisons : quelles planètes ont des saisons comme la Terre ? Laquelle est couchée sur le côté ?
+- Vénus est « à l'envers » : dans quel sens tourne-t-elle par rapport aux autres ?
+- Mars et la Terre : comparez la durée de leur jour et leur inclinaison. Comment seraient les saisons sur Mars ?
+
+## Fonctionnement
+
+Les globes tournent à leur vraie période de rotation sidérale, toutes accélérées du même facteur, et penchent de leur vraie inclinaison par rapport à la perpendiculaire à leur orbite. Une inclinaison de plus de 90° signifie que la planète tourne à l'envers (Vénus, Uranus). Les tailles des planètes ne sont pas à l'échelle.
+
+## Sources
+
+- Périodes de rotation et inclinaisons des planètes, arrondies.
+- Textures : Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.

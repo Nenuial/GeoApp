@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/sun-future.jpg
+title: "L'avenir du Soleil"
+description: "D'aujourd'hui à la géante rouge, à la nébuleuse planétaire et à la naine blanche : ce qui arrive au Soleil et aux planètes intérieures."
+categories: [Cosmologie]
+---
+
+Faites glisser la frise ou appuyez sur ▶ pour vieillir le Soleil, ou sautez avec *Aujourd'hui*, *Géante rouge* et *Naine blanche*. Les orbites de Mercure, Vénus, la Terre et Mars sont dessinées à l'échelle autour du Soleil, dont la taille est comparée à celle d'aujourd'hui (en traitillé). Un petit diagramme de Hertzsprung-Russell suit le trajet du Soleil, et le texte sous les commandes dit ce qui se passe.
+
+::: {.column-page}
+{{< geores sim="sun-future" presets="age" >}}
+:::
+
+## À observer
+
+- Quel âge a le Soleil aujourd'hui ? Combien de temps restera-t-il encore sur la séquence principale ?
+- Quand la Terre perdra-t-elle ses océans ? Bien avant ou après que le Soleil devienne une géante rouge ?
+- Quelles planètes sont englouties par la géante rouge ? Pourquoi les orbites des autres s'élargissent-elles ?
+- Suivez le trajet du Soleil sur le petit diagramme : où finit-il, et pourquoi n'explosera-t-il jamais en supernova ?
+
+## Fonctionnement
+
+Le Soleil devient lentement plus lumineux en transformant l'hydrogène en hélium. Quand l'hydrogène de son cœur est épuisé, il enfle en une géante rouge environ 250 fois plus grande qu'aujourd'hui et perd une grande partie de sa masse : les orbites des planètes s'élargissent. Après le flash de l'hélium et un dernier gonflement, il expulse ses couches extérieures en une nébuleuse planétaire et laisse une naine blanche de la taille de la Terre. La frise n'est pas à l'échelle : les dernières étapes sont étirées pour être visibles.
+
+## Sources
+
+Valeurs de modèle d'après Sackmann, Boothroyd & Kraemer (1993), *Our Sun. III. Present and Future*, et Schröder & Smith (2008), *Distant future of the Sun and Earth revisited*.

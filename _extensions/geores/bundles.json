@@ -5,6 +5,8 @@
       "names": ["earth-year"] },
     "precip": { "script": "precip.js", "about": "monthly precipitation 1991-2020, GPCP (about 170 kB)",
       "names": ["precipitation-map", "monsoon"] },
+    "planets": { "script": "planets.js", "about": "planet pictures and textures (about 1.3 MB)",
+      "names": ["orrery", "planet-spin", "comet-orbit"] },
     "climate": { "script": "climate.js", "about": "climate stations, the 1° Köppen grids and the climate series (about 1 MB)",
       "names": ["climogram", "koppen-key", "koppen-map", "koppen-world", "koppen-tree", "co2-curve", "ice-core", "global-temperature", "warming-stripes", "glacier-massbalance", "glacier-length"] },
     "climate-wmo": { "script": "climate-wmo.js", "about": "every station of the WMO normals 1991-2020, 4 693 stations (about 0.8 MB)",

@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/hr-diagram.jpg
+title: "The Sun among the stars"
+description: "The Hertzsprung–Russell diagram: where the Sun stands among red dwarfs, giants, supergiants and white dwarfs."
+categories: [Cosmology]
+---
+
+The diagram places stars by their surface temperature (hot on the left) and their brightness (the Sun = 1). The *Mass* slider, or the buttons *Red dwarf*, *Sun*, *Sirius* and *Massive star*, put a star of that mass on the main sequence and give its class, brightness, size, lifetime and end. Click one of the named stars for its data. *Sizes* draws the dashed lines along which stars have the same size.
+
+::: {.column-page}
+{{< geores sim="hr-diagram" presets="mass,star,sizes" >}}
+:::
+
+## What to look for
+
+- Where is the Sun on the diagram? Is it a big, bright star or an ordinary one?
+- Move the mass from 0.1 to 40 Suns: how do the temperature, the brightness and the lifetime change? Which stars live longest?
+- Click Betelgeuse and Sirius B: why are they so far from the main sequence? Compare their sizes with the Sun's.
+- Which stars end as white dwarfs, and which explode as supernovae?
+
+## How it works
+
+Stars on the main sequence turn hydrogen into helium in their core; their mass sets their temperature, brightness and lifetime. A star twice as massive as the Sun is about 16 times as bright, so it burns its fuel faster and lives about eight times shorter. Giants and supergiants have left the main sequence; white dwarfs are the cooling cores of dead stars. Brightness and lifetimes are rounded model values.
+
+## Sources
+
+Schematic model with approximate relations for main-sequence stars; approximate values for the named stars.

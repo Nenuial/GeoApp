@@ -1,0 +1,27 @@
+---
+image: ../assets/thumbs/comet-orbit.jpg
+title: "L'orbite d'une comète"
+description: "Une comète sur une orbite très allongée, à côté d'une planète sur un cercle : rapide près du Soleil, lente loin de lui."
+categories: [Cosmologie]
+---
+
+La comète et la planète tournent en même temps autour du Soleil. Le curseur *Vitesse* règle l'allure et ❚❚ met en pause. *Intervalles de temps égaux* laisse un point sur les deux orbites à intervalles de temps réguliers : on voit où chaque corps va vite et où il ralentit. Sous les commandes, la distance et la vitesse de la comète, comparées à celles de la planète.
+
+::: {.column-page}
+{{< geores sim="comet-orbit" presets="steps" >}}
+:::
+
+## À observer
+
+- Cochez *Intervalles de temps égaux* : où les points de la comète sont-ils serrés, et où sont-ils espacés ? Qu'est-ce que cela dit de sa vitesse ?
+- Où la comète passe-t-elle le plus de temps, près du Soleil ou loin de lui ?
+- Regardez les queues quand la comète passe près du Soleil : de quel côté pointent-elles ? Sont-elles toujours derrière la comète ?
+- Pourquoi la comète n'a-t-elle une chevelure et des queues que près du Soleil ?
+
+## Fonctionnement
+
+La comète suit une ellipse dont le Soleil occupe un foyer, et balaie des aires égales en des temps égaux (deuxième loi de Kepler) : elle accélère en tombant vers le Soleil et ralentit loin de lui. La planète, sur un cercle, garde la même vitesse. Près du Soleil, la glace de la comète se change en gaz : la chevelure se forme, la queue d'ions bleue pointe à l'opposé du Soleil et la queue de poussières s'incurve derrière. Les distances et les tailles ne sont pas à l'échelle.
+
+## Sources
+
+Modèle schématique d'après les lois de Kepler, sans données.

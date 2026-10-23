@@ -1,0 +1,28 @@
+---
+image: ../assets/thumbs/orrery.jpg
+title: "The planets in motion"
+description: "The eight planets around the Sun, starting from where they are today, at any speed."
+categories: [Cosmology]
+---
+
+The planets start from their positions of today. The *Speed* slider sets how much time passes in one second, ❚❚ pauses and ▶ starts again, and *Today* brings every planet back to today. *Real distances* draws the orbits to scale; without it the distances are squeezed so that all eight orbits fit. Under the controls, the time gone by and the number of orbits each planet has completed.
+
+::: {.column-page}
+{{< geores sim="orrery" presets="real" >}}
+:::
+
+## What to look for
+
+- Let one Earth year go by: how many times has Mercury gone round the Sun? How far has Neptune moved?
+- Which planets move fastest along their orbits, the inner ones or the outer ones?
+- Tick *Real distances*: where are the four rocky planets now? Why do the giant planets need so much room?
+- Wait until Earth passes between the Sun and Mars: why is it the best time to see Mars in the night sky?
+
+## How it works
+
+Each planet moves on a circle at its mean speed, from its mean position of today. Real orbits are slightly elliptical and tilted, so the positions are approximate. The sizes of the planets and of the Sun are not to scale.
+
+## Sources
+
+- Mean orbital elements of the planets (distance, period, position at 1 January 2000).
+- Planet pictures: Solar System Scope (solarsystemscope.com/textures), CC BY 4.0.
