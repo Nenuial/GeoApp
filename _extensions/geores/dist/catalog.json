@@ -901,6 +901,36 @@
    ]
   },
   {
+   "name": "milankovitch-cycles",
+   "field": "climatology",
+   "file": "src/sims/climatology/milankovitch-cycles.js",
+   "description": "the orbit and the ice ages over 800 000 years (or 1.5 million) and the next 100 000. On one time axis: eccentricity, tilt and precession of the orbit, the summer insolation at 65° N they give (21 June, computed here: it matches Berger & Loutre's own values to 0.03 W/m²), then the ice record: benthic δ18O (ice volume), Antarctic temperature, CO₂ and sea level, with the warm periods (interglacials) shaded. A cursor to drag or play; at the cursor, the orbit seen from above (where 21 June falls, the perihelion) and the tilt. Each cycle can be switched off (held at its mean): the insolation is computed again. \"Periods\": the spectra of the insolation and of the ice, side by side (the 100 000-year problem; before about 1 million years ago, the 41 000-year world). Data: GeoRes.data.milank (dist/milankovitch.js, data/climatology/milankovitch.README.md).",
+   "options": [
+    {
+     "option": "data-span",
+     "example": null,
+     "doc": "800 (default) or 1500 (thousand years back)"
+    },
+    {
+     "option": "data-year",
+     "example": null,
+     "doc": "the cursor at the start, in thousand years (negative: past; default 0)"
+    },
+    {
+     "option": "data-view",
+     "example": null,
+     "doc": "\"periods\" to start on the spectra"
+    }
+   ],
+   "bundles": [
+    {
+     "id": "milankovitch",
+     "script": "milankovitch.js"
+    }
+   ],
+   "images": []
+  },
+  {
    "name": "orrery",
    "field": "cosmology",
    "file": "src/sims/cosmology/orrery.js",

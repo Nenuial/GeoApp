@@ -9,6 +9,8 @@
       "names": ["orrery", "planet-spin", "comet-orbit"] },
     "timezones": { "script": "timezones.js", "about": "time zones of the world today (about 240 kB)",
       "names": ["time-zones"] },
+    "milankovitch": { "script": "milankovitch.js", "about": "orbit 1.5 Myr–+100 kyr and ice-age records (δ18O, Antarctic temperature, CO₂, sea level), about 70 kB",
+      "names": ["milankovitch-cycles"], "diagrams": ["milankovitch-ice"] },
     "orbital": { "script": "orbital.js", "about": "Earth's orbit over the last 400 000 years, Berger & Loutre 1991 (about 9 kB)",
       "names": [], "diagrams": ["milankovitch"] },
     "climate": { "script": "climate.js", "about": "climate stations, the 1° Köppen grids and the climate series (about 1 MB)",

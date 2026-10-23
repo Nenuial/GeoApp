@@ -3667,6 +3667,84 @@
   };
 })(globalThis);
 
+// ---- src/diagrams/climatology/milankovitch-ice.js ----
+// The orbit and the ice ages, 800 000 years and the next 100 000: the print version of the sim milankovitch-cycles.
+// Eccentricity, tilt, precession, the summer insolation at 65° N (21 June) they give, then benthic δ18O (ice volume),
+// Antarctic temperature, CO₂ and sea level, the warm periods (interglacials) shaded, the Last Glacial Maximum and the
+// Eemian marked. Data: GeoRes.data.milank (dist/milankovitch.js); strings and helpers of the sim (GeoRes.milank).
+//   <div class="geores" data-diagram="milankovitch-ice"></div>
+//   data-span: 800 (default) or 1500 (thousand years back)
+(function (G) {
+  const R_ = G.GeoRes, { r1, svgDoc, text, esc } = R_.lib;
+  const rad = d => d * Math.PI / 180;
+
+  R_.addStrings({
+    en: { mliTitle: "The orbit and the ice ages, 800 000 years and the next 100 000" },
+    fr: { mliTitle: "L'orbite et les glaciations, 800 000 ans et les 100 000 prochaines années" },
+  });
+
+  R_.diagrams["milankovitch-ice"] = function (opts = {}) {
+    const th = R_.theme(opts.theme), L = opts.lang, tr = k => R_.t(L, k);
+    const D = R_.data && R_.data.milank, M = R_.milank;
+    if (!D || !M) return svgDoc("0 0 1280 80", text(20, 40, esc(tr("mlcNoData")), { fill: th.muted }), th);
+    const C = M.PALETTE[th.name === "dark" ? "dark" : "light"], O = D.orbit;
+    const span = opts.span === "1500" ? 1500 : 800;
+    const X0 = 220, X1 = 1260, W = 1280;
+    const STRIPS = [[12, 46], [64, 46], [116, 46], [168, 74], [262, 50], [318, 50], [374, 46], [426, 46]], AXIS = 480;
+    const X = t => X0 + (t + span) / (span + 100) * (X1 - X0);
+    const ts = []; for (let t = -span; t <= 100; t++) ts.push(t);
+    const orb = t => { const i = t - O.start; return [O.ecc[i], O.obl[i], O.omega[i]]; };
+    const rec = (a, t) => (t <= 0 && -t < a.length ? a[-t] : null);
+    const big = n => R_.typo(L, String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+    const series = [
+      ts.map(t => orb(t)[0]), ts.map(t => orb(t)[1]), ts.map(t => { const [e, , w] = orb(t); return e * Math.sin(rad(w)); }),
+      ts.map(t => { const [e, o, w] = orb(t); return M.insolation(e, o, w); }),
+      ts.map(t => rec(D.lr04, t)), ts.map(t => rec(D.edcT, t)), ts.map(t => rec(D.co2, t)), ts.map(t => rec(D.sea, t)),
+    ];
+    const INVERT = [false, false, true, false, true, false, false, false];
+    let out = "";
+    // warm periods (LR04 δ18O below the threshold of the sim) and the future
+    let start = null;
+    for (let t = -span; t <= 1; t++) {
+      const v = t <= 0 ? rec(D.lr04, t) : null, warm = v !== null && v < M.WARM;
+      if (warm && start === null) start = t;
+      if (!warm && start !== null) { out += `<rect x="${r1(X(start - 0.5))}" y="8" width="${r1(X(t - 0.5) - X(start - 0.5))}" height="${AXIS - 8}" fill="${C.warm}"/>`; start = null; }
+    }
+    out += `<rect x="${r1(X(0))}" y="8" width="${r1(X1 - X(0))}" height="${AXIS - 8}" fill="${th.text}" fill-opacity="0.06"/>`;
+    // the strips
+    series.forEach((vals, k) => {
+      const [top, h] = STRIPS[k], vs = vals.filter(v => v !== null);
+      let lo = Math.min(...vs), hi = Math.max(...vs); const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+      const Y = v => (INVERT[k] ? top + (v - lo) / (hi - lo) * h : top + h - (v - lo) / (hi - lo) * h);
+      let d = "", pen = false;
+      ts.forEach((t, i) => { const v = vals[i]; if (v === null) { pen = false; return; } d += `${pen ? "L" : "M"}${r1(X(t))},${r1(Y(v))}`; pen = true; });
+      out += `<line x1="${X0}" y1="${top + h + 2}" x2="${X1}" y2="${top + h + 2}" stroke="${th.grid}"/>` +
+        `<path d="${d}" fill="none" stroke="${C.lines[k]}" stroke-width="${k === 3 ? 2.4 : 1.6}" stroke-linejoin="round"/>` +
+        text(X0 - 10, top + 17, esc(tr("mlcStrips")[k]), { "font-size": 15, "font-weight": 600, fill: C.lines[k], "text-anchor": "end" });
+      // the subtitle, in two lines if long (about 30 characters a line)
+      const sub = tr("mlcStripSub")[k].replace(/(\d) (?=\d{3}\b)/g, "$1 "), lines = [""];
+      sub.split(" ").forEach(w => { const l = lines[lines.length - 1]; if ((l + " " + w).length > 32 && l) lines.push(w); else lines[lines.length - 1] = l ? l + " " + w : w; });
+      lines.slice(0, 2).forEach((l, i) => { out += text(X0 - 10, top + 32 + i * 13, esc(l), { "font-size": 12, fill: th.muted, "text-anchor": "end" }); });
+    });
+    // time axis, marks
+    out += `<line x1="${X0}" y1="${AXIS}" x2="${X1}" y2="${AXIS}" stroke="${th.text}" stroke-width="1.5"/>`;
+    for (let t = -Math.floor(span / 100) * 100; t <= 100; t += 100) {
+      out += `<line x1="${r1(X(t))}" y1="${AXIS}" x2="${r1(X(t))}" y2="${AXIS + 6}" stroke="${th.text}" stroke-width="1.5"/>`;
+      if (t % 200 || t > 0) continue;
+      out += text(X(t), AXIS + 22, t === 0 ? esc(tr("mlcToday")) : "−" + big(-t * 1000), { "font-size": 13, fill: th.muted, "text-anchor": "middle" });
+    }
+    [[-125, "mlcEemian"], [-21, "mlcLGM"]].forEach(([t, k]) => {
+      out += `<line x1="${r1(X(t))}" y1="12" x2="${r1(X(t))}" y2="${AXIS}" stroke="${th.muted}" stroke-dasharray="3 4"/>` +
+        text(X(t), AXIS + 40, esc(tr(k)), { "font-size": 13, "font-weight": 600, fill: th.text, "text-anchor": "middle" });
+    });
+    out += text(X0, AXIS + 58, esc(`▬ ${tr("mlcWarm")}`), { "font-size": 12, fill: th.muted }) +
+      text(X1, AXIS + 58, esc(tr("mlcFuture")), { "font-size": 12, fill: th.muted, "text-anchor": "end" }) +
+      text(X0, AXIS + 76, esc(R_.typo(L, tr(span > 800 ? "mlcMPT" : "mlcNext"))), { "font-size": 12, fill: th.muted }) +
+      text(X0, AXIS + 94, esc(R_.typo(L, tr("mlcSource"))), { "font-size": 11, fill: th.muted });
+    return svgDoc(`0 0 ${W} ${AXIS + 104}`, out, th, { title: tr("mliTitle"), cls: "geores-mli" });
+  };
+})(globalThis);
+
 // ---- src/diagrams/climatology/warming-stripes.js ----
 // Warming stripes (after Ed Hawkins): one stripe per year, from blue (cold) to red (warm), for a Swiss
 // station (MeteoSwiss homogeneous series) or the world (HadCRUT5). Anomalies from the 1961-1990 mean.
@@ -17514,6 +17592,451 @@
       } else text(tr("kmHover"), 980, 350, { size: 15, color: th.muted, italic: true });
     }
     X.run(container, step);
+  };
+})(globalThis);
+
+// ---- src/sims/climatology/milankovitch-cycles.js ----
+// Sim "milankovitch-cycles": the orbit and the ice ages over 800 000 years (or 1.5 million) and the next 100 000.
+// On one time axis: eccentricity, tilt and precession of the orbit, the summer insolation at 65° N they give (21 June,
+// computed here: it matches Berger & Loutre's own values to 0.03 W/m²), then the ice record: benthic δ18O (ice
+// volume), Antarctic temperature, CO₂ and sea level, with the warm periods (interglacials) shaded. A cursor to drag or
+// play; at the cursor, the orbit seen from above (where 21 June falls, the perihelion) and the tilt. Each cycle can be
+// switched off (held at its mean): the insolation is computed again. "Periods": the spectra of the insolation and of
+// the ice, side by side (the 100 000-year problem; before about 1 million years ago, the 41 000-year world).
+// Data: GeoRes.data.milank (dist/milankovitch.js, data/climatology/milankovitch.README.md).
+//   <div class="geores" data-sim="milankovitch-cycles" data-span="800" data-year="-21"></div>
+//   data-span: 800 (default) or 1500 (thousand years back); data-year: the cursor at the start, in thousand years
+//   (negative: past; default 0); data-view: "periods" to start on the spectra
+(function (G) {
+  const R_ = G.GeoRes, pg = R_.page;
+
+  R_.addStrings({
+    en: {
+      mlcPlay: "Play", mlcPause: "Pause", mlcSpeed: "Speed", mlcRate: n => `1 s = ${n} 000 years`,
+      mlcEcc: "Eccentricity", mlcTilt: "Tilt", mlcPrec: "Precession", mlcLong: "1.5 million years", mlcShort: "800 000 years",
+      mlcPeriods: "Periods", mlcTimeline: "Timeline",
+      mlcStrips: ["Eccentricity", "Tilt", "Precession", "Sunshine 65° N", "Ice (δ¹⁸O)", "Antarctica", "CO₂", "Sea level"],
+      mlcStripSub: ["orbit shape · 100 000 and 400 000 years", "of the axis · 41 000 years", "up: June closer to the Sun · 19 000–23 000 years",
+        "21 June · W/m² · the three together", "on land · up: less ice · ‰", "temperature, °C, compared with today", "ppm", "m, compared with today"],
+      mlcToday: "today", mlcLGM: "LGM", mlcEemian: "Eemian", mlcAgo: n => `${n} years ago`, mlcIn: n => `in ${n} years`, mlcNow: "today",
+      mlcYears: n => `${n}`, mlcWarm: "warm periods (interglacials)", mlcFuture: "future: orbit only",
+      mlcNext: "Next glaciation: not before 50 000 years (Berger & Loutre 2002), later with today's CO₂ (Ganopolski et al. 2016).",
+      mlcGlacial: "glacial", mlcInterglacial: "interglacial", mlcStage: n => `MIS ${n}`,
+      mlcLGMLong: "Last Glacial Maximum", mlcEemianLong: "Eemian interglacial",
+      mlcSay: (when, name, stage, q) => `<b>${when}</b>${name ? " · " + name : ""}${stage ? " · " + stage : ""} · sunshine 65° N, 21 June: <b>${q} W/m²</b>`,
+      mlcOrbit: "The orbit seen from above", mlcExag: "shape × 8 (the real orbit looks like a circle)", mlcPeri: "perihelion",
+      mlcJune: "21 June", mlcDec: "21 December", mlcJuneNear: "June: Earth close to the Sun", mlcJuneFar: "June: Earth far from the Sun",
+      mlcTiltOf: "tilt of the axis", mlcValues: ["Eccentricity", "Tilt", "Sunshine 65° N", "δ¹⁸O", "Antarctica", "CO₂", "Sea level"],
+      mlcTodayCO2: "today: 422", mlcOff: "off: held at its mean",
+      mlcSpecTitle: "Which cycles are strongest? Spectra (the height of each peak: how much of that cycle the curve holds)",
+      mlcSpecPeriod: "period (thousand years)", mlcSpecInsol: "Sunshine 65° N, 21 June", mlcSpecIce: "Ice (δ¹⁸O), last 800 000 years",
+      mlcSpecIceOld: "Ice (δ¹⁸O), 1.5–1 million years ago",
+      mlcProblem: "The sunshine has almost no 100 000-year cycle, yet the ice ages follow it: the 100 000-year problem. Ice sheets, CO₂ and the oceans amplify the small changes.",
+      mlcMPT: "Before about 1 million years ago, the ice came and went every 41 000 years, with the tilt: the Mid-Pleistocene Transition.",
+      mlcSource: "Orbit: Berger & Loutre 1991, Berger 1978 · δ¹⁸O: Lisiecki & Raymo 2005 · Antarctica: Jouzel et al. 2007 (EPICA) · CO₂: Bereiter et al. 2015 · sea level: Spratt & Lisiecki 2016",
+      mlcNoData: "dist/milankovitch.js missing",
+    },
+    fr: {
+      mlcPlay: "Lecture", mlcPause: "Pause", mlcSpeed: "Vitesse", mlcRate: n => `1 s = ${n} 000 ans`,
+      mlcEcc: "Excentricité", mlcTilt: "Inclinaison", mlcPrec: "Précession", mlcLong: "1 500 000 ans", mlcShort: "800 000 ans",
+      mlcPeriods: "Périodes", mlcTimeline: "Frise",
+      mlcStrips: ["Excentricité", "Inclinaison", "Précession", "Ensoleillement 65° N", "Glace (δ¹⁸O)", "Antarctique", "CO₂", "Niveau de la mer"],
+      mlcStripSub: ["forme de l'orbite · 100 000 et 400 000 ans", "de l'axe · 41 000 ans", "en haut : juin plus près du Soleil · 19 000–23 000 ans",
+        "21 juin · W/m² · les trois ensemble", "sur les continents · en haut : moins de glace · ‰", "température, °C, par rapport à aujourd'hui", "ppm", "m, par rapport à aujourd'hui"],
+      mlcToday: "aujourd'hui", mlcLGM: "DMG", mlcEemian: "Eémien", mlcAgo: n => `il y a ${n} ans`, mlcIn: n => `dans ${n} ans`, mlcNow: "aujourd'hui",
+      mlcYears: n => `${n}`, mlcWarm: "périodes chaudes (interglaciaires)", mlcFuture: "futur : orbite seulement",
+      mlcNext: "Prochaine glaciation : pas avant 50 000 ans (Berger et Loutre 2002), plus tard avec le CO₂ actuel (Ganopolski et al. 2016).",
+      mlcGlacial: "glaciaire", mlcInterglacial: "interglaciaire", mlcStage: n => `stade ${n}`,
+      mlcLGMLong: "dernier maximum glaciaire", mlcEemianLong: "interglaciaire de l'Eémien",
+      mlcSay: (when, name, stage, q) => `<b>${when}</b>${name ? " · " + name : ""}${stage ? " · " + stage : ""} · ensoleillement 65° N, 21 juin : <b>${q} W/m²</b>`,
+      mlcOrbit: "L'orbite vue de dessus", mlcExag: "forme × 8 (l'orbite réelle ressemble à un cercle)", mlcPeri: "périhélie",
+      mlcJune: "21 juin", mlcDec: "21 décembre", mlcJuneNear: "juin : la Terre près du Soleil", mlcJuneFar: "juin : la Terre loin du Soleil",
+      mlcTiltOf: "inclinaison de l'axe", mlcValues: ["Excentricité", "Inclinaison", "Ensoleillement 65° N", "δ¹⁸O", "Antarctique", "CO₂", "Niveau de la mer"],
+      mlcTodayCO2: "aujourd'hui : 422", mlcOff: "désactivé : fixé à sa moyenne",
+      mlcSpecTitle: "Quels cycles dominent ? Spectres (la hauteur d'un pic : la part de ce cycle dans la courbe)",
+      mlcSpecPeriod: "période (milliers d'années)", mlcSpecInsol: "Ensoleillement 65° N, 21 juin", mlcSpecIce: "Glace (δ¹⁸O), 800 000 dernières années",
+      mlcSpecIceOld: "Glace (δ¹⁸O), il y a 1,5 à 1 million d'années",
+      mlcProblem: "L'ensoleillement n'a presque pas de cycle de 100 000 ans, et pourtant les glaciations le suivent : le « problème des 100 000 ans ». Calottes, CO₂ et océans amplifient les petites variations.",
+      mlcMPT: "Avant 1 million d'années environ, la glace allait et venait tous les 41 000 ans, au rythme de l'inclinaison : la transition du Pléistocène moyen.",
+      mlcSource: "Orbite : Berger et Loutre 1991, Berger 1978 · δ¹⁸O : Lisiecki et Raymo 2005 · Antarctique : Jouzel et al. 2007 (EPICA) · CO₂ : Bereiter et al. 2015 · niveau de la mer : Spratt et Lisiecki 2016",
+      mlcNoData: "dist/milankovitch.js manquant",
+    },
+  });
+
+  const rad = d => d * Math.PI / 180;
+  const W = 1280, H = 560;
+  // the plot, the strips [top, height] and the orbit panel
+  const X0 = 205, X1 = 880, PX = 905;
+  const STRIPS = [[12, 46], [64, 46], [116, 46], [168, 74], [262, 50], [318, 50], [374, 46], [426, 46]];
+  const AXIS = 480;
+  const WARM = 3.6;          // LR04 δ18O below this (‰): an interglacial
+  const PALETTE = {
+    dark: { lines: ["#e8a65d", "#e06c9f", "#b28ce6", "#f2c46d", "#8cc47a", "#ef5b4c", "#c9a27e", "#5aa7e6"], warm: "rgba(242, 196, 109, 0.09)", hatch: "rgba(255, 255, 255, 0.06)" },
+    light: { lines: ["#c0661b", "#c2406f", "#7b55c7", "#b07d00", "#3f8a3a", "#d63a2b", "#8a6446", "#2f7fc4"], warm: "rgba(201, 138, 0, 0.09)", hatch: "rgba(0, 0, 0, 0.05)" },
+  };
+
+  // daily mean insolation (W/m²) at latitude phi on solar longitude lam, with Berger's omega (the Sun's perihelion = omega + 180°)
+  function insolation(e, obl, omega, phi = 65, lam = 90, S0 = 1360) {
+    const d = Math.asin(Math.sin(rad(obl)) * Math.sin(rad(lam))), p = rad(phi);
+    const c = -Math.tan(p) * Math.tan(d), h = c >= 1 ? 0 : c <= -1 ? Math.PI : Math.acos(c);
+    const r = (1 + e * Math.cos(rad(lam - omega - 180))) / (1 - e * e);
+    return S0 / Math.PI * r * r * (h * Math.sin(p) * Math.sin(d) + Math.cos(p) * Math.cos(d) * Math.sin(h));
+  }
+
+  // shared with the diagram milankovitch-ice (its print version)
+  R_.milank = { insolation, PALETTE, WARM };
+
+  R_.sims["milankovitch-cycles"] = function (container, opts = {}) {
+    const L = R_.lang(opts.lang), tr = k => R_.t(L, k);
+    const D = R_.data && R_.data.milank;
+    const ctx = pg.makeCanvas(container, W, H);
+    let th, C;
+    const theme = () => { th = R_.theme(pg.markTheme(container)); C = PALETTE[th.name === "dark" ? "dark" : "light"]; };
+    theme();
+    const text = (s, x, y, o) => pg.ctxText(ctx, th, s, x, y, o);
+    if (!D) { text(tr("mlcNoData"), 20, 40, { color: th.muted }); return; }
+    const O = D.orbit, n0 = O.start;   // orbit index = t − start
+    const big = n => R_.typo(L, String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+    const fmt = (x, d) => R_.num(L, x, d);
+
+    let span = opts.span === "1500" ? 1500 : 800, view = opts.view === "periods" ? "periods" : "timeline";
+    let t = Math.max(-span, Math.min(100, Math.round(+opts.year || 0))), playing = false, speed = 10;
+    const on = { ecc: true, tilt: true, prec: true };
+
+    const panel = pg.controls(container, `
+      <button class="play" aria-label="${tr("mlcPlay")}" data-alt="❚❚">▶</button>
+      <label>${tr("mlcSpeed")} <input type="range" min="0" max="1000"></label>
+      <span class="rate" style="min-width: ${L === "fr" ? 7.6 : 8.8}em"></span>
+      <label><input type="checkbox" class="mlc-ecc" checked> ${tr("mlcEcc")}</label>
+      <label><input type="checkbox" class="mlc-tilt" checked> ${tr("mlcTilt")}</label>
+      <label><input type="checkbox" class="mlc-prec" checked> ${tr("mlcPrec")}</label>
+      <button class="span" data-alt="${tr(span === 800 ? "mlcShort" : "mlcLong")}">${tr(span === 800 ? "mlcLong" : "mlcShort")}</button>
+      <button class="view" data-alt="${tr(view === "timeline" ? "mlcTimeline" : "mlcPeriods")}">${tr(view === "timeline" ? "mlcPeriods" : "mlcTimeline")}</button>
+      <span class="date" style="flex-basis: 100%"></span>`);   // a sentence: a row of its own, always
+    if (container.closest(".reveal .sim")) panel.classList.add("sim-controls");
+    const slider = panel.querySelector("input[type=range]"), lo = 0, hi = 1.7;   // 1 to 50 kyr per second
+    slider.value = pg.logPos(speed, lo, hi);
+    const rate = panel.querySelector(".rate"), say = panel.querySelector(".date"), play = panel.querySelector(".play");
+    const showRate = () => { rate.textContent = tr("mlcRate")(Math.round(speed)); };
+    showRate();
+    slider.addEventListener("input", () => { speed = pg.logValue(slider.value, lo, hi); showRate(); });
+    const setPlaying = p => {
+      playing = p;
+      play.textContent = p ? "❚❚" : "▶";
+      play.setAttribute("aria-label", tr(p ? "mlcPause" : "mlcPlay"));
+    };
+    play.addEventListener("click", () => {
+      if (!playing && t >= 100) t = -span;   // at the end: from the start again
+      setPlaying(!playing);
+    });
+    [["ecc", ".mlc-ecc"], ["tilt", ".mlc-tilt"], ["prec", ".mlc-prec"]].forEach(([k, sel]) =>
+      panel.querySelector(sel).addEventListener("change", e => { on[k] = e.target.checked; build(); }));
+    const spanBtn = panel.querySelector(".span");
+    spanBtn.addEventListener("click", () => {
+      span = span === 800 ? 1500 : 800;
+      spanBtn.textContent = tr(span === 800 ? "mlcLong" : "mlcShort");
+      spanBtn.dataset.alt = tr(span === 800 ? "mlcShort" : "mlcLong");
+      t = Math.max(t, -span); build();
+    });
+    const viewBtn = panel.querySelector(".view");
+    viewBtn.addEventListener("click", () => {
+      view = view === "timeline" ? "periods" : "timeline";
+      viewBtn.textContent = tr(view === "timeline" ? "mlcPeriods" : "mlcTimeline");
+      viewBtn.dataset.alt = tr(view === "timeline" ? "mlcTimeline" : "mlcPeriods");
+      build();
+    });
+
+    // series on the time axis of the span: index k = t + span (t from −span to +100)
+    const X = tt => X0 + (tt + span) / (span + 100) * (X1 - X0);
+    const T = x => Math.round(-span + (x - X0) / (X1 - X0) * (span + 100));
+    const orbitAt = tt => { const i = tt - n0; return { e: O.ecc[i], obl: O.obl[i], omega: O.omega[i] }; };
+    const rec = (arr, tt) => (tt <= 0 && -tt < arr.length ? arr[-tt] : null);
+    let means, insol, insolFull;
+    function series() {
+      const ts = []; for (let tt = -span; tt <= 100; tt++) ts.push(tt);
+      const os = ts.map(orbitAt), avg = a => a.reduce((s, v) => s + v, 0) / a.length;
+      means = { e: avg(os.map(o => o.e)), obl: avg(os.map(o => o.obl)), omega: orbitAt(0).omega };
+      // a cycle switched off is held at its mean (precession: the perihelion stays where it is today)
+      insolFull = os.map(o => insolation(o.e, o.obl, o.omega));
+      insol = os.map(o => insolation(on.ecc ? o.e : means.e, on.tilt ? o.obl : means.obl, on.prec ? o.omega : means.omega));
+      return { ts, os };
+    }
+
+    // the static picture (strips or spectra) on a canvas of its own; the cursor on top
+    const base = document.createElement("canvas");
+    base.width = W * 2; base.height = H * 2;
+    const bctx = base.getContext("2d");
+    bctx.scale(2, 2);
+    const btext = (s, x, y, o) => pg.ctxText(bctx, th, s, x, y, o);
+
+    let S;
+    function build() {
+      S = series();
+      bctx.clearRect(0, 0, W, H);
+      if (view === "periods") spectra(); else timeline();
+      dirty = true;
+    }
+
+    function strip(k, values, { invert = false, dim = false, flat = null } = {}) {
+      const [top, h] = STRIPS[k], col = C.lines[k];
+      const vs = values.filter(v => v !== null && v !== undefined);
+      if (!vs.length) return;
+      let vmin = Math.min(...vs), vmax = Math.max(...vs);
+      const pad = (vmax - vmin) * 0.08 || 1; vmin -= pad; vmax += pad;
+      const Y = v => (invert ? top + (v - vmin) / (vmax - vmin) * h : top + h - (v - vmin) / (vmax - vmin) * h);
+      strip.Y[k] = Y;
+      bctx.strokeStyle = th.grid; bctx.lineWidth = 1;
+      bctx.beginPath(); bctx.moveTo(X0, top + h + 2); bctx.lineTo(X1, top + h + 2); bctx.stroke();
+      bctx.save(); bctx.globalAlpha = dim ? 0.3 : 1;
+      bctx.strokeStyle = col; bctx.lineWidth = k === 3 ? 2.6 : 1.8; bctx.lineJoin = "round";
+      bctx.beginPath();
+      let pen = false;
+      S.ts.forEach((tt, i) => {
+        const v = values[i];
+        if (v === null || v === undefined) { pen = false; return; }
+        const x = X(tt), y = Y(v);
+        if (pen) bctx.lineTo(x, y); else { bctx.moveTo(x, y); pen = true; }
+      });
+      bctx.stroke();
+      bctx.restore();
+      if (flat !== null) {
+        bctx.strokeStyle = col; bctx.lineWidth = 2; bctx.setLineDash([6, 5]);
+        bctx.beginPath(); bctx.moveTo(X0, Y(flat)); bctx.lineTo(X1, Y(flat)); bctx.stroke(); bctx.setLineDash([]);
+      }
+      label(k, dim ? tr("mlcOff") : tr("mlcStripSub")[k]);
+    }
+    strip.Y = [];
+    // the name of a strip and what it is (in two lines if it is long)
+    function label(k, sub) {
+      const top = STRIPS[k][0];
+      btext(tr("mlcStrips")[k], X0 - 10, top + 16, { size: 15, weight: 600, color: C.lines[k], align: "right" });
+      bctx.font = `12px ${th.font}`;
+      const lines = [""];
+      // the groups of digits of a number stay together (100 000)
+      sub.replace(/(\d) (?=\d{3}\b)/g, "$1\u00a0").split(" ").forEach(w => { const l = lines[lines.length - 1]; if (bctx.measureText(l + " " + w).width > X0 - 18 && l) lines.push(w); else lines[lines.length - 1] = l ? l + " " + w : w; });
+      lines.slice(0, 2).forEach((l, i) => btext(l, X0 - 10, top + 31 + i * 13, { size: 12, color: th.muted, align: "right" }));
+    }
+
+    function timeline() {
+      // warm periods (LR04 below WARM) and the future, over all the strips
+      const top = STRIPS[0][0] - 4, bottom = AXIS;
+      bctx.fillStyle = C.warm;
+      let start = null;
+      for (let tt = -span; tt <= 1; tt++) {
+        const v = tt <= 0 ? rec(D.lr04, tt) : null, warm = v !== null && v < WARM;
+        if (warm && start === null) start = tt;
+        if (!warm && start !== null) { bctx.fillRect(X(start - 0.5), top, X(tt - 0.5) - X(start - 0.5), bottom - top); start = null; }
+      }
+      bctx.save();
+      bctx.beginPath(); bctx.rect(X(0), top, X1 - X(0), bottom - top); bctx.clip();
+      bctx.strokeStyle = C.hatch; bctx.lineWidth = 6;
+      for (let x = X(0) - 600; x < X1; x += 14) { bctx.beginPath(); bctx.moveTo(x, bottom); bctx.lineTo(x + 600, top); bctx.stroke(); }
+      bctx.restore();
+
+      const os = S.os;
+      strip(0, os.map(o => o.e), { dim: !on.ecc, flat: on.ecc ? null : means.e });
+      strip(1, os.map(o => o.obl), { dim: !on.tilt, flat: on.tilt ? null : means.obl });
+      // precession index e·sin(omega): high = 21 June far from the Sun, so drawn upside down (up: sunnier June)
+      strip(2, os.map(o => o.e * Math.sin(rad(o.omega))), { invert: true, dim: !on.prec });
+      // insolation: the full one faint when a cycle is off
+      if (!(on.ecc && on.tilt && on.prec)) {
+        const [tp, h] = STRIPS[3], vs = insolFull, vmin = Math.min(...vs) - 10, vmax = Math.max(...vs) + 10;
+        bctx.save(); bctx.globalAlpha = 0.25; bctx.strokeStyle = C.lines[3]; bctx.lineWidth = 1.5; bctx.beginPath();
+        S.ts.forEach((tt, i) => { const x = X(tt), y = tp + h - (vs[i] - vmin) / (vmax - vmin) * h; i ? bctx.lineTo(x, y) : bctx.moveTo(x, y); });
+        bctx.stroke(); bctx.restore();
+      }
+      // the insolation on the same scale as the full one, so that switching a cycle off shows what it adds
+      {
+        const [tp, h] = STRIPS[3], vmin = Math.min(...insolFull) - 10, vmax = Math.max(...insolFull) + 10;
+        const Y = v => tp + h - (v - vmin) / (vmax - vmin) * h;
+        strip.Y[3] = Y;
+        bctx.strokeStyle = th.grid; bctx.lineWidth = 1; bctx.beginPath(); bctx.moveTo(X0, tp + h + 2); bctx.lineTo(X1, tp + h + 2); bctx.stroke();
+        bctx.strokeStyle = C.lines[3]; bctx.lineWidth = 2.6; bctx.lineJoin = "round"; bctx.beginPath();
+        S.ts.forEach((tt, i) => { const x = X(tt), y = Y(insol[i]); i ? bctx.lineTo(x, y) : bctx.moveTo(x, y); });
+        bctx.stroke();
+        label(3, tr("mlcStripSub")[3]);
+        btext(`${Math.round(vmax - 10)}`, X0 + 4, tp + 10, { size: 11, color: th.muted });
+        btext(`${Math.round(vmin + 10)}`, X0 + 4, tp + h - 2, { size: 11, color: th.muted });
+      }
+      // the ice record (past only); δ18O up = less ice
+      strip(4, S.ts.map(tt => rec(D.lr04, tt)), { invert: true });
+      strip(5, S.ts.map(tt => rec(D.edcT, tt)));
+      strip(6, S.ts.map(tt => rec(D.co2, tt)));
+      strip(7, S.ts.map(tt => rec(D.sea, tt)));
+
+      // time axis: every 100 000 years, today, the future
+      bctx.strokeStyle = th.text; bctx.lineWidth = 1.5;
+      bctx.beginPath(); bctx.moveTo(X0, AXIS); bctx.lineTo(X1, AXIS); bctx.stroke();
+      for (let tt = -Math.floor(span / 100) * 100; tt <= 100; tt += 100) {
+        bctx.beginPath(); bctx.moveTo(X(tt), AXIS); bctx.lineTo(X(tt), AXIS + 6); bctx.stroke();
+        if (tt % 200 || tt > 0) continue;
+        const s = tt === 0 ? tr("mlcToday") : "−" + big(-tt * 1000);
+        btext(s, X(tt), AXIS + 22, { size: 13, color: th.muted, align: tt === -span ? "left" : "center" });
+      }
+      // marks: the Last Glacial Maximum, the Eemian, today
+      MARKS.forEach(([tt, key]) => {
+        if (tt < -span) return;
+        bctx.strokeStyle = th.muted; bctx.setLineDash([3, 4]); bctx.lineWidth = 1;
+        bctx.beginPath(); bctx.moveTo(X(tt), STRIPS[0][0]); bctx.lineTo(X(tt), AXIS); bctx.stroke(); bctx.setLineDash([]);
+        btext(tr(key), X(tt), AXIS + 40, { size: 13, weight: 600, color: th.text, align: "center" });
+      });
+      btext(`▬ ${tr("mlcWarm")}`, X0, AXIS + 58, { size: 12, color: th.muted });
+      btext(tr("mlcFuture"), X1, AXIS + 58, { size: 12, color: th.muted, align: "right" });
+      if (span > 800) btext(tr("mlcMPT"), X0, AXIS + 74, { size: 12, color: th.muted });
+      else btext(tr("mlcNext"), X0, AXIS + 74, { size: 12, color: th.muted });
+    }
+    const MARKS = [[-125, "mlcEemian"], [-21, "mlcLGM"]];
+
+    // spectra: amplitude of each period, 10 to 150 thousand years (log axis)
+    function spectrum(values, ts) {
+      const ok = values.map((v, i) => [ts[i], v]).filter(([, v]) => v !== null && v !== undefined);
+      const m = ok.reduce((s, [, v]) => s + v, 0) / ok.length, out = [];
+      for (let p = 10; p <= 150; p *= 1.01) {
+        let re = 0, im = 0;
+        ok.forEach(([tt, v]) => { const a = 2 * Math.PI * tt / p; re += (v - m) * Math.cos(a); im += (v - m) * Math.sin(a); });
+        out.push([p, Math.hypot(re, im) / ok.length]);
+      }
+      const mx = Math.max(...out.map(o => o[1]));
+      return out.map(([p, a]) => [p, a / mx]);
+    }
+    function spectra() {
+      const x0 = 80, x1 = 1200, PXs = p => x0 + (Math.log(p) - Math.log(10)) / (Math.log(150) - Math.log(10)) * (x1 - x0);
+      btext(tr("mlcSpecTitle"), x0, 26, { size: 16, weight: 600 });
+      const past = S.ts.filter(tt => tt <= 0);
+      const curves = [[tr("mlcSpecInsol"), spectrum(insol.slice(0, past.length), past), C.lines[3]]];
+      const ice = tt0 => { const ts = []; for (let tt = tt0; tt <= Math.min(0, tt0 + 500); tt++) ts.push(tt); return ts; };
+      const tsIce = []; for (let tt = -Math.min(span, 800); tt <= 0; tt++) tsIce.push(tt);
+      curves.push([tr("mlcSpecIce"), spectrum(tsIce.map(tt => rec(D.lr04, tt)), tsIce), C.lines[4]]);
+      if (span > 800) { const ts2 = ice(-1500); curves.push([tr("mlcSpecIceOld"), spectrum(ts2.map(tt => rec(D.lr04, tt)), ts2), C.lines[1]]); }
+      const top = 60, h = (AXIS - top - 20) / curves.length - 18;
+      curves.forEach(([name, sp, col], k) => {
+        const y0 = top + k * (h + 18), Y = a => y0 + h - a * (h - 10);
+        [19, 23, 41, 100].forEach(p => {
+          bctx.strokeStyle = th.grid; bctx.setLineDash([3, 4]); bctx.lineWidth = 1;
+          bctx.beginPath(); bctx.moveTo(PXs(p), y0); bctx.lineTo(PXs(p), y0 + h); bctx.stroke(); bctx.setLineDash([]);
+        });
+        bctx.fillStyle = col; bctx.globalAlpha = 0.25; bctx.beginPath(); bctx.moveTo(PXs(10), y0 + h);
+        sp.forEach(([p, a]) => bctx.lineTo(PXs(p), Y(a))); bctx.lineTo(PXs(150), y0 + h); bctx.closePath(); bctx.fill(); bctx.globalAlpha = 1;
+        bctx.strokeStyle = col; bctx.lineWidth = 2; bctx.beginPath();
+        sp.forEach(([p, a], i) => (i ? bctx.lineTo(PXs(p), Y(a)) : bctx.moveTo(PXs(p), Y(a)))); bctx.stroke();
+        btext(name, x0 + 6, y0 + 16, { size: 14, weight: 600, color: col });
+        bctx.strokeStyle = th.grid; bctx.beginPath(); bctx.moveTo(x0, y0 + h); bctx.lineTo(x1, y0 + h); bctx.stroke();
+      });
+      const yA = top + curves.length * (h + 18) - 4;
+      [10, 19, 23, 41, 100, 150].forEach(p => btext(String(p), PXs(p), yA + 2, { size: 13, color: th.muted, align: "center" }));
+      btext(tr("mlcSpecPeriod"), x1, yA + 20, { size: 13, color: th.muted, align: "right" });
+      wrap(tr(span > 800 ? "mlcMPT" : "mlcProblem"), x0, yA + 40, x1 - x0, 17, { size: 14, color: th.text });
+    }
+    function wrap(s, x, y, maxW, lh, o) {
+      bctx.font = `${o.weight || 400} ${o.size}px ${th.font}`;
+      let line = "";
+      s.split(" ").forEach(w => { const l = line ? line + " " + w : w; if (bctx.measureText(l).width > maxW && line) { btext(line, x, y, o); line = w; y += lh; } else line = l; });
+      if (line) btext(line, x, y, o);
+    }
+
+    // the cursor, the orbit panel and the sentence
+    function stageAt(tt) {
+      const age = -tt;
+      for (let i = 0; i < D.mis.length; i++) if (age < D.mis[i][2]) return D.mis[i][0];
+      return null;
+    }
+    function orbitPanel(o, q) {
+      const top = 14;
+      text(tr("mlcOrbit"), PX, top + 14, { size: 15, weight: 600 });
+      text(tr("mlcExag"), PX, top + 30, { size: 11, color: th.muted, italic: true });
+      // ellipse seen from above, eccentricity × 8, the Sun at a focus; the perihelion to the left
+      const a = 100, ev = Math.min(0.9, o.e * 8), b = a * Math.sqrt(1 - ev * ev), cx = PX + 185, cy = top + 120, fx = cx - a * ev;
+      ctx.strokeStyle = th.muted; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.ellipse(cx, cy, a, b, 0, 0, 2 * Math.PI); ctx.stroke();
+      const g = ctx.createRadialGradient(fx, cy, 0, fx, cy, 16);
+      g.addColorStop(0, "#fff3c4"); g.addColorStop(0.5, "#ffd27a"); g.addColorStop(1, "rgba(245,166,35,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(fx, cy, 16, 0, 2 * Math.PI); ctx.fill();
+      ctx.fillStyle = th.text; ctx.beginPath(); ctx.arc(cx - a, cy, 3, 0, 2 * Math.PI); ctx.fill();
+      text(tr("mlcPeri"), cx - a - 6, cy + 4, { size: 12, color: th.muted, align: "right" });
+      // Earth at 21 June: true anomaly = solar longitude 90° − perihelion of the Sun (omega + 180°)
+      const pos = v => { const r = a * (1 - ev * ev) / (1 + ev * Math.cos(rad(v))); return [fx - r * Math.cos(rad(v)), cy - r * Math.sin(rad(v))]; };
+      const vJ = 90 - (o.omega + 180), [jx, jy] = pos(vJ), [dx, dy] = pos(vJ + 180);
+      ctx.fillStyle = C.lines[3]; ctx.beginPath(); ctx.arc(jx, jy, 7, 0, 2 * Math.PI); ctx.fill();
+      ctx.fillStyle = th.muted; ctx.beginPath(); ctx.arc(dx, dy, 5, 0, 2 * Math.PI); ctx.fill();
+      text(tr("mlcJune"), jx, jy - 12, { size: 13, weight: 600, color: C.lines[3], align: "center" });
+      text(tr("mlcDec"), dx, dy + 20, { size: 12, color: th.muted, align: "center" });
+      const near = Math.cos(rad(vJ)) > 0;   // closer to the perihelion than to the aphelion
+      text(tr(near ? "mlcJuneNear" : "mlcJuneFar"), PX, top + 242, { size: 13, color: th.text });
+      // the tilt of the axis
+      const ex = PX + 300, ey = top + 270, R = 22, tilt = o.obl;
+      ctx.fillStyle = th.name === "dark" ? "#2f5d8a" : "#5d8fbf"; ctx.beginPath(); ctx.arc(ex, ey, R, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = th.text; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(ex - 36 * Math.sin(rad(tilt)), ey + 36 * Math.cos(rad(tilt))); ctx.lineTo(ex + 36 * Math.sin(rad(tilt)), ey - 36 * Math.cos(rad(tilt))); ctx.stroke();
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = th.muted; ctx.beginPath(); ctx.moveTo(ex, ey + 36); ctx.lineTo(ex, ey - 36); ctx.stroke(); ctx.setLineDash([]);
+      text(tr("mlcTiltOf"), PX, top + 266, { size: 13, color: th.muted });
+      text(`${fmt(tilt, 2)}°`, PX, top + 286, { size: 20, weight: 700, color: C.lines[1] });
+      // the values at the cursor
+      const v = [fmt(o.e, 4), `${fmt(tilt, 2)}°`, `${Math.round(q)} W/m²`, rec(D.lr04, t) !== null ? `${fmt(rec(D.lr04, t), 2)} ‰` : "–",
+        rec(D.edcT, t) !== null ? `${rec(D.edcT, t) > 0 ? "+" : ""}${fmt(rec(D.edcT, t), 1)} °C` : "–",
+        rec(D.co2, t) !== null ? `${Math.round(rec(D.co2, t))} ppm` + (t === 0 ? ` (${tr("mlcTodayCO2")})` : "") : "–",
+        rec(D.sea, t) !== null ? `${rec(D.sea, t) > 0 ? "+" : ""}${Math.round(rec(D.sea, t))} m` : "–"];
+      const cols = [0, 1, 3, 4, 5, 6, 7];
+      tr("mlcValues").forEach((name, i) => {
+        const y = top + 318 + i * 21;
+        text(name, PX, y, { size: 13, color: th.muted });
+        text(R_.typo(L, v[i]), W - 14, y, { size: 14, weight: 600, color: C.lines[cols[i]], align: "right" });
+      });
+    }
+
+    let dirty = true, shown = "";
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.drawImage(base, 0, 0, W, H);
+      const o = orbitAt(t), q = insol[t + span];
+      if (view === "timeline") {
+        const x = X(t);
+        ctx.strokeStyle = th.text; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(x, STRIPS[0][0] - 6); ctx.lineTo(x, AXIS); ctx.stroke();
+        const vals = [o.e, o.obl, o.e * Math.sin(rad(o.omega)), q, rec(D.lr04, t), rec(D.edcT, t), rec(D.co2, t), rec(D.sea, t)];
+        vals.forEach((v, k) => {
+          if (v === null || !strip.Y[k]) return;
+          ctx.fillStyle = C.lines[k]; ctx.beginPath(); ctx.arc(x, strip.Y[k](v), 4.5, 0, 2 * Math.PI); ctx.fill();
+        });
+        ctx.fillStyle = th.text; ctx.beginPath(); ctx.moveTo(x - 7, STRIPS[0][0] - 12); ctx.lineTo(x + 7, STRIPS[0][0] - 12); ctx.lineTo(x, STRIPS[0][0] - 4); ctx.fill();
+      }
+      if (view === "timeline") orbitPanel(o, q);
+      const when = t === 0 ? tr("mlcNow") : t < 0 ? tr("mlcAgo")(big(-t * 1000)) : tr("mlcIn")(big(t * 1000));
+      const mark = t === -21 ? tr("mlcLGMLong") : t === -125 ? tr("mlcEemianLong") : "";
+      const st = t <= 0 ? stageAt(t) : null, v18 = rec(D.lr04, t);
+      const stage = st ? `${tr("mlcStage")(st)}, ${tr(v18 !== null && v18 < WARM ? "mlcInterglacial" : "mlcGlacial")}` : "";
+      const s = tr("mlcSay")(when, mark, stage, Math.round(q));
+      if (s !== shown) say.innerHTML = shown = R_.typo(L, s);
+    }
+
+    // drag or click on the strips; the marks under the axis jump there
+    const at = e => { const r = ctx.canvas.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height]; };
+    let drag = false;
+    const moveTo = (x, y) => {
+      if (view !== "timeline") return false;
+      if (y > AXIS + 28 && y < AXIS + 48) {
+        const m = MARKS.find(([tt]) => Math.abs(X(tt) - x) < 30 && tt >= -span);
+        if (m) { t = m[0]; dirty = true; return true; }
+      }
+      if (x < X0 - 4 || x > X1 + 4 || y > AXIS + 4) return false;
+      t = Math.max(-span, Math.min(100, T(x))); dirty = true; return true;
+    };
+    ctx.canvas.addEventListener("pointerdown", e => { const [x, y] = at(e); if (moveTo(x, y)) { drag = true; setPlaying(false); ctx.canvas.setPointerCapture(e.pointerId); } });
+    ctx.canvas.addEventListener("pointermove", e => { const [x, y] = at(e); if (drag) moveTo(x, Math.min(y, AXIS)); });
+    ctx.canvas.addEventListener("pointerup", () => { drag = false; });
+
+    let acc = 0;
+    function step(dt) {
+      if (playing) {
+        acc += speed * dt;
+        const k = Math.floor(acc);
+        if (k) { acc -= k; t = Math.min(100, t + k); dirty = true; if (t >= 100) setPlaying(false); }
+      }
+      if (dirty) { draw(); dirty = false; }
+    }
+    build();
+    pg.loop(container, step);
+    pg.onThemeChange(() => { theme(); build(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { build(); });
   };
 })(globalThis);
 

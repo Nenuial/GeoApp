@@ -132,6 +132,10 @@
 .geores[data-sim="sun-future"]:not(.reveal .geores) .geores-controls .date {
   flex-basis: 100%;
 }
+/* milankovitch-cycles on a page: play, speed, three switches and two buttons on one row, also with a 20 px root font */
+.geores[data-sim="milankovitch-cycles"]:not(.reveal .geores) .geores-controls input[type="range"] {
+  width: clamp(3rem, 5.4cqw, 9rem);
+}
 /* sun-angle: two sliders, two readouts and four buttons on one row, also with a 20 px root font in a 990 px box */
 .geores[data-sim="sun-angle"]:not(.reveal .geores) .geores-controls input[type="range"] {
   width: clamp(3.5rem, 7.5cqw, 9rem);
@@ -543,3 +547,13 @@
 .geores-dtm-mini .dtm-band { fill: #63452f; transition: transform .9s ease-in-out .3s; }
 .geores-dtm-mini .dtm-head { fill: #f6eed7; opacity: .5; transition: opacity .6s .6s; }
 .geores-dtm-mini .dtm-head.dtm-on { opacity: 1; }
+
+/* milankovitch-cycles in a keynote's .sim box: the canvas a little narrower (and so lower) and the controls below it,
+   clear of the time axis and of the slide's footer */
+.reveal .sim [data-sim="milankovitch-cycles"] canvas.geores-canvas { width: 1180px; margin: 0 auto; }
+.reveal .sim [data-sim="milankovitch-cycles"] .sim-controls {
+  position: static;
+  max-width: none;
+  margin-top: 4px;
+  padding: 6px 14px;
+}

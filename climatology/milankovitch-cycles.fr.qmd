@@ -1,0 +1,38 @@
+---
+image: ../assets/thumbs/milankovitch-cycles.jpg
+title: "Les cycles de Milankovitch et les glaciations"
+description: "L'orbite de la Terre et les glaciations sur les 800 000 dernières années (ou 1,5 million) et les 100 000 prochaines : excentricité, inclinaison et précession, ensoleillement à 65° N, glace, température, CO₂ et niveau de la mer."
+categories: [Climatologie]
+---
+
+Huit courbes partagent le même axe du temps. En haut, les trois cycles de l'orbite de la Terre : sa forme (excentricité), l'inclinaison de son axe et la précession, et l'ensoleillement qu'ils donnent ensemble à 65° N le 21 juin. En dessous, les archives des glaciations : le volume de glace d'après les coquilles de foraminifères des grands fonds (δ¹⁸O), la température de l'Antarctique et le CO₂ tirés de sa glace, et le niveau de la mer. Les périodes chaudes (interglaciaires) sont ombrées.
+
+Faites glisser le curseur ou appuyez sur ▶ : à droite, l'orbite vue d'en haut montre où tombe le 21 juin et l'inclinaison de l'axe, avec les valeurs au curseur. Décochez *Excentricité*, *Inclinaison* ou *Précession* pour garder ce cycle à sa moyenne : l'ensoleillement est recalculé sans lui. *1,5 million d'années* remonte plus loin, et *Périodes* compare les rythmes de l'ensoleillement et de la glace.
+
+::: {.column-page}
+{{< geores sim="milankovitch-cycles" presets="span,year,view" >}}
+:::
+
+## À observer
+
+- Trouvez le dernier maximum glaciaire, il y a 21 000 ans : quel froid faisait-il en Antarctique, combien de CO₂ y avait-il dans l'air, quel était le niveau de la mer ?
+- Comptez les périodes chaudes sur 800 000 ans : combien de temps dure environ un cycle glaciaire ? Quel cycle de l'orbite a la même durée ?
+- Décochez chaque cycle à tour de rôle : lequel façonne le plus l'ensoleillement à 65° N ? Lequel le change le moins ?
+- Ouvrez *Périodes* : l'ensoleillement bat tous les 23 000 et 41 000 ans, la glace tous les 100 000. Pourquoi parle-t-on du « problème des 100 000 ans » ?
+- Passez à *1,5 million d'années* : avant il y a un million d'années environ, combien de temps duraient les cycles glaciaires ?
+- Avancez le curseur dans le futur : quand l'ensoleillement à 65° N sera-t-il de nouveau aussi bas qu'au début de la dernière glaciation ?
+
+## Fonctionnement
+
+L'idée de Milankovitch : les glaciations suivent l'ensoleillement d'été aux hautes latitudes nord. Quand les étés y sont frais, la neige de l'hiver ne fond pas, et les calottes de glace grandissent. Cet ensoleillement dépend de trois cycles de l'orbite de la Terre : sa forme (environ 100 000 et 400 000 ans), l'inclinaison de son axe (41 000 ans) et la précession, qui décide si juin tombe près du Soleil ou loin de lui (19 000 à 23 000 ans). La simulation calcule l'ensoleillement du 21 juin à 65° N à partir de l'orbite, vérifié sur les valeurs publiées par Berger et Loutre. Le dessin de l'orbite est étiré huit fois : l'orbite réelle ressemble à un cercle.
+
+Les archives des glaciations viennent des sédiments des grands fonds (δ¹⁸O des coquilles de foraminifères : plus d'¹⁸O signifie plus de glace sur les continents) et de la glace de l'Antarctique (température et bulles d'air). L'orbite donne le rythme, mais le fort rythme de 100 000 ans du dernier million d'années demande aussi les rétroactions de la glace, du CO₂ et des océans. La prochaine glaciation n'est pas attendue avant au moins 50 000 ans, et plus tard avec le CO₂ d'aujourd'hui (422 ppm, bien au-dessus de toutes les valeurs des 800 000 dernières années).
+
+## Sources
+
+- Orbite : Berger, A. & Loutre, M.F. (1991), *Quaternary Science Reviews* 10 ; Berger, A. (1978) pour le futur. NOAA/WDS Paleoclimatology.
+- Volume de glace : pile δ¹⁸O benthique LR04, Lisiecki, L.E. & Raymo, M.E. (2005), *Paleoceanography* 20 ; PANGAEA (CC BY 3.0).
+- Température de l'Antarctique : EPICA Dome C, Jouzel, J. et al. (2007), *Science* 317. NOAA/WDS Paleoclimatology.
+- CO₂ : composite antarctique, Bereiter, B. et al. (2015), *Geophysical Research Letters* 42. NOAA/WDS Paleoclimatology.
+- Niveau de la mer : Spratt, R.M. & Lisiecki, L.E. (2016), *Climate of the Past* 12. NOAA/WDS Paleoclimatology.
+- Prochaine glaciation : Berger, A. & Loutre, M.F. (2002), *Science* 297 ; Ganopolski, A. et al. (2016), *Nature* 529.

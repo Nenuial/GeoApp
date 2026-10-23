@@ -1,0 +1,38 @@
+---
+image: ../assets/thumbs/milankovitch-cycles.jpg
+title: "Milankovitch cycles and the ice ages"
+description: "Earth's orbit and the ice ages over the last 800 000 years (or 1.5 million) and the next 100 000: eccentricity, tilt and precession, sunshine at 65° N, ice, temperature, CO₂ and sea level."
+categories: [Climatology]
+---
+
+Eight curves share one time axis. At the top, the three cycles of Earth's orbit: its shape (eccentricity), the tilt of its axis and the precession, and the sunshine they give together at 65° N on 21 June. Below, the record of the ice ages: the ice volume from the shells of deep-sea foraminifera (δ¹⁸O), the temperature of Antarctica and the CO₂ from its ice, and the sea level. The warm periods (interglacials) are shaded.
+
+Drag the cursor or press ▶: on the right, the orbit seen from above shows where 21 June falls and the tilt of the axis, with the values at the cursor. Untick *Eccentricity*, *Tilt* or *Precession* to hold that cycle at its mean: the sunshine is computed again without it. *1.5 million years* goes further back, and *Periods* compares the rhythms of the sunshine and of the ice.
+
+::: {.column-page}
+{{< geores sim="milankovitch-cycles" presets="span,year,view" >}}
+:::
+
+## What to look for
+
+- Find the Last Glacial Maximum, 21 000 years ago: how cold was Antarctica, how much CO₂ was in the air, how low was the sea?
+- Count the warm periods over 800 000 years: about how long is one glacial cycle? Which orbital cycle has the same length?
+- Untick each cycle in turn: which one shapes the sunshine at 65° N most? Which one changes it least?
+- Open *Periods*: the sunshine beats every 23 000 and 41 000 years, the ice every 100 000. Why is this called the "100 000-year problem"?
+- Switch to *1.5 million years*: before about a million years ago, how long were the glacial cycles?
+- Move the cursor into the future: when will the sunshine at 65° N next be as low as at the start of the last glaciation?
+
+## How it works
+
+Milankovitch's idea: the ice ages follow the summer sunshine at high northern latitudes. When summers there are cool, the winter snow does not melt, and ice sheets grow. That sunshine depends on three cycles of Earth's orbit: its shape (about 100 000 and 400 000 years), the tilt of its axis (41 000 years) and the precession, which decides whether June falls near the Sun or far from it (19 000 to 23 000 years). The sim computes the 21 June sunshine at 65° N from the orbit, checked against Berger and Loutre's published values. The orbit drawing is stretched eight times: the real orbit looks like a circle.
+
+The ice-age records come from deep-sea sediments (δ¹⁸O of foraminifera shells: more ¹⁸O means more ice on land) and from the ice of Antarctica (temperature and air bubbles). The orbit sets the pace, but the strong 100 000-year rhythm of the last million years also needs the feedbacks of ice, CO₂ and the oceans. The next glaciation is not expected for at least 50 000 years, and later with today's CO₂ (422 ppm, far above any value of the last 800 000 years).
+
+## Sources
+
+- Orbit: Berger, A. & Loutre, M.F. (1991), *Quaternary Science Reviews* 10; Berger, A. (1978) for the future. NOAA/WDS Paleoclimatology.
+- Ice volume: LR04 benthic δ¹⁸O stack, Lisiecki, L.E. & Raymo, M.E. (2005), *Paleoceanography* 20; PANGAEA (CC BY 3.0).
+- Antarctic temperature: EPICA Dome C, Jouzel, J. et al. (2007), *Science* 317. NOAA/WDS Paleoclimatology.
+- CO₂: Antarctic composite, Bereiter, B. et al. (2015), *Geophysical Research Letters* 42. NOAA/WDS Paleoclimatology.
+- Sea level: Spratt, R.M. & Lisiecki, L.E. (2016), *Climate of the Past* 12. NOAA/WDS Paleoclimatology.
+- Next glaciation: Berger, A. & Loutre, M.F. (2002), *Science* 297; Ganopolski, A. et al. (2016), *Nature* 529.
