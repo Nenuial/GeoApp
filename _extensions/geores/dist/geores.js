@@ -3689,13 +3689,25 @@
     if (!D || !M) return svgDoc("0 0 1280 80", text(20, 40, esc(tr("mlcNoData")), { fill: th.muted }), th);
     const C = M.PALETTE[th.name === "dark" ? "dark" : "light"], O = D.orbit;
     const span = opts.span === "1500" ? 1500 : 800;
-    const X0 = 220, X1 = 1260, W = 1280;
-    const STRIPS = [[12, 46], [64, 46], [116, 46], [168, 74], [262, 50], [318, 50], [374, 46], [426, 46]], AXIS = 480;
+    // drawn for print: 960 wide, so that at book width (about 16 cm) the smallest text is about 6 pt
+    const W = 960, X0 = 250, X1 = 945, FS = { label: 18, sub: 14, axis: 15, note: 14, source: 13 };
+    const HS = [54, 54, 54, 84, 58, 58, 54, 54], STRIPS = [];
+    HS.reduce((top, h) => (STRIPS.push([top, h]), top + h + 8), 12);
+    const AXIS = STRIPS[7][0] + STRIPS[7][1] + 4;
     const X = t => X0 + (t + span) / (span + 100) * (X1 - X0);
     const ts = []; for (let t = -span; t <= 100; t++) ts.push(t);
     const orb = t => { const i = t - O.start; return [O.ecc[i], O.obl[i], O.omega[i]]; };
     const rec = (a, t) => (t <= 0 && -t < a.length ? a[-t] : null);
     const big = n => R_.typo(L, String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+    // lines of at most n characters, digit groups kept together
+    const wrap = (str, n) => {
+      const lines = [""];
+      str.replace(/(\d) (?=\d{3}\b)/g, "$1\u00A0").split(" ").forEach(w => {
+        const l = lines[lines.length - 1];
+        if ((l + " " + w).length > n && l) lines.push(w); else lines[lines.length - 1] = l ? l + " " + w : w;
+      });
+      return lines;
+    };
     const series = [
       ts.map(t => orb(t)[0]), ts.map(t => orb(t)[1]), ts.map(t => { const [e, , w] = orb(t); return e * Math.sin(rad(w)); }),
       ts.map(t => { const [e, o, w] = orb(t); return M.insolation(e, o, w); }),
@@ -3719,29 +3731,36 @@
       let d = "", pen = false;
       ts.forEach((t, i) => { const v = vals[i]; if (v === null) { pen = false; return; } d += `${pen ? "L" : "M"}${r1(X(t))},${r1(Y(v))}`; pen = true; });
       out += `<line x1="${X0}" y1="${top + h + 2}" x2="${X1}" y2="${top + h + 2}" stroke="${th.grid}"/>` +
-        `<path d="${d}" fill="none" stroke="${C.lines[k]}" stroke-width="${k === 3 ? 2.4 : 1.6}" stroke-linejoin="round"/>` +
-        text(X0 - 10, top + 17, esc(tr("mlcStrips")[k]), { "font-size": 15, "font-weight": 600, fill: C.lines[k], "text-anchor": "end" });
-      // the subtitle, in two lines if long (about 30 characters a line)
-      const sub = tr("mlcStripSub")[k].replace(/(\d) (?=\d{3}\b)/g, "$1 "), lines = [""];
-      sub.split(" ").forEach(w => { const l = lines[lines.length - 1]; if ((l + " " + w).length > 32 && l) lines.push(w); else lines[lines.length - 1] = l ? l + " " + w : w; });
-      lines.slice(0, 2).forEach((l, i) => { out += text(X0 - 10, top + 32 + i * 13, esc(l), { "font-size": 12, fill: th.muted, "text-anchor": "end" }); });
+        `<path d="${d}" fill="none" stroke="${C.lines[k]}" stroke-width="${k === 3 ? 2.8 : 2}" stroke-linejoin="round"/>` +
+        text(X0 - 10, top + 17, esc(tr("mlcStrips")[k]), { "font-size": FS.label, "font-weight": 600, fill: C.lines[k], "text-anchor": "end" });
+      // the subtitle, in two lines if long
+      wrap(tr("mlcStripSub")[k], 32).slice(0, 2).forEach((l, i) => {
+        out += text(X0 - 10, top + 35 + i * 16, esc(l), { "font-size": FS.sub, fill: th.muted, "text-anchor": "end" });
+      });
     });
     // time axis, marks
     out += `<line x1="${X0}" y1="${AXIS}" x2="${X1}" y2="${AXIS}" stroke="${th.text}" stroke-width="1.5"/>`;
     for (let t = -Math.floor(span / 100) * 100; t <= 100; t += 100) {
       out += `<line x1="${r1(X(t))}" y1="${AXIS}" x2="${r1(X(t))}" y2="${AXIS + 6}" stroke="${th.text}" stroke-width="1.5"/>`;
       if (t % 200 || t > 0) continue;
-      out += text(X(t), AXIS + 22, t === 0 ? esc(tr("mlcToday")) : "−" + big(-t * 1000), { "font-size": 13, fill: th.muted, "text-anchor": "middle" });
+      out += text(X(t), AXIS + 24, t === 0 ? esc(tr("mlcToday")) : "−" + big(-t * 1000), { "font-size": FS.axis, fill: th.muted, "text-anchor": "middle" });
     }
-    [[-125, "mlcEemian"], [-21, "mlcLGM"]].forEach(([t, k]) => {
+    // on 1.5 million years the two marks are close: the labels go to either side
+    const near = span > 800;
+    [[-125, "mlcEemian", "end"], [-21, "mlcLGM", "start"]].forEach(([t, k, side]) => {
       out += `<line x1="${r1(X(t))}" y1="12" x2="${r1(X(t))}" y2="${AXIS}" stroke="${th.muted}" stroke-dasharray="3 4"/>` +
-        text(X(t), AXIS + 40, esc(tr(k)), { "font-size": 13, "font-weight": 600, fill: th.text, "text-anchor": "middle" });
+        text(X(t) + (near ? (side === "end" ? 4 : -4) : 0), AXIS + 44, esc(tr(k)), { "font-size": FS.axis, "font-weight": 600, fill: th.text, "text-anchor": near ? side : "middle" });
     });
-    out += text(X0, AXIS + 58, esc(`▬ ${tr("mlcWarm")}`), { "font-size": 12, fill: th.muted }) +
-      text(X1, AXIS + 58, esc(tr("mlcFuture")), { "font-size": 12, fill: th.muted, "text-anchor": "end" }) +
-      text(X0, AXIS + 76, esc(R_.typo(L, tr(span > 800 ? "mlcMPT" : "mlcNext"))), { "font-size": 12, fill: th.muted }) +
-      text(X0, AXIS + 94, esc(R_.typo(L, tr("mlcSource"))), { "font-size": 11, fill: th.muted });
-    return svgDoc(`0 0 ${W} ${AXIS + 104}`, out, th, { title: tr("mliTitle"), cls: "geores-mli" });
+    // legend, the note and the sources, wrapped to the width of the chart
+    let y = AXIS + 68;
+    out += `<rect x="${X0}" y="${y - 12}" width="22" height="14" fill="${C.warm}" stroke="${th.grid}"/>` +
+      text(X0 + 30, y, esc(tr("mlcWarm")), { "font-size": FS.note, fill: th.muted }) +
+      text(X1, y, esc(tr("mlcFuture")), { "font-size": FS.note, fill: th.muted, "text-anchor": "end" });
+    [[tr(span > 800 ? "mlcMPT" : "mlcNext"), FS.note], [tr("mlcSource"), FS.source]].forEach(([str, fs]) => {
+      y += 6;
+      wrap(R_.typo(L, str), Math.floor((X1 - X0) / (fs * 0.5))).forEach(l => { y += fs + 4; out += text(X0, y, esc(l), { "font-size": fs, fill: th.muted }); });
+    });
+    return svgDoc(`0 0 ${W} ${y + 10}`, out, th, { title: tr("mliTitle"), cls: "geores-mli" });
   };
 })(globalThis);
 
@@ -18004,7 +18023,7 @@
       const mark = t === -21 ? tr("mlcLGMLong") : t === -125 ? tr("mlcEemianLong") : "";
       const st = t <= 0 ? stageAt(t) : null, v18 = rec(D.lr04, t);
       const stage = st ? `${tr("mlcStage")(st)}, ${tr(v18 !== null && v18 < WARM ? "mlcInterglacial" : "mlcGlacial")}` : "";
-      const s = tr("mlcSay")(when, mark, stage, Math.round(q));
+      const s = tr("mlcSay")(when[0].toUpperCase() + when.slice(1), mark, stage, Math.round(q));   // it starts the sentence
       if (s !== shown) say.innerHTML = shown = R_.typo(L, s);
     }
 
