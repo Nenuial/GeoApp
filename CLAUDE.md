@@ -11,9 +11,9 @@ the other sessions and the shared folders). Plan: `~/.claude/plans/you-are-geoap
 - Public (robots `Disallow`), no tracking. Deployed as a Docker compose image (caddy) on the VPS; every deploy approved
   by the user.
 - Population data: UN WPP 2024 (one-year age pyramids for every country, 1950–2100), via `geodata::gdt_wpp_*`.
-- Release straight to app.geoviews.ch (no test address). **On hold (2026-10-23):** the user first erases the old GeoApp
-  remote (GitHub `Nenuial/GeoApp`, the Shiny app) for a clean restart. No remote, no push and no release until the
-  user says so.
+- Release straight to app.geoviews.ch (no test address), when the user says so.
+- Remote: `git@github.com:Nenuial/GeoApp.git` (`origin`), restarted clean on 2026-10-23 (the old Shiny repository was
+  erased; its code stays in `Teaching/Z-Archives/OLD-GeoApp`). The user decides about pushing.
 - Not Shiny, not Highcharts. World maps in Equal Earth (`GeoRes.maps.frame("equalearth")`), Köppen with
   `GeoRes.koppen.classify` (geotools now uses the same definition).
 
