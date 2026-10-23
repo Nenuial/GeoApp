@@ -5,6 +5,19 @@
 // and a toolbar under the tool: Full screen (present mode), Link (copy the address), Embed (copy the iframe code).
 // Loaded at the end of <body>, before DOMContentLoaded: presets reach the sim before GeoRes.mount().
 (function () {
+  // Thumbnails of the listings: <slug>.jpg in the light theme, <slug>-dark.jpg in the dark one (tests/thumbs.mjs)
+  const thumbs = () => {
+    const dark = document.body.classList.contains("quarto-dark");
+    document.querySelectorAll('img[src*="assets/thumbs/"]').forEach(img => {
+      const src = img.getAttribute("src"), want = dark ? src.replace(/(-dark)?\.jpg$/, "-dark.jpg") : src.replace(/-dark\.jpg$/, ".jpg");
+      if (want !== src) img.setAttribute("src", want);
+    });
+  };
+  thumbs();
+  new MutationObserver(thumbs).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+})();
+
+(function () {
   const doc = document.documentElement;
   const tool = document.querySelector("main .geores[data-sim]");
   if (!tool) return;

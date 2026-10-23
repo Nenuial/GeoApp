@@ -1,5 +1,6 @@
-// Thumbnails of the tool pages for the listings: a picture of the sim (dark theme), assets/thumbs/<slug>.jpg,
-// and `image:` in the front matter of the page (and its French twin) when it has none.
+// Thumbnails of the tool pages for the listings: a picture of the sim in each theme, assets/thumbs/<slug>.jpg (light)
+// and <slug>-dark.jpg (assets/geoapp.js shows the one of the page's theme), and `image:` (the light one) in the
+// front matter of the page (and its French twin) when it has none. Sims on their dark stage look the same in both.
 // node tests/thumbs.mjs [slug …]   (the site must be built and served: make render, make serve on port 4321)
 import { chromium } from "@playwright/test";
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from "node:fs";
@@ -28,19 +29,26 @@ for (const dir of readdirSync(root)) {
 }
 
 const browser = await chromium.launch();
-const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 0.6 });
-await ctx.addInitScript(() => { try { localStorage.setItem("quarto-color-scheme", "alternate"); } catch (e) {} });
-const page = await ctx.newPage();
+const context = async scheme => {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 0.6 });
+  await ctx.addInitScript(v => { try { localStorage.setItem("quarto-color-scheme", v); } catch (e) {} }, scheme);
+  return ctx.newPage();
+};
+const THEMES = { "": await context("default"), "-dark": await context("alternate") };   // light, dark
 for (const qmd of pages) {
   const slug = basename(qmd).replace(/(\.fr)?\.qmd$/, "");
   if (only.size && !only.has(slug)) continue;
   const rel = relative(root, qmd).replace(/(\.fr)?\.qmd$/, ".html");
   const url = `${base}/${rel.startsWith("oc/") ? "fr/" : ""}${rel}`;
-  await page.goto(url, { waitUntil: "networkidle" });
-  const sim = page.locator("main .geores[data-sim]").first();
-  if (!(await sim.count())) { console.warn(`no sim: ${url}`); continue; }
-  await page.waitForTimeout(1500);   // let animations settle on a representative frame
-  await sim.screenshot({ path: join(out, `${slug}.jpg`), type: "jpeg", quality: 78 });
+  let found = true;
+  for (const [suffix, page] of Object.entries(THEMES)) {
+    await page.goto(url, { waitUntil: "networkidle" });
+    const sim = page.locator("main .geores[data-sim]").first();
+    if (!(await sim.count())) { console.warn(`no sim: ${url}`); found = false; break; }
+    await page.waitForTimeout(1500);   // let animations settle on a representative frame
+    await sim.screenshot({ path: join(out, `${slug}${suffix}.jpg`), type: "jpeg", quality: 78 });
+  }
+  if (!found) continue;
   // image: in the page and its French twin
   for (const f of [qmd, qmd.replace(/\.qmd$/, ".fr.qmd")]) {
     if (!existsSync(f) || f.endsWith(".fr.fr.qmd")) continue;

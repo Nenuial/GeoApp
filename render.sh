@@ -25,6 +25,22 @@ rsync -a --delete \
 # The data files are fetched at /data/…: the French copy babelquarto makes is not needed
 rm -rf "$work/_site/fr/data"
 
+# The 404 pages are written with links from the site's root, without the /fr of the French site: fixed here
+python3 - "$work/_site" <<'PY'
+import re, sys, pathlib
+site = pathlib.Path(sys.argv[1])
+fr = site / "fr" / "404.html"
+if fr.exists():
+    s = fr.read_text()
+    s = re.sub(r'(href|src)="/(?!fr/)', r'\1="/fr/', s)                    # the French site's own files
+    s = s.replace('id="language-link-en" href="/fr/404.html"', 'id="language-link-en" href="/404.html"')
+    s = s.replace('href="/fr/404.html" id="language-link-en"', 'href="/404.html" id="language-link-en"')
+    fr.write_text(s)
+for p in [site / "404.html", fr]:
+    if p.exists():
+        p.write_text(p.read_text().replace('"/fr/404.fr.html"', '"/fr/404.html"'))
+PY
+
 # Precompressed copies of the data, served by Caddy (and tools/serve.mjs) to browsers that accept gzip
 [ ! -d "$work/_site/data" ] || find "$work/_site/data" -name '*.json' -exec gzip -kf9 {} +
 

@@ -2,4 +2,4 @@
 title: "Page introuvable"
 ---
 
-Cette page n'existe pas (ou plus). Les outils sont présentés sur la [page d'accueil](/fr/index.html), par domaine.
+Cette page n'existe pas (ou plus). Les outils sont présentés sur la [page d'accueil](https://app.geoviews.ch/fr/), par domaine.

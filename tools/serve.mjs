@@ -18,6 +18,11 @@ const isFile = p => { try { return statSync(p).isFile(); } catch { return false;
 createServer((req, res) => {
   const path = normalize(decodeURIComponent(new URL(req.url, "http://x").pathname)).replace(/^(\.\.[/\\])+/, "");
   const base = join(root, path);
+  // a folder without its final slash goes to the slash, as Caddy does (relative links need it)
+  if (!path.endsWith("/") && !isFile(base) && !isFile(base + ".html") && isFile(join(base, "index.html"))) {
+    res.writeHead(308, { Location: path + "/" });
+    return res.end();
+  }
   const file = [base, base + ".html", join(base, "index.html")].find(isFile);
   if (!file) { res.writeHead(404, { "Content-Type": "text/plain" }); return res.end("404"); }
   const headers = { "Content-Type": TYPES[extname(file)] || "application/octet-stream", "Cache-Control": "no-cache" };

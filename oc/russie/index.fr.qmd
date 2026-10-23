@@ -14,4 +14,4 @@ listing:
   sort: "title asc"
 ---
 
-Aussi, dans les outils de données : la [pyramide des âges de la Russie de 1950 à 2100](/fr/demography/pyramids.html?c=RUS), à comparer avec [la Russie en 1950](/fr/demography/pyramids.html?c=RUS&y=2024&cmp=1950) ou [avec la Suisse](/fr/demography/pyramids.html?c=RUS&rel=1&cmp=CHE).
+Aussi, dans les outils de données : la [pyramide des âges de la Russie de 1950 à 2100](../../demography/pyramids.html?c=RUS), à comparer avec [la Russie en 1950](../../demography/pyramids.html?c=RUS&y=2024&cmp=1950) ou [avec la Suisse](../../demography/pyramids.html?c=RUS&rel=1&cmp=CHE).

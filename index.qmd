@@ -27,13 +27,15 @@ listing:
 
 The tools of the Elective Discipline (Option complémentaire) are in French.
 
+<!-- One tile per OC chapter, written by hand: the English site cannot list the French-only OC pages.
+     A new chapter (tools/new-oc-chapter.sh) gets its tile here too. -->
 ```{=html}
 <div class="app-tiles">
-  <a class="app-tile app-field-russie" href="/fr/oc/index.html">
+  <a class="app-tile app-field-russie" href="fr/oc/russie/index.html">
     <img class="app-tile-img" src="assets/fields/russie.jpg" alt="" loading="lazy">
     <span class="app-tile-body">
-      <span class="app-tile-title"><i class="bi bi-mortarboard" aria-hidden="true"></i>Option complémentaire</span>
-      <span class="app-tile-desc">The chapters of the Elective Discipline, in French.</span>
+      <span class="app-tile-title"><i class="bi bi-snow" aria-hidden="true"></i>Russie</span>
+      <span class="app-tile-desc">Population, territory, regions and economy of Russia (in French).</span>
     </span>
   </a>
 </div>

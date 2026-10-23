@@ -484,3 +484,34 @@ html.app-embed body > :not(.app-embed-wrap):not(script) {
 .geores-dark .app-head .app-yes { color: #a1d76a; }
 .geores-dark .app-head .app-no { color: #e9a3c9; }
 .app-votes .geores-controls .app-wide select { max-width: min(36rem, 80vw); }
+
+/* Readouts of the sims keep one width whatever their value, so that moving a slider moves nothing else (and the
+   controls never jump to a second row). Widths of the widest value in English and French; GeoResources is asked to
+   do the same in the sims themselves (geokey), these rules can go when it does. */
+.geores-controls .rate,
+.geores-controls .readout {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.geores[data-sim="sun-angle"] .day-out { min-width: 6.5em; }
+.geores[data-sim="sun-angle"] .lat-out { min-width: 8.3em; }
+/* sun-angle: two sliders and four buttons on one row (the sliders shrink before anything wraps) */
+.geores[data-sim="sun-angle"] .geores-controls { flex-wrap: nowrap; }
+.geores[data-sim="sun-angle"] .geores-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.geores[data-sim="sun-angle"] .geores-controls input[type="range"] {
+  flex: 1 1 4rem;
+  width: auto;
+  min-width: 4rem;
+  max-width: 10rem;
+}
+.geores[data-sim="sun-angle"] .geores-controls button { flex: none; white-space: nowrap; }
+@media (max-width: 900px) {
+  .geores[data-sim="sun-angle"] .geores-controls { flex-wrap: wrap; }
+}

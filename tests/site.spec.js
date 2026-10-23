@@ -245,3 +245,27 @@ test.describe("swiss votes", () => {
     await expect(page.locator(".app-votes .geores[data-mounted], .app-votes .geores canvas, .app-votes .geores svg").first()).toBeVisible();
   });
 });
+
+// Every link of every page that stays on the site answers 200 (navbar, listings, text, language links)
+test("every internal link resolves", async ({ page, request }, info) => {
+  test.skip(info.project.name !== "beamer", "once is enough");
+  test.setTimeout(600_000);
+  const seen = new Map();
+  for (const path of pages) {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const hrefs = await page.evaluate(() => [...document.querySelectorAll("a[href]")]
+      .map(a => a.href).filter(h => h.startsWith(location.origin)).map(h => h.split("#")[0]));
+    hrefs.forEach(h => { if (!seen.has(h)) seen.set(h, path); });
+  }
+  const broken = [];
+  for (const [href, from] of seen) {
+    const r = await request.get(href);
+    if (r.status() !== 200) broken.push(`${r.status()} ${href} (on ${from})`);
+  }
+  expect(broken, broken.join("\n")).toEqual([]);
+});
+
+test("a folder without its final slash is redirected to it", async ({ page }) => {
+  await page.goto("/fr/oc/russie");
+  await expect(page).toHaveURL(/\/fr\/oc\/russie\/$/);
+});

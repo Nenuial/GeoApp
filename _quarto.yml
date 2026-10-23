@@ -7,6 +7,7 @@ project:
     - robots.txt
     - assets/geoapp.js
     - assets/fields/
+    - assets/thumbs/
     - data/
 
 lang: en-US

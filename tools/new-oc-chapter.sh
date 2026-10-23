@@ -26,5 +26,6 @@ listing:
   sort: "title asc"
 ---
 EOF
-echo "Created oc/$name/index.fr.qmd (order $order). Add a description, the cover, the accent and the tool pages."
+echo "Created oc/$name/index.fr.qmd (order $order). Add a description, the cover, the accent, the tool pages,"
+echo "and its tile on the English home page (index.qmd, written by hand: the English site cannot list French-only pages)."
 [ -f "$here/assets/fields/$name.jpg" ] || echo "note: no cover assets/fields/$name.jpg yet" >&2

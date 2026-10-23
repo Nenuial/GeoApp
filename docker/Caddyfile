@@ -9,6 +9,13 @@
 	root * /srv
 	encode zstd gzip
 
+	# A folder without its final slash (/fr/oc/russie) goes to /fr/oc/russie/: relative links need the slash
+	@folder {
+		not path */
+		file {path}/index.html
+	}
+	redir @folder {path}/ 308
+
 	# Clean addresses: /demography/pyramids serves /demography/pyramids.html
 	try_files {path} {path}.html {path}/index.html
 
